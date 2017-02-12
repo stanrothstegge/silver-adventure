@@ -1,5 +1,13 @@
 grammar alpha;
 
+program: TAB;
+
+/*
+=============================================
+ SUCH LEXING!
+=============================================
+*/
+
 //data types
 INTEGER: 'in';
 DOUBLE: 'do';
@@ -46,6 +54,7 @@ GLOBAL_TYPE: THIS '.' TEXT;
 //in & out
 PRINT: 'sp';
 READ: 'he';
+RETURN: 're'; //return function
 
 //START & END
 START: 'Alpha';
@@ -56,17 +65,29 @@ INTEGER_TYPE: [0-9]+; //0 to int max
 DOUBLE_TYPE: INTEGER_TYPE '.' INTEGER_TYPE;
 
 //TEXT 
-WILDCARD: .;
-CHAR_TYPE: '\'' WILDCARD '\'';
-TEXT: WILDCARD WILDCARD? WILDCARD? WILDCARD? WILDCARD?; //max 5 chars
-STRING_TYPE: '"' WILDCARD+ '"';
+CHAR_TYPE: '\'' . '\'';
+//used for function & variable names
+TEXT: [a-zA-Z_] [a-zA-Z_0-9]? [a-zA-Z_0-9]? [a-zA-Z_0-9]? [a-zA-Z_0-9]?; //max 5 chars
+STRING_TYPE: '"' .? .? .? .? .? '"'; //max 5 chars
 
-//collections
+//TAB 
+TAB: '\u0009';
+//COMMENTS
+COMMENT: '/*' .*? '*/' -> skip;//Everything between /* and */
+LINE_COMMENT: '//' ~[\r\n]* -> skip;//Everything after //
+
+/*
+=============================================
+ SUCH PARSING!
+=============================================
+*/
+
+//--collections--
 DATA_TYPE: INTEGER | DOUBLE | STRING | CHAR | BOOLEAN;
 VALUE_TYPE: CHAR_TYPE | STRING_TYPE | INTEGER_TYPE | DOUBLE_TYPE | TRUE | FALSE;
 VARIABLE: TEXT | GLOBAL_TYPE;
 
-//declarations
+//--declarations--
 // Example: in a
 DECLARATION: DATA_TYPE ' ' TEXT;
 // Example: a = 2 | in a = 2 | in a = b
@@ -76,7 +97,7 @@ DECLARATION_FINAL: FILLING ';';
 // Example: in a = b | int a
 DECLARATION_FUNCTION: FILLING | DECLARATION;
 
-//functions
+//--functions--
 // Example: (in a, in b = 2)
 ARGUMENTS_DECLARATION: (DECLARATION_FUNCTION (', ' DECLARATION_FUNCTION)*)?;
 // Example: (2, aap, "test")
@@ -84,5 +105,5 @@ ARGUMENTS_CALL: ((VALUE_TYPE | VARIABLE) (', ' (VALUE_TYPE | VARIABLE))*)?;
 // Example: ~st in ch~ func2 (a, 2, "test")
 FUNCTION_DECLARATION: '~' (DATA_TYPE (' ' DATA_TYPE)* '~')? ' ' TEXT ' ' LBRACKET ARGUMENTS_DECLARATION RBRACKET;
 // Example: 4 * a = func (a, 2, "test");
-FUNCTION_CALL: (INTEGER_TYPE ' * ')? ((DECLARATION | VARIABLE) ' = ')? TEXT ' ' LBRACKET ARGUMENTS_CALL RBRACKET ';';
+FUNCTION_CALL: (INTEGER_TYPE ' * ')? ((DECLARATION | VARIABLE) (', ' (DECLARATION | VARIABLE)) ' = ')? TEXT ' ' LBRACKET ARGUMENTS_CALL RBRACKET ';';
 
