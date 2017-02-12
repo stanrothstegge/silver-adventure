@@ -1,6 +1,9 @@
 grammar alpha;
-
+//https://github.com/bkiers/tiny-language-antlr4/blob/master/src/main/antlr4/tl/antlr4/TL.g4
+//https://github.com/antlr/grammars-v4
 program: TAB;
+
+expression:;
 
 /*
 =============================================
@@ -61,7 +64,8 @@ START: 'Alpha';
 END: 'Omega';
 
 //Numbers
-INTEGER_TYPE: [0-9]+; //0 to int max
+INTEGER_TYPE: [1-9] Digit* | '0';
+Digit: [0-9];
 DOUBLE_TYPE: INTEGER_TYPE '.' INTEGER_TYPE;
 
 //TEXT 
@@ -71,7 +75,7 @@ TEXT: [a-zA-Z_] [a-zA-Z_0-9]? [a-zA-Z_0-9]? [a-zA-Z_0-9]? [a-zA-Z_0-9]?; //max 5
 STRING_TYPE: '"' .? .? .? .? .? '"'; //max 5 chars
 
 //TAB 
-TAB: '\u0009';
+TAB: '    ';
 //COMMENTS
 COMMENT: '/*' .*? '*/' -> skip;//Everything between /* and */
 LINE_COMMENT: '//' ~[\r\n]* -> skip;//Everything after //
@@ -107,3 +111,5 @@ FUNCTION_DECLARATION: '~' (DATA_TYPE (' ' DATA_TYPE)* '~')? ' ' TEXT ' ' LBRACKE
 // Example: 4 * a = func (a, 2, "test");
 FUNCTION_CALL: (INTEGER_TYPE ' * ')? ((DECLARATION | VARIABLE) (', ' (DECLARATION | VARIABLE)) ' = ')? TEXT ' ' LBRACKET ARGUMENTS_CALL RBRACKET ';';
 
+//--MATH--
+//todo this
