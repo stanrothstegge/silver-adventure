@@ -1,8 +1,9 @@
 grammar alpha;
 //https://github.com/bkiers/tiny-language-antlr4/blob/master/src/main/antlr4/tl/antlr4/TL.g4
 //https://github.com/antlr/grammars-v4
-program: expression;
+program: ;
 
+// expressions are true/false statements
 expression
  : MINUS ' ' expression
  | NOT ' ' expression
@@ -22,7 +23,15 @@ expression
  | NUMBER
  | TRUE
  | FALSE
+ | FUNCTION_CALL
  ;
+ 
+//if elseif and elseif
+// Example: if (expression) 
+//				if (expression) //nesteled
+//			ef (expression)
+//			el
+ifStatement: IF ' ' LBRACKET expression RBRACKET (ELSEIF ' ' LBRACKET expression RBRACKET)* ELSE?;
 
 /*
 =============================================
@@ -109,6 +118,9 @@ LINE_COMMENT: '//' ~[\r\n]* -> skip;//Everything after //
 DATA_TYPE: INTEGER | DOUBLE | STRING | CHAR | BOOLEAN;
 VALUE_TYPE: CHAR_TYPE | STRING_TYPE | NUMBER | TRUE | FALSE;
 VARIABLE: TEXT | GLOBAL_TYPE;
+// Example: "string" + a + 2 | \+ "string" a 2          for printing
+VARIABLES_PRINT: ((VALUE_TYPE | VARIABLE) (' + ' (VALUE_TYPE | VARIABLE))*)? | '\\+' ( ' ' VALUE_TYPE | VARIABLE)+;
+
 
 //--declarations--
 // Example: in a
@@ -130,5 +142,7 @@ FUNCTION_DECLARATION: '~' (DATA_TYPE (' ' DATA_TYPE)* '~')? ' ' TEXT ' ' LBRACKE
 // Example: 4 * a = func (a, 2, "test");
 FUNCTION_CALL: (INTEGER_TYPE ' * ')? ((DECLARATION | VARIABLE) (', ' (DECLARATION | VARIABLE)) ' = ')? TEXT ' ' LBRACKET ARGUMENTS_CALL RBRACKET ';';
 
-//--MATH--
-//todo this
+//--custom-functions--
+PRINT_FUNCTION: PRINT ' ' LBRACKET VARIABLES_PRINT? RBRACKET ';';
+READ_FUNCTION: (DECLARATION | VARIABLE) ' = ' READ ' ' LBRACKET RBRACKET ';';
+THROW_FUNCTION: THROW ' ' LBRACKET VARIABLES_PRINT RBRACKET ';';
