@@ -1,9 +1,28 @@
 grammar alpha;
 //https://github.com/bkiers/tiny-language-antlr4/blob/master/src/main/antlr4/tl/antlr4/TL.g4
 //https://github.com/antlr/grammars-v4
-program: TAB;
+program: expression;
 
-expression:;
+expression
+ : MINUS ' ' expression
+ | NOT ' ' expression
+ | expression ' ' MULTIPLY ' ' expression
+ | expression ' ' DIVIDE ' ' expression
+ | expression ' ' MODULO ' ' expression
+ | expression ' ' PLUS ' ' expression
+ | expression ' ' MINUS ' ' expression
+ | expression ' ' GREATEROREQUAL ' ' expression
+ | expression ' ' SMALLEROREQUAL ' ' expression
+ | expression ' ' GREATERTHAN ' ' expression
+ | expression ' ' SMALLERTHAN ' ' expression
+ | expression ' ' EQUALTO ' ' expression
+ | expression ' ' NOTEQUALTO ' ' expression
+ | expression ' ' AND ' ' expression
+ | expression ' ' OR ' ' expression
+ | NUMBER
+ | TRUE
+ | FALSE
+ ;
 
 /*
 =============================================
@@ -64,9 +83,9 @@ START: 'Alpha';
 END: 'Omega';
 
 //Numbers
-INTEGER_TYPE: [1-9] Digit* | '0';
-Digit: [0-9];
-DOUBLE_TYPE: INTEGER_TYPE '.' INTEGER_TYPE;
+INTEGER_TYPE: [1-9] DIGIT* | '0';
+DIGIT: [0-9];
+NUMBER : INTEGER_TYPE ('.' DIGIT+)?;
 
 //TEXT 
 CHAR_TYPE: '\'' . '\'';
@@ -88,7 +107,7 @@ LINE_COMMENT: '//' ~[\r\n]* -> skip;//Everything after //
 
 //--collections--
 DATA_TYPE: INTEGER | DOUBLE | STRING | CHAR | BOOLEAN;
-VALUE_TYPE: CHAR_TYPE | STRING_TYPE | INTEGER_TYPE | DOUBLE_TYPE | TRUE | FALSE;
+VALUE_TYPE: CHAR_TYPE | STRING_TYPE | NUMBER | TRUE | FALSE;
 VARIABLE: TEXT | GLOBAL_TYPE;
 
 //--declarations--
