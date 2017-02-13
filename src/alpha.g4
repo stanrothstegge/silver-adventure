@@ -1,7 +1,7 @@
 grammar alpha;
 //https://github.com/bkiers/tiny-language-antlr4/blob/master/src/main/antlr4/tl/antlr4/TL.g4
 //https://github.com/antlr/grammars-v4
-program: ;
+program: NUMBER;
 
 // expressions are true/false statements
 expression
@@ -103,7 +103,7 @@ TEXT: [a-zA-Z_] [a-zA-Z_0-9]? [a-zA-Z_0-9]? [a-zA-Z_0-9]? [a-zA-Z_0-9]?; //max 5
 STRING_TYPE: '"' .? .? .? .? .? '"'; //max 5 chars
 
 //TAB 
-TAB: '    ';
+TAB: '\u0009'; //must enable tab character in inteljij
 //COMMENTS
 COMMENT: '/*' .*? '*/' -> skip;//Everything between /* and */
 LINE_COMMENT: '//' ~[\r\n]* -> skip;//Everything after //
