@@ -2,13 +2,9 @@ grammar alpha;
 //https://github.com/bkiers/tiny-language-antlr4/blob/master/src/main/antlr4/tl/antlr4/TL.g4
 //https://github.com/antlr/grammars-v4
 language
-    :START NEWLINE
-    (globalStatements NEWLINE
-    | function
-    | NEWLINE)*
+    :START
+    (globalStatements|function)*
     END;
-
-program: NUMBER;
 
 /*
 =============================================
@@ -33,15 +29,13 @@ expression
  | expression ' ' NOTEQUALTO ' ' expression
  | expression ' ' AND ' ' expression
  | expression ' ' OR ' ' expression
- | NUMBER
- | NUMBERa
+ | NUMBER | ROBINPLZ
  | TRUE
  | FALSE
  | variable
  | functionCall
  ;
  
- NUMBERa: [0-9];
  
  
  valueType: CHAR_TYPE | STRING_TYPE | expression;
@@ -69,8 +63,9 @@ expression
  // Example: ~st in ch~ func2 (a, 2, "test")
  functionDeclaration: '~' (dataType (' ' dataType)* '~ ')? TEXT ' ' LBRACKET argumentsDeclaration? RBRACKET;
  // Example: 4 * a = func (a, 2, "test");
- functionCall: (Pizza ' * ')? ((declaration | variable) (', ' (declaration | variable)) ' = ')? TEXT ' ' LBRACKET argumentsCall? RBRACKET ';';
- 
+ //todo anthony help robin plz replace ads with integer
+ functionCall: (ROBINPLZ ' * ')? ((declaration | variable) ((', ' (declaration | variable))* ' = '))? TEXT ' ' LBRACKET argumentsCall? RBRACKET ';';
+ ROBINPLZ:[0-9]+;
  //--custom-functions--
  printFunction: PRINT ' ' LBRACKET variablesPrint RBRACKET ';';
  readFunction: (declaration | variable) ' = ' READ ' ' LBRACKET RBRACKET ';';
@@ -91,27 +86,26 @@ expression
      | throwBlock
      | ifStatement
      | return
-     | while) 
-     NEWLINE;
+     | while);
      
- return: RETURN ' ' (variable | valueType (', '(variable | valueType))*)? ';' NEWLINE;
+ return: RETURN ' ' (variable | valueType (', '(variable | valueType))*)? ';';
  
  //--blocks--
 // throwBlock: TRY NEWLINE (statement )* TAB* throwFunction NEWLINE (statement )* TAB* CATCH;
 // function: TAB functionDeclaration NEWLINE (TAB TAB statement NEWLINE)* (TAB TAB return NEWLINE)?;
- throwBlock: TRY NEWLINE (statement )*  throwFunction NEWLINE (statement )* catchFunction NEWLINE statement+ ;
- function:  functionDeclaration NEWLINE ( statement)* COFFEE NEWLINE;
+ throwBlock: TRY (statement )*  throwFunction (statement )* catchFunction statement+ COFFEE;
+ function:  functionDeclaration ( statement)* COFFEE;
  //if elseif and elseif
  // Example: if (expression) 
  //				if (expression) //nesteled
  //			ef (expression)
  //			el
- ifStatement: IF ' ' LBRACKET expression RBRACKET NEWLINE statement* 
-     (ELSEIF ' ' LBRACKET expression RBRACKET NEWLINE statement*)* 
-     (ELSE NEWLINE statement*)?
+ ifStatement: IF ' ' LBRACKET expression RBRACKET statement* 
+     (ELSEIF ' ' LBRACKET expression RBRACKET statement*)* 
+     (ELSE statement*)?
      COFFEE;
      
- while: WHILE ' ' LBRACKET expression RBRACKET NEWLINE statement* COFFEE NEWLINE;
+ while: WHILE ' ' LBRACKET expression RBRACKET statement* COFFEE;
 
 
 //--collections--
@@ -180,10 +174,12 @@ START: 'Alpha';
 END: 'Omega';
 
 //Numbers
-Pizza: [1-9] DIGIT* | '0';
-fragment INTEGER_TYPE: [1-9] DIGIT* | '0';
-fragment DIGIT: [0-9];
-NUMBER: INTEGER_TYPE ('.' DIGIT+)?;
+//todo anthony help
+fragment INTEGER_TYPE: [1-9] DIGITS* | '0';
+fragment DIGITS: [0-9];
+NUMBER: INTEGER_TYPE ('.' DIGITS+)?;
+
+
 
 
 //TEXT
@@ -197,7 +193,7 @@ TAB: ('\u0009' | '\t') -> skip; //must enable tab character in inteljij
 //COMMENTS
 COMMENT: '/*' .*? '*/' -> skip;//Everything between /* and */
 LINE_COMMENT: '//' ~[\r\n]* -> skip;//Everything after //
-NEWLINE: '\n';
+NEWLINE: '\n' -> skip;
 
 
 
