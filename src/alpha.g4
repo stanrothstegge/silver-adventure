@@ -3,11 +3,12 @@ grammar alpha;
 //https://github.com/antlr/grammars-v4
 language
     :START NEWLINE
-    (TAB globalStatements NEWLINE
-    | function)*
+    (globalStatements NEWLINE
+    | function
+    | NEWLINE)*
     END;
 
-program: TAB;
+program: NUMBER;
 
 /*
 =============================================
@@ -33,64 +34,73 @@ expression
  | expression ' ' AND ' ' expression
  | expression ' ' OR ' ' expression
  | NUMBER
+ | NUMBERa
  | TRUE
  | FALSE
+ | variable
  | functionCall
  ;
+ 
+ NUMBERa: [0-9];
+ 
  
  valueType: CHAR_TYPE | STRING_TYPE | expression;
  
  // Example: "string" + a + 2 | \+ "string" a 2          for printing
- variablesPrint: (valueType | VARIABLE) (' + ' (valueType | VARIABLE))* | '\\+' ( ' ' valueType | VARIABLE)+;
+ variablesPrint: (valueType | variable) (' + ' (valueType | variable))* | '\\+' ( ' ' valueType | variable)+;
  
  
  //--declarations--
  // Example: in a
- declaration: DATA_TYPE ' ' TEXT;
+ declaration: dataType ' ' TEXT;
  // Example: a = 2 | in a = 2 | in a = b
- declarationFill: (declaration | VARIABLE) ' = ' (valueType | VARIABLE);
+ declarationFill: (declaration | variable) ' = ' (valueType);
  // Example: in a = 2;
  declarationFinal: declarationFill ';';
  // Example: in a = b | int a
  declarationFunction: declarationFill | declaration;
  
+ 
  //--functions--
  // Example: (in a, in b = 2)
  argumentsDeclaration: declarationFunction (', ' declarationFunction)*;
  // Example: (2, aap, "test")
- argumentsCall: (valueType | VARIABLE) (', ' (valueType | VARIABLE))*;
+ argumentsCall: (valueType | variable) (', ' (valueType | variable))*;
  // Example: ~st in ch~ func2 (a, 2, "test")
- functionDeclaration: '~' (DATA_TYPE (' ' DATA_TYPE)* '~')? ' ' TEXT ' ' LBRACKET argumentsDeclaration? RBRACKET;
+ functionDeclaration: '~' (dataType (' ' dataType)* '~ ')? TEXT ' ' LBRACKET argumentsDeclaration? RBRACKET;
  // Example: 4 * a = func (a, 2, "test");
- functionCall: (INTEGER_TYPE ' * ')? ((declaration | VARIABLE) (', ' (declaration | VARIABLE)) ' = ')? TEXT ' ' LBRACKET argumentsCall? RBRACKET ';';
+ functionCall: (Pizza ' * ')? ((declaration | variable) (', ' (declaration | variable)) ' = ')? TEXT ' ' LBRACKET argumentsCall? RBRACKET ';';
  
  //--custom-functions--
- printFunction: PRINT ' ' LBRACKET variablesPrint? RBRACKET ';';
- readFunction: (declaration | VARIABLE) ' = ' READ ' ' LBRACKET RBRACKET ';';
+ printFunction: PRINT ' ' LBRACKET variablesPrint RBRACKET ';';
+ readFunction: (declaration | variable) ' = ' READ ' ' LBRACKET RBRACKET ';';
  throwFunction: THROW ' ' LBRACKET variablesPrint RBRACKET ';';
+ catchFunction: CATCH ' ' LBRACKET variable RBRACKET;
  
  //--lines--
  globalStatements: declarationFinal | declaration ';';
  
  statement
  //before every statement, there are tabs. the number of tabs matter.
-     : TAB*
+     : 
      (globalStatements 
-     | PLUS PLUS valueType ';'
+     | PLUS PLUS (variable) ';'
      | functionCall 
      | printFunction 
      | readFunction
      | throwBlock
      | ifStatement
+     | return
      | while) 
      NEWLINE;
      
- return: RETURN (VARIABLE | valueType (', '(VARIABLE | valueType))*)? ';' NEWLINE;
+ return: RETURN ' ' (variable | valueType (', '(variable | valueType))*)? ';' NEWLINE;
  
  //--blocks--
- throwBlock: TRY NEWLINE (statement )* TAB* throwFunction NEWLINE (statement )* TAB* CATCH;
- function: TAB functionDeclaration NEWLINE (TAB TAB statement NEWLINE)* (TAB TAB return NEWLINE)?;
- 
+// throwBlock: TRY NEWLINE (statement )* TAB* throwFunction NEWLINE (statement )* TAB* CATCH;
+// function: TAB functionDeclaration NEWLINE (TAB TAB statement NEWLINE)* (TAB TAB return NEWLINE)?;
+ throwBlock: TRY NEWLINE (statement )*  throwFunction NEWLINE (statement )* catchFunction NEWLINE statement+ ;
+ function:  functionDeclaration NEWLINE ( statement)* COFFEE NEWLINE;
  //if elseif and elseif
  // Example: if (expression) 
  //				if (expression) //nesteled
@@ -98,9 +108,15 @@ expression
  //			el
  ifStatement: IF ' ' LBRACKET expression RBRACKET NEWLINE statement* 
      (ELSEIF ' ' LBRACKET expression RBRACKET NEWLINE statement*)* 
-     (ELSE statement*)?;
+     (ELSE NEWLINE statement*)?
+     COFFEE;
      
- while: WHILE ' ' LBRACKET expression RBRACKET NEWLINE statement*
+ while: WHILE ' ' LBRACKET expression RBRACKET NEWLINE statement* COFFEE NEWLINE;
+
+
+//--collections--
+ dataType: INTEGER | DOUBLE | STRING | CHAR | BOOLEAN;
+ variable: TEXT | GLOBAL_TYPE;
 
 /*
 =============================================
@@ -138,7 +154,7 @@ AND: '&&';
 NOT: '!';
 
 //try catch
-TRY: 'tr';
+TRY: 'ty';
 CATCH: 'ca';
 THROW: 'th';
 
@@ -147,6 +163,8 @@ IF: 'if';
 ELSEIF: 'ef';
 ELSE: 'el';
 WHILE: 'wh';
+
+COFFEE: '☕' | '\u2615';
 
 //global variables
 THIS: 'gl';
@@ -162,18 +180,20 @@ START: 'Alpha';
 END: 'Omega';
 
 //Numbers
+Pizza: [1-9] DIGIT* | '0';
 fragment INTEGER_TYPE: [1-9] DIGIT* | '0';
 fragment DIGIT: [0-9];
 NUMBER: INTEGER_TYPE ('.' DIGIT+)?;
 
-//TEXT 
+
+//TEXT
 CHAR_TYPE: '\'' . '\'';
 //used for function & variable names
 TEXT: [a-zA-Z_] [a-zA-Z_0-9]? [a-zA-Z_0-9]? [a-zA-Z_0-9]? [a-zA-Z_0-9]?; //max 5 chars
 STRING_TYPE: '"' .? .? .? .? .? '"'; //max 5 chars
 
 //TAB 
-TAB: '\u0009' | '\t'; //must enable tab character in inteljij
+TAB: ('\u0009' | '\t') -> skip; //must enable tab character in inteljij
 //COMMENTS
 COMMENT: '/*' .*? '*/' -> skip;//Everything between /* and */
 LINE_COMMENT: '//' ~[\r\n]* -> skip;//Everything after //
@@ -181,6 +201,4 @@ NEWLINE: '\n';
 
 
 
-//--collections--
-fragment DATA_TYPE: INTEGER | DOUBLE | STRING | CHAR | BOOLEAN;
-fragment VARIABLE: TEXT | GLOBAL_TYPE;
+
