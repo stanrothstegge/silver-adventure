@@ -14,41 +14,40 @@ language
 
 // expressions are true/false statements
 expression
- : MINUS ' ' expression
- | NOT ' ' expression
- | expression ' ' MULTIPLY ' ' expression
- | expression ' ' DIVIDE ' ' expression
- | expression ' ' MODULO ' ' expression
- | expression ' ' PLUS ' ' expression
- | expression ' ' MINUS ' ' expression
- | expression ' ' GREATEROREQUAL ' ' expression
- | expression ' ' SMALLEROREQUAL ' ' expression
- | expression ' ' GREATERTHAN ' ' expression
- | expression ' ' SMALLERTHAN ' ' expression
- | expression ' ' EQUALTO ' ' expression
- | expression ' ' NOTEQUALTO ' ' expression
- | expression ' ' AND ' ' expression
- | expression ' ' OR ' ' expression
- | NUMBER | ROBINPLZ
- | TRUE
- | FALSE
- | variable
- | functionCall
+ :  '-' 						expression 					#minusExpression
+ | NOT  						expression 					#notExpression
+ | expression MULTIPLY 			expression 					#multiplyExpression
+ | expression DIVIDE 			expression 					#divideExpression
+ | expression MODULO			expression 					#moduloExpression
+ | expression PLUS 				expression 					#plusExpression
+ | expression MINUS 			expression 					#minusExpression
+ | expression GREATEROREQUAL 	expression 					#greatOrRequalExpression
+ | expression SMALLEROREQUAL 	expression 					#smallerOrRequalExpression
+ | expression GREATERTHAN 		expression 					#greaterThanExpression
+ | expression SMALLERTHAN 		expression 					#smallerThanExpression
+ | expression EQUALTO 			expression 					#qualeToEpression
+ | expression NOTEQUALTO 		expression 					#notEqualToExpression
+ | expression AND 				expression 					#andExpression
+ | expression OR 				expression 					#orExpression
+ | LBRACKET expression RBRACKET 		   					#leftBracketExpressionRightBracketExpression
+ | NUMBER								   					#numberExpression
+ | CHAR_TYPE 												#charExpression
+ | STRING_TYPE												#stringExpression
+ | TRUE									   					#trueExpression
+ | FALSE								   					#falseExpression
+ | variable                                					#variableExpression
+ | functionCall							   					#functionCallExpression
+ | '\\+' (' ' (NUMBER|variable|CHAR_TYPE|STRING_TYPE))+     #addCustomExpression
  ;
  
  
- 
- valueType: CHAR_TYPE | STRING_TYPE | expression;
- 
- // Example: "string" + a + 2 | \+ "string" a 2          for printing
- variablesPrint: (valueType | variable) (' + ' (valueType | variable))* | '\\+' ( ' ' valueType | variable)+;
- 
+ valueType: CHAR_TYPE | STRING_TYPE | expression; 
  
  //--declarations--
  // Example: in a
  declaration: dataType ' ' TEXT;
  // Example: a = 2 | in a = 2 | in a = b
- declarationFill: (declaration | variable) ' = ' (valueType);
+ declarationFill: (declaration | variable) ' = ' (expression);
  // Example: in a = 2;
  declarationFinal: declarationFill ';';
  // Example: in a = b | int a
@@ -59,15 +58,15 @@ expression
  // Example: (in a, in b = 2)
  argumentsDeclaration: declarationFunction (', ' declarationFunction)*;
  // Example: (2, aap, "test")
- argumentsCall: (valueType | variable) (', ' (valueType | variable))*;
+ argumentsCall: (expression) (', ' (expression))*;
  // Example: ~st in ch~ func2 (a, 2, "test")
  functionDeclaration: '~' (dataType (' ' dataType)* '~ ')? TEXT ' ' LBRACKET argumentsDeclaration? RBRACKET;
  // Example: 4 * a = func (a, 2, "test");
  functionCall: (NUMBER ' * ')? ((declaration | variable) ((', ' (declaration | variable))* ' = '))? TEXT ' ' LBRACKET argumentsCall? RBRACKET ';';
  //--custom-functions--
- printFunction: PRINT ' ' LBRACKET variablesPrint RBRACKET ';';
+ printFunction: PRINT ' ' LBRACKET expression RBRACKET ';';
  readFunction: (declaration | variable) ' = ' READ ' ' LBRACKET RBRACKET ';';
- throwFunction: THROW ' ' LBRACKET variablesPrint RBRACKET ';';
+ throwFunction: THROW ' ' LBRACKET expression RBRACKET ';';
  catchFunction: CATCH ' ' LBRACKET variable RBRACKET;
  
  //--lines--
@@ -77,7 +76,7 @@ expression
  //before every statement, there are tabs. the number of tabs matter.
      : 
      (globalStatements 
-     | PLUS PLUS (variable) ';'
+     | '++' (variable) ';'
      | functionCall 
      | printFunction 
      | readFunction
@@ -86,7 +85,7 @@ expression
      | return
      | while);
      
- return: RETURN ' ' (variable | valueType (', '(variable | valueType))*)? ';';
+ return: RETURN ' ' (expression (', '(expression))*)? ';';
  
  //--blocks--
 // throwBlock: TRY NEWLINE (statement )* TAB* throwFunction NEWLINE (statement )* TAB* CATCH;
@@ -126,24 +125,24 @@ TRUE: 'tr';
 FALSE: 'fs';
 
 //Math & Expressions
-PLUS: '+';
-MINUS: '-';
-MULTIPLY: '*';
-DIVIDE: '/';
-MODULO: '%';
+PLUS: ' + ';
+MINUS: ' - ';
+MULTIPLY: ' * ';
+DIVIDE: ' / ';
+MODULO: ' % ';
 LBRACKET: '(';
 RBRACKET: ')';
 
-SMALLERTHAN: '<';
-GREATERTHAN: '>';
-EQUALTO: '==';
-NOTEQUALTO: '!=';
-SMALLEROREQUAL: '<=';
-GREATEROREQUAL: '>=';
+SMALLERTHAN: ' < ';
+GREATERTHAN: ' > ';
+EQUALTO: ' == ';
+NOTEQUALTO: ' != ';
+SMALLEROREQUAL: ' <= ';
+GREATEROREQUAL: ' >= ';
 
-OR: '||';
-AND: '&&';
-NOT: '!';
+OR: ' || ';
+AND: ' && ';
+NOT: '! ';
 
 //try catch
 TRY: 'ty';
