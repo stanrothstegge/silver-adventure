@@ -63,9 +63,7 @@ expression
  // Example: ~st in ch~ func2 (a, 2, "test")
  functionDeclaration: '~' (dataType (' ' dataType)* '~ ')? TEXT ' ' LBRACKET argumentsDeclaration? RBRACKET;
  // Example: 4 * a = func (a, 2, "test");
- //todo anthony help robin plz replace ads with integer
- functionCall: (ROBINPLZ ' * ')? ((declaration | variable) ((', ' (declaration | variable))* ' = '))? TEXT ' ' LBRACKET argumentsCall? RBRACKET ';';
- ROBINPLZ:[0-9]+;
+ functionCall: (NUMBER ' * ')? ((declaration | variable) ((', ' (declaration | variable))* ' = '))? TEXT ' ' LBRACKET argumentsCall? RBRACKET ';';
  //--custom-functions--
  printFunction: PRINT ' ' LBRACKET variablesPrint RBRACKET ';';
  readFunction: (declaration | variable) ' = ' READ ' ' LBRACKET RBRACKET ';';
@@ -174,13 +172,9 @@ START: 'Alpha';
 END: 'Omega';
 
 //Numbers
-//todo anthony help
-fragment INTEGER_TYPE: [1-9] DIGITS* | '0';
 fragment DIGITS: [0-9];
+fragment INTEGER_TYPE: [1-9] DIGITS* | '0';
 NUMBER: INTEGER_TYPE ('.' DIGITS+)?;
-
-
-
 
 //TEXT
 CHAR_TYPE: '\'' . '\'';
