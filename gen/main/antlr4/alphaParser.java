@@ -1,4 +1,5 @@
-// Generated from C:/Users/Robin/Documents/School/Jaar 2/Kwartiel 3/Compilers/ProgrammeerTaal/src\alpha.g4 by ANTLR 4.6
+// Generated from E:/Dropbox/Saxion/Jaar 2/Kwartiel 3/Compilers & Operating Systems/Practicumopdracht1/src/main/antlr4\alpha.g4 by ANTLR 4.6
+package main.antlr4;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -30,14 +31,14 @@ public class alphaParser extends Parser {
 		RULE_argumentsCall = 7, RULE_functionDeclaration = 8, RULE_functionCall = 9, 
 		RULE_printFunction = 10, RULE_readFunction = 11, RULE_throwFunction = 12, 
 		RULE_catchFunction = 13, RULE_globalStatements = 14, RULE_statement = 15, 
-		RULE_return = 16, RULE_throwBlock = 17, RULE_function = 18, RULE_ifStatement = 19, 
-		RULE_while = 20, RULE_dataType = 21, RULE_variable = 22;
+		RULE_returnmethod = 16, RULE_throwBlock = 17, RULE_function = 18, RULE_ifStatement = 19, 
+		RULE_whilemethod = 20, RULE_dataType = 21, RULE_variable = 22;
 	public static final String[] ruleNames = {
 		"language", "expression", "declaration", "declarationFill", "declarationFinal", 
 		"declarationFunction", "argumentsDeclaration", "argumentsCall", "functionDeclaration", 
 		"functionCall", "printFunction", "readFunction", "throwFunction", "catchFunction", 
-		"globalStatements", "statement", "return", "throwBlock", "function", "ifStatement", 
-		"while", "dataType", "variable"
+		"globalStatements", "statement", "returnmethod", "throwBlock", "function", 
+		"ifStatement", "whilemethod", "dataType", "variable"
 	};
 
 	private static final String[] _LITERAL_NAMES = {
@@ -1738,11 +1739,11 @@ public class alphaParser extends Parser {
 		public IfStatementContext ifStatement() {
 			return getRuleContext(IfStatementContext.class,0);
 		}
-		public ReturnContext return() {
-			return getRuleContext(ReturnContext.class,0);
+		public ReturnmethodContext returnmethod() {
+			return getRuleContext(ReturnmethodContext.class,0);
 		}
-		public WhileContext while() {
-			return getRuleContext(WhileContext.class,0);
+		public WhilemethodContext whilemethod() {
+			return getRuleContext(WhilemethodContext.class,0);
 		}
 		public VariableContext variable() {
 			return getRuleContext(VariableContext.class,0);
@@ -1818,13 +1819,13 @@ public class alphaParser extends Parser {
 			case 8:
 				{
 				setState(263);
-				return();
+				returnmethod();
 				}
 				break;
 			case 9:
 				{
 				setState(264);
-				while();
+				whilemethod();
 				}
 				break;
 			}
@@ -1841,7 +1842,7 @@ public class alphaParser extends Parser {
 		return _localctx;
 	}
 
-	public static class ReturnContext extends ParserRuleContext {
+	public static class ReturnmethodContext extends ParserRuleContext {
 		public TerminalNode RETURN() { return getToken(alphaParser.RETURN, 0); }
 		public List<ExpressionContext> expression() {
 			return getRuleContexts(ExpressionContext.class);
@@ -1849,20 +1850,20 @@ public class alphaParser extends Parser {
 		public ExpressionContext expression(int i) {
 			return getRuleContext(ExpressionContext.class,i);
 		}
-		public ReturnContext(ParserRuleContext parent, int invokingState) {
+		public ReturnmethodContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_return; }
+		@Override public int getRuleIndex() { return RULE_returnmethod; }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitReturn(this);
+			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitReturnmethod(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final ReturnContext return() throws RecognitionException {
-		ReturnContext _localctx = new ReturnContext(_ctx, getState());
-		enterRule(_localctx, 32, RULE_return);
+	public final ReturnmethodContext returnmethod() throws RecognitionException {
+		ReturnmethodContext _localctx = new ReturnmethodContext(_ctx, getState());
+		enterRule(_localctx, 32, RULE_returnmethod);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
@@ -2215,7 +2216,7 @@ public class alphaParser extends Parser {
 		return _localctx;
 	}
 
-	public static class WhileContext extends ParserRuleContext {
+	public static class WhilemethodContext extends ParserRuleContext {
 		public TerminalNode WHILE() { return getToken(alphaParser.WHILE, 0); }
 		public TerminalNode LBRACKET() { return getToken(alphaParser.LBRACKET, 0); }
 		public ExpressionContext expression() {
@@ -2229,20 +2230,20 @@ public class alphaParser extends Parser {
 		public StatementContext statement(int i) {
 			return getRuleContext(StatementContext.class,i);
 		}
-		public WhileContext(ParserRuleContext parent, int invokingState) {
+		public WhilemethodContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_while; }
+		@Override public int getRuleIndex() { return RULE_whilemethod; }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitWhile(this);
+			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitWhilemethod(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final WhileContext while() throws RecognitionException {
-		WhileContext _localctx = new WhileContext(_ctx, getState());
-		enterRule(_localctx, 40, RULE_while);
+	public final WhilemethodContext whilemethod() throws RecognitionException {
+		WhilemethodContext _localctx = new WhilemethodContext(_ctx, getState());
+		enterRule(_localctx, 40, RULE_whilemethod);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
