@@ -39,10 +39,7 @@ expression
  | functionCall							   					#functionCallExpression
  | '\\+' (' ' (NUMBER|variable|CHAR_TYPE|STRING_TYPE))+     #addCustomExpression
  ;
- 
- 
- valueType: CHAR_TYPE | STRING_TYPE | expression; 
- 
+  
  //--declarations--
  // Example: in a
  declaration: dataType ' ' TEXT;
