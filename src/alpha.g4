@@ -70,9 +70,7 @@ expression
  globalStatements: declarationFinal | declaration ';';
  
  statement
- //before every statement, there are tabs. the number of tabs matter.
-     : 
-     (globalStatements 
+     : (globalStatements 
      | '++' (variable) ';'
      | functionCall 
      | printFunction 
