@@ -2,13 +2,21 @@ package main.java;
 
 import main.antlr4.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Visitor
  */
 class TypeChecker extends alphaBaseVisitor {
+
+
+    Map<String, RenameThis> functions = new HashMap<>();
+
+
     @Override
     public Object visitLanguage(alphaParser.LanguageContext ctx) {
-        return super.visitLanguage(ctx);
+        return visitChildren(ctx);
     }
 
     @Override
@@ -128,17 +136,19 @@ class TypeChecker extends alphaBaseVisitor {
 
     @Override
     public Object visitDeclaration(alphaParser.DeclarationContext ctx) {
-        return super.visitDeclaration(ctx);
+        //todo fix this
+       // functions.put(ctx.getText(),new RenameThis(ctx.dataType()));
+        return visitChildren(ctx);
     }
 
     @Override
     public Object visitDeclarationFill(alphaParser.DeclarationFillContext ctx) {
-        return super.visitDeclarationFill(ctx);
+        return visitChildren(ctx);
     }
 
     @Override
     public Object visitDeclarationFinal(alphaParser.DeclarationFinalContext ctx) {
-        return super.visitDeclarationFinal(ctx);
+        return visitChildren(ctx);
     }
 
     @Override
@@ -188,7 +198,7 @@ class TypeChecker extends alphaBaseVisitor {
 
     @Override
     public Object visitGlobalStatements(alphaParser.GlobalStatementsContext ctx) {
-        return super.visitGlobalStatements(ctx);
+        return visitChildren(ctx);
     }
 
     @Override
@@ -222,8 +232,8 @@ class TypeChecker extends alphaBaseVisitor {
     }
 
     @Override
-    public Object visitDataType(alphaParser.DataTypeContext ctx) {
-        return super.visitDataType(ctx);
+    public DataTypes.DataType visitDataType(alphaParser.DataTypeContext ctx) {
+        return DataTypes.getEnum(ctx.getText());                                                                        //return datatype
     }
 
     @Override
