@@ -5,7 +5,7 @@ import main.antlr4.*;
 /**
  * Visitor
  */
-class SemanticEvaluator extends alphaBaseVisitor {
+class Identifier extends alphaBaseVisitor {
     @Override
     public Object visitLanguage(alphaParser.LanguageContext ctx) {
         return super.visitLanguage(ctx);
@@ -197,8 +197,8 @@ class SemanticEvaluator extends alphaBaseVisitor {
     }
 
     @Override
-    public Object visitReturnmethod(alphaParser.ReturnmethodContext ctx) {
-        return super.visitReturnmethod(ctx);
+    public Object visitReturnMethod(alphaParser.ReturnMethodContext ctx) {
+        return super.visitReturnMethod(ctx);
     }
 
     @Override
@@ -217,8 +217,8 @@ class SemanticEvaluator extends alphaBaseVisitor {
     }
 
     @Override
-    public Object visitWhilemethod(alphaParser.WhilemethodContext ctx) {
-        return super.visitWhilemethod(ctx);
+    public Object visitWhileMethod(alphaParser.WhileMethodContext ctx) {
+        return super.visitWhileMethod(ctx);
     }
 
     @Override

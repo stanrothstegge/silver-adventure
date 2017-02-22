@@ -77,10 +77,10 @@ expression
      | readFunction
      | throwBlock
      | ifStatement
-     | returnmethod
-     | whilemethod);
+     | returnMethod
+     | whileMethod);
      
- returnmethod: RETURN ' ' (expression (', '(expression))*)? ';';
+ returnMethod: RETURN ' ' (expression (', '(expression))*)? ';';
  
  //--blocks--
 // throwBlock: TRY NEWLINE (statement )* TAB* throwFunction NEWLINE (statement )* TAB* CATCH;
@@ -97,7 +97,7 @@ expression
      (ELSE statement*)?
      COFFEE;
      
- whilemethod: WHILE ' ' LBRACKET expression RBRACKET statement* COFFEE;
+ whileMethod: WHILE ' ' LBRACKET expression RBRACKET statement* COFFEE;
 
 
 //--collections--

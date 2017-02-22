@@ -1,4 +1,4 @@
-// Generated from E:/Dropbox/Saxion/Jaar 2/Kwartiel 3/Compilers & Operating Systems/Practicumopdracht1/src/main/antlr4\alpha.g4 by ANTLR 4.6
+// Generated from C:/Users/Robin/Documents/School/Jaar 2/Kwartiel 3/Compilers/ProgrammeerTaal/src/main/antlr4\alpha.g4 by ANTLR 4.6
 package main.antlr4;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -262,11 +262,11 @@ public interface alphaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStatement(alphaParser.StatementContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link alphaParser#returnmethod}.
+	 * Visit a parse tree produced by {@link alphaParser#returnMethod}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitReturnmethod(alphaParser.ReturnmethodContext ctx);
+	T visitReturnMethod(alphaParser.ReturnMethodContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link alphaParser#throwBlock}.
 	 * @param ctx the parse tree
@@ -286,11 +286,11 @@ public interface alphaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIfStatement(alphaParser.IfStatementContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link alphaParser#whilemethod}.
+	 * Visit a parse tree produced by {@link alphaParser#whileMethod}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitWhilemethod(alphaParser.WhilemethodContext ctx);
+	T visitWhileMethod(alphaParser.WhileMethodContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link alphaParser#dataType}.
 	 * @param ctx the parse tree
