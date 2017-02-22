@@ -1,4 +1,4 @@
-// Generated from E:/Dropbox/Saxion/Jaar 2/Kwartiel 3/Compilers & Operating Systems/Practicumopdracht1/src/main/antlr4\alpha.g4 by ANTLR 4.6
+// Generated from C:/Users/Robin/Documents/School/Jaar 2/Kwartiel 3/Compilers/ProgrammeerTaal/src/main/antlr4\alpha.g4 by ANTLR 4.6
 package main.antlr4;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
@@ -283,7 +283,7 @@ public class alphaBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements 
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitReturnmethod(alphaParser.ReturnmethodContext ctx) { return visitChildren(ctx); }
+	@Override public T visitReturnMethod(alphaParser.ReturnMethodContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -311,7 +311,7 @@ public class alphaBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements 
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitWhilemethod(alphaParser.WhilemethodContext ctx) { return visitChildren(ctx); }
+	@Override public T visitWhileMethod(alphaParser.WhileMethodContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

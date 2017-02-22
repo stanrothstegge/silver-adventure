@@ -1,12 +1,19 @@
 package main.java;
 
-import main.antlr4.alphaBaseVisitor;
-import main.antlr4.alphaParser;
+import main.antlr4.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Visitor
  */
 class TypeChecker extends alphaBaseVisitor {
+
+
+    Map<String, RenameThis> functions = new HashMap<>();
+
+
     @Override
     public Object visitLanguage(alphaParser.LanguageContext ctx) {
         return visitChildren(ctx);
@@ -129,16 +136,14 @@ class TypeChecker extends alphaBaseVisitor {
 
     @Override
     public Object visitDeclaration(alphaParser.DeclarationContext ctx) {
-        return super.visitDeclaration(ctx);
+        //todo fix this
+       // functions.put(ctx.getText(),new RenameThis(ctx.dataType()));
+        return visitChildren(ctx);
     }
 
     @Override
     public Object visitDeclarationFill(alphaParser.DeclarationFillContext ctx) {
-      //  switch (visit(ctx.declaration())){
-
-      //  }
-
-        return super.visitDeclarationFill(ctx);
+        return visitChildren(ctx);
     }
 
     @Override
@@ -202,8 +207,8 @@ class TypeChecker extends alphaBaseVisitor {
     }
 
     @Override
-    public Object visitReturnmethod(alphaParser.ReturnmethodContext ctx) {
-        return super.visitReturnmethod(ctx);
+    public Object visitReturnMethod(alphaParser.ReturnMethodContext ctx) {
+        return super.visitReturnMethod(ctx);
     }
 
     @Override
@@ -222,13 +227,13 @@ class TypeChecker extends alphaBaseVisitor {
     }
 
     @Override
-    public Object visitWhilemethod(alphaParser.WhilemethodContext ctx) {
-        return super.visitWhilemethod(ctx);
+    public Object visitWhileMethod(alphaParser.WhileMethodContext ctx) {
+        return super.visitWhileMethod(ctx);
     }
 
     @Override
-    public Object visitDataType(alphaParser.DataTypeContext ctx) {
-        return super.visitDataType(ctx);
+    public DataTypes.DataType visitDataType(alphaParser.DataTypeContext ctx) {
+        return DataTypes.getEnum(ctx.getText());                                                                        //return datatype
     }
 
     @Override

@@ -26,8 +26,13 @@ public class Alpha {
 
         //week 2
         // Evaluate by running the visitor
+
        // SemanticEvaluator semanticEvaluator = new SemanticEvaluator();
         //semanticEvaluator.visit(expression);
+
+        Identifier identifier = new Identifier();
+        identifier.visit(expression);
+
 
         // then type check
         TypeChecker type = new TypeChecker();
