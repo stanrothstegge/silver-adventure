@@ -1,0 +1,10 @@
+Alpha
+	in a = 2;//int
+	in b = 2;//int
+
+	~funct ()
+		if (a == b)
+			sp ("test");
+		☕
+	☕
+Omega

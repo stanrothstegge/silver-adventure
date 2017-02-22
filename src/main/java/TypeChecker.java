@@ -9,7 +9,7 @@ import main.antlr4.alphaParser;
 class TypeChecker extends alphaBaseVisitor {
     @Override
     public Object visitLanguage(alphaParser.LanguageContext ctx) {
-        return super.visitLanguage(ctx);
+        return visitChildren(ctx);
     }
 
     @Override
@@ -134,12 +134,16 @@ class TypeChecker extends alphaBaseVisitor {
 
     @Override
     public Object visitDeclarationFill(alphaParser.DeclarationFillContext ctx) {
+      //  switch (visit(ctx.declaration())){
+
+      //  }
+
         return super.visitDeclarationFill(ctx);
     }
 
     @Override
     public Object visitDeclarationFinal(alphaParser.DeclarationFinalContext ctx) {
-        return super.visitDeclarationFinal(ctx);
+        return visitChildren(ctx);
     }
 
     @Override
@@ -189,7 +193,7 @@ class TypeChecker extends alphaBaseVisitor {
 
     @Override
     public Object visitGlobalStatements(alphaParser.GlobalStatementsContext ctx) {
-        return super.visitGlobalStatements(ctx);
+        return visitChildren(ctx);
     }
 
     @Override

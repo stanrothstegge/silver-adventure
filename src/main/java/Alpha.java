@@ -14,7 +14,8 @@ public class Alpha {
     public static void main(String[] args) {
 
         //week 1
-        ANTLRInputStream inputStream = new ANTLRInputStream("src/main/alpha/firstcode.alpha");
+       // ANTLRInputStream inputStream = new ANTLRInputStream("src/main/alpha/firstcode.alpha");
+        ANTLRInputStream inputStream = new ANTLRInputStream("src/main/alpha/test.alpha");
         // Create lexer and run scanner to create stream of tokens
         alphaLexer lexer = new alphaLexer(inputStream);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -25,8 +26,8 @@ public class Alpha {
 
         //week 2
         // Evaluate by running the visitor
-        SemanticEvaluator semanticEvaluator = new SemanticEvaluator();
-        semanticEvaluator.visit(expression);
+       // SemanticEvaluator semanticEvaluator = new SemanticEvaluator();
+        //semanticEvaluator.visit(expression);
 
         // then type check
         TypeChecker type = new TypeChecker();
