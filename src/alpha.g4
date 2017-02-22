@@ -6,7 +6,7 @@ language
     (globalStatements|function)*
     END;
 
-/** garcia 
+/*
 =============================================
  SUCH PARSING!
 =============================================
