@@ -177,7 +177,7 @@ TEXT: [a-zA-Z_] [a-zA-Z_0-9]? [a-zA-Z_0-9]? [a-zA-Z_0-9]? [a-zA-Z_0-9]?; //max 5
 STRING_TYPE: '"' .? .? .? .? .? '"'; //max 5 chars
 
 //TAB 
-TAB: ('\u0009' | '\t') -> skip; //must enable tab character in inteljij
+TAB: [ \t\r\u000C] -> skip; //must enable tab character in inteljij
 //COMMENTS
 COMMENT: '/*' .*? '*/' -> skip;//Everything between /* and */
 LINE_COMMENT: '//' ~[\r\n]* -> skip;//Everything after //

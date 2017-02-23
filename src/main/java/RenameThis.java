@@ -5,9 +5,9 @@ package main.java;
  */
 public class RenameThis {
     private String id;
-    private DataTypes params;
+    private DataTypes.DataType params;
 
-    public RenameThis(DataTypes params) {
+    public RenameThis(DataTypes.DataType params) {
         this.params = params;
     }
 
@@ -19,11 +19,4 @@ public class RenameThis {
         this.id = id;
     }
 
-    public DataTypes getParams() {
-        return params;
-    }
-
-    public void setParams(DataTypes params) {
-        this.params = params;
-    }
 }

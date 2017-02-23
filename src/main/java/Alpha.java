@@ -1,9 +1,12 @@
 package main.java;
 
 import main.antlr4.*;
+import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
+
+import java.io.IOException;
 
 
 /**
@@ -11,13 +14,12 @@ import org.antlr.v4.runtime.tree.ParseTree;
  */
 public class Alpha {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         //week 1
-       // ANTLRInputStream inputStream = new ANTLRInputStream("src/main/alpha/firstcode.alpha");
-        ANTLRInputStream inputStream = new ANTLRInputStream("src/main/alpha/test.alpha");
-        // Create lexer and run scanner to create stream of tokens
-        alphaLexer lexer = new alphaLexer(inputStream);
+        //Load in the file and  create lexer from it
+        alphaLexer lexer = new alphaLexer(new ANTLRFileStream("src/main/alpha/test.alpha"));
+        //run scanner to create stream of tokens
         CommonTokenStream tokens = new CommonTokenStream(lexer);
 
         // Create parser and feed it the tokens
@@ -30,8 +32,8 @@ public class Alpha {
        // SemanticEvaluator semanticEvaluator = new SemanticEvaluator();
         //semanticEvaluator.visit(expression);
 
-        Identifier identifier = new Identifier();
-        identifier.visit(expression);
+       // Identifier identifier = new Identifier();
+       // identifier.visit(expression);
 
 
         // then type check

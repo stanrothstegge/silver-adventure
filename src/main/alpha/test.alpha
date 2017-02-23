@@ -1,10 +1,10 @@
 Alpha
-	in a = 2;//int
-	in b = 2;//int
+in a = 2;
+in b = 2;
 
-	~funct ()
-		if (a == b)
-			sp ("test");
-		☕
-	☕
+~funct ()
+if (a == b)
+sp ("test");
+☕
+☕
 Omega

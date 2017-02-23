@@ -10,13 +10,9 @@ import java.util.Map;
  */
 class TypeChecker extends alphaBaseVisitor {
 
-
-    Map<String, RenameThis> functions = new HashMap<>();
-
-
     @Override
     public Object visitLanguage(alphaParser.LanguageContext ctx) {
-        return visitChildren(ctx);
+        return super.visitLanguage(ctx);
     }
 
     @Override
@@ -76,6 +72,7 @@ class TypeChecker extends alphaBaseVisitor {
 
     @Override
     public Object visitVariableExpression(alphaParser.VariableExpressionContext ctx) {
+        System.out.println(ctx.getText());
         return super.visitVariableExpression(ctx);
     }
 
@@ -136,19 +133,18 @@ class TypeChecker extends alphaBaseVisitor {
 
     @Override
     public Object visitDeclaration(alphaParser.DeclarationContext ctx) {
-        //todo fix this
-       // functions.put(ctx.getText(),new RenameThis(ctx.dataType()));
-        return visitChildren(ctx);
+        System.out.println(123456);
+        return super.visitDeclaration(ctx);
     }
 
     @Override
     public Object visitDeclarationFill(alphaParser.DeclarationFillContext ctx) {
-        return visitChildren(ctx);
+        return super.visitDeclarationFill(ctx);
     }
 
     @Override
     public Object visitDeclarationFinal(alphaParser.DeclarationFinalContext ctx) {
-        return visitChildren(ctx);
+        return super.visitDeclarationFinal(ctx);
     }
 
     @Override
@@ -198,7 +194,7 @@ class TypeChecker extends alphaBaseVisitor {
 
     @Override
     public Object visitGlobalStatements(alphaParser.GlobalStatementsContext ctx) {
-        return visitChildren(ctx);
+        return super.visitGlobalStatements(ctx);
     }
 
     @Override
@@ -232,12 +228,13 @@ class TypeChecker extends alphaBaseVisitor {
     }
 
     @Override
-    public DataTypes.DataType visitDataType(alphaParser.DataTypeContext ctx) {
-        return DataTypes.getEnum(ctx.getText());                                                                        //return datatype
+    public Object visitDataType(alphaParser.DataTypeContext ctx) {
+        return super.visitDataType(ctx);
     }
 
     @Override
     public Object visitVariable(alphaParser.VariableContext ctx) {
+        System.out.println(ctx.getText());
         return super.visitVariable(ctx);
     }
 }
