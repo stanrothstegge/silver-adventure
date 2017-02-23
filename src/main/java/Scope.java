@@ -9,7 +9,7 @@ import java.util.HashMap;
 public class Scope {
 
     final Scope parentScope;
-    private final HashMap<String, DataType> variables = new HashMap<>();
+    private final HashMap<String, DataTypes.DataType> variables = new HashMap<>();
     private final HashMap<String, Method> methods = new HashMap<>();
     
     private Scope(Scope parentScope) {
@@ -20,7 +20,7 @@ public class Scope {
         parentScope = null;
     }
     
-    public boolean declareVariable(String name, DataType type) {
+    public boolean declareVariable(String name, DataTypes.DataType type) {
         if (!variables.containsKey(name)) {
             variables.put(name, type);
             return true;
@@ -36,8 +36,8 @@ public class Scope {
         return false;
     }
     
-    public DataType lookupVariable(String name) {
-        DataType type = variables.get(name);
+    public DataTypes.DataType lookupVariable(String name) {
+        DataTypes.DataType type = variables.get(name);
         if (type == null && parentScope != null) {
             type = parentScope.lookupVariable(name);
         }

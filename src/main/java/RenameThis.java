@@ -19,4 +19,11 @@ public class RenameThis {
         this.id = id;
     }
 
+    public DataTypes.DataType getParams() {
+        return params;
+    }
+
+    public void setParams(DataTypes.DataType params) {
+        this.params = params;
+    }
 }

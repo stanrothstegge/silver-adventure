@@ -45,5 +45,31 @@ class DataTypes {
                 return null;
         }
     }
+
+
+    public static void typeChecker(Integer x, DataType dataType) throws RuntimeException {
+        if(dataType != DataType.INTEGER)
+            throw new RuntimeException("Variable =" + x + " Is not Integer but:" + dataType);
+    }
+    public static void typeChecker(Double x, DataType dataType) throws RuntimeException{
+        if(dataType != DataType.DOUBLE)
+            throw new RuntimeException("Variable =" + x + " Is not DOUBLE but:" + dataType);
+    }
+
+    public static void typeChecker(String x, DataType dataType) throws RuntimeException{
+        if(dataType != DataType.STRING)
+            throw new RuntimeException("Variable =" + x + " Is not STRING but:" + dataType);
+    }
+
+    public static void typeChecker(Character x, DataType dataType) throws RuntimeException{
+        if(dataType != DataType.CHAR)
+            throw new RuntimeException("Variable =" + x + " Is not CHAR but:" + dataType);
+    }
+
+    public static void typeChecker(Boolean x, DataType dataType) throws RuntimeException{
+        if(dataType != DataType.BOOLEAN)
+            throw new RuntimeException("Variable =" + x + " Is not BOOLEAN but:" + dataType);
+    }
+
 }
 

@@ -4,11 +4,18 @@ import main.antlr4.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static main.java.DataTypes.typeChecker;
 
 /**
  * Visitor
  */
 class TypeChecker extends alphaBaseVisitor {
+
+    Map<String, RenameThis> functions = new HashMap<>();
+    String currentVariable = "";                                                                                        //Used to save the key of function
 
     @Override
     public Object visitLanguage(alphaParser.LanguageContext ctx) {
@@ -37,6 +44,21 @@ class TypeChecker extends alphaBaseVisitor {
 
     @Override
     public Object visitNumberExpression(alphaParser.NumberExpressionContext ctx) {
+        try {
+            Pattern p = Pattern.compile("[.]");
+            Matcher m = p.matcher(ctx.getText());
+            if (m.find()) {                                                                                             //Check if its a double or integer
+                functions.get(currentVariable).setParams(DataTypes.DataType.DOUBLE);
+                typeChecker(Double.parseDouble(functions.get(currentVariable).getId()), functions.get(currentVariable).getParams());
+            } else {
+                functions.get(currentVariable).setParams(DataTypes.DataType.INTEGER);
+                typeChecker(Integer.parseInt(functions.get(currentVariable).getId()), functions.get(currentVariable).getParams());
+            }
+            functions.get(currentVariable).setId(ctx.getText());                                                        //Save the number in to the table
+           //Check if the
+        } catch (NumberFormatException e) {
+            throw new RuntimeException("Variable =" + ctx.getText() + " Could not be parse to number");
+        }
         return super.visitNumberExpression(ctx);
     }
 
@@ -70,9 +92,14 @@ class TypeChecker extends alphaBaseVisitor {
         return super.visitGreaterThanExpression(ctx);
     }
 
+    /**
+     * visitDeclaration hold the typechecking for this
+     *
+     * @param ctx
+     * @return
+     */
     @Override
     public Object visitVariableExpression(alphaParser.VariableExpressionContext ctx) {
-        System.out.println(ctx.getText());
         return super.visitVariableExpression(ctx);
     }
 
@@ -133,7 +160,10 @@ class TypeChecker extends alphaBaseVisitor {
 
     @Override
     public Object visitDeclaration(alphaParser.DeclarationContext ctx) {
-        System.out.println(123456);
+        //todo fix this
+        currentVariable = ctx.getText().substring(3);                                                         //All our DataType are 2 long so get everything after that is a Declartion
+        functions.put(currentVariable, new RenameThis(DataTypes.getEnum(ctx.dataType().getText())));
+
         return super.visitDeclaration(ctx);
     }
 
@@ -234,7 +264,6 @@ class TypeChecker extends alphaBaseVisitor {
 
     @Override
     public Object visitVariable(alphaParser.VariableContext ctx) {
-        System.out.println(ctx.getText());
         return super.visitVariable(ctx);
     }
 }
