@@ -89,8 +89,14 @@ class TypeChecker extends alphaBaseVisitor {
     }
 
     @Override
-    public Object visitQualeToEpression(alphaParser.QualeToEpressionContext ctx) {
-        return super.visitQualeToEpression(ctx);
+    public Object visitEqualeToExpression(alphaParser.EqualeToExpressionContext ctx) {
+        //todo stuff
+        return super.visitEqualeToExpression(ctx);
+    }
+
+    @Override
+    public Object visitGlobal_type(alphaParser.Global_typeContext ctx) {
+        return super.visitGlobal_type(ctx);
     }
 
     @Override
