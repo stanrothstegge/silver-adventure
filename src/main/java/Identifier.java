@@ -17,6 +17,7 @@ class Identifier extends alphaBaseVisitor {
     
     @Override
     public Object visitLanguage(alphaParser.LanguageContext ctx) {
+        
         return super.visitLanguage(ctx);
     }
 
@@ -201,7 +202,20 @@ class Identifier extends alphaBaseVisitor {
 
     @Override
     public Object visitCatchFunction(alphaParser.CatchFunctionContext ctx) {
-        return super.visitCatchFunction(ctx);
+        for(ParseTree t: ctx.children) {
+            switch (t.getText()) {
+                case "ca":
+                    scope = scope.close();
+                    scope = scope.open();
+                    break;
+                default:
+                    visit(t);
+            }
+        }
+
+        scope = scope.close();
+
+        return null;
     }
 
     @Override
@@ -235,8 +249,8 @@ class Identifier extends alphaBaseVisitor {
     }
 
     @Override
-    public Object visitThrowBlackStatement(alphaParser.ThrowBlackStatementContext ctx) {
-        return super.visitThrowBlackStatement(ctx);
+    public Object visitThrowBlockStatement(alphaParser.ThrowBlockStatementContext ctx) {
+        return super.visitThrowBlockStatement(ctx);
     }
 
     @Override
@@ -261,7 +275,18 @@ class Identifier extends alphaBaseVisitor {
 
     @Override
     public Object visitThrowBlock(alphaParser.ThrowBlockContext ctx) {
-        return super.visitThrowBlock(ctx);
+        for(ParseTree t: ctx.children) {
+            switch (t.getText()) {
+                case "ty":
+                    //scope closed in visitCatchFunction
+                    scope = scope.open();
+                    break;
+                default:
+                    visit(t);
+            }
+        }
+
+        return null;
     }
 
     @Override
@@ -296,7 +321,19 @@ class Identifier extends alphaBaseVisitor {
 
     @Override
     public Object visitWhileMethod(alphaParser.WhileMethodContext ctx) {
-        return super.visitWhileMethod(ctx);
+        for(ParseTree t: ctx.children) {
+            switch (t.getText()) {
+                case "wh":
+                    scope = scope.open();
+                    break;
+                default:
+                    visit(t);
+            }
+        }
+
+        scope = scope.close();
+
+        return null;
     }
 
     @Override

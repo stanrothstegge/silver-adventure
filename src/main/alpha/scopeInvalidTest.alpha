@@ -1,0 +1,18 @@
+Alpha
+in a = 2;
+in b = 2;
+// invalid start
+//in a = b;
+//a = c;
+//invalid end
+
+~funct ()
+if (a == b)
+sp ("test");
+in d = 2;
+//invalid start
+//ef (d == b)
+//invalid end
+☕
+☕
+Omega

@@ -253,8 +253,8 @@ class TypeChecker extends alphaBaseVisitor {
     }
 
     @Override
-    public Object visitThrowBlackStatement(alphaParser.ThrowBlackStatementContext ctx) {
-        return super.visitThrowBlackStatement(ctx);
+    public Object visitThrowBlockStatement(alphaParser.ThrowBlockStatementContext ctx) {
+        return super.visitThrowBlockStatement(ctx);
     }
 
     @Override

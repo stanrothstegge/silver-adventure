@@ -291,12 +291,12 @@ public interface alphaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitReadStatement(alphaParser.ReadStatementContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code throwBlackStatement}
+	 * Visit a parse tree produced by the {@code throwBlockStatement}
 	 * labeled alternative in {@link alphaParser#statement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitThrowBlackStatement(alphaParser.ThrowBlackStatementContext ctx);
+	T visitThrowBlockStatement(alphaParser.ThrowBlockStatementContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code ifStatementStatement}
 	 * labeled alternative in {@link alphaParser#statement}.

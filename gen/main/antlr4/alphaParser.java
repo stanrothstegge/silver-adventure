@@ -47,7 +47,7 @@ public class alphaParser extends Parser {
 		"' * '", "' / '", "' % '", "'('", "')'", "' < '", "' > '", "' == '", "' != '", 
 		"' <= '", "' >= '", "' || '", "' && '", "'! '", "'ty'", "'ca'", "'th'", 
 		"'if'", "'ef'", "'el'", "'wh'", null, "'gl'", null, "'sp'", "'he'", "'re'", 
-		"'Alpha'", "'Omega'"
+		"'Alpha'", "'Omega'", null, null, null, null, null, null, null, "'\n'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
 		null, null, null, null, null, null, null, null, null, null, "INTEGER", 
@@ -1808,14 +1808,14 @@ public class alphaParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class ThrowBlackStatementContext extends StatementContext {
+	public static class ThrowBlockStatementContext extends StatementContext {
 		public ThrowBlockContext throwBlock() {
 			return getRuleContext(ThrowBlockContext.class,0);
 		}
-		public ThrowBlackStatementContext(StatementContext ctx) { copyFrom(ctx); }
+		public ThrowBlockStatementContext(StatementContext ctx) { copyFrom(ctx); }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitThrowBlackStatement(this);
+			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitThrowBlockStatement(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1885,7 +1885,7 @@ public class alphaParser extends Parser {
 				}
 				break;
 			case 6:
-				_localctx = new ThrowBlackStatementContext(_localctx);
+				_localctx = new ThrowBlockStatementContext(_localctx);
 				enterOuterAlt(_localctx, 6);
 				{
 				setState(261);

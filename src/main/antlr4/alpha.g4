@@ -75,7 +75,7 @@ expression
      | functionCall 			#functionCallStatement
      | printFunction 			#printStatement
      | readFunction				#readStatement
-     | throwBlock				#throwBlackStatement
+     | throwBlock				#throwBlockStatement
      | ifStatement				#ifStatementStatement
      | returnMethod				#returnMethodStatement
      | whileMethod				#whileMethodStatement
@@ -182,7 +182,7 @@ TAB: [ \t\r\u000C] -> skip; //must enable tab character in inteljij
 //COMMENTS
 COMMENT: '/*' .*? '*/' -> skip;//Everything between /* and */
 LINE_COMMENT: '//' ~[\r\n]* -> skip;//Everything after //
-NEWLINE: [\n] -> skip;
+NEWLINE: '\n' -> skip;
 
 
 

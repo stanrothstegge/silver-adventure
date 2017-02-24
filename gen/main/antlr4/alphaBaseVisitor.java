@@ -311,7 +311,7 @@ public class alphaBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements 
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitThrowBlackStatement(alphaParser.ThrowBlackStatementContext ctx) { return visitChildren(ctx); }
+	@Override public T visitThrowBlockStatement(alphaParser.ThrowBlockStatementContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
