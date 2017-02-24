@@ -10,14 +10,17 @@ class Scope {
 
     final Scope parentScope;
     private final HashMap<String, DataTypes.DataType> variables = new HashMap<>();
-    private final HashMap<String, Method> methods = new HashMap<>();
+    private final HashMap<String, Method> methods;
     
     private Scope(Scope parentScope) {
         this.parentScope = parentScope;
+        //can't add methods outside of global scope
+        methods = null;
     }
 
     public Scope() {
         parentScope = null;
+        methods = new HashMap<>();
     }
     
     public boolean declareVariable(String name, DataTypes.DataType type) {
@@ -29,7 +32,8 @@ class Scope {
     }
     
     public boolean declareMethod(String name, Method method) {
-        if (!methods.containsKey(name)) {
+        Scope globalscope = getGlobalScope();
+        if (!globalscope.methods.containsKey(name)) {
             methods.put(name, method);
             return true;
         }
@@ -43,13 +47,21 @@ class Scope {
         }
         return type;
     }
+
+    public DataTypes.DataType lookupGlobalVariable(String name) {
+        return getGlobalScope().lookupVariable(name);
+    }
     
-    public Method lookupMethods(String name) {
-        Method method = methods.get(name);
-        if (method == null && parentScope != null) {
-            method = parentScope.lookupMethods(name);
+    public Method lookupMethods(String name) {        
+        return getGlobalScope().methods.get(name);
+    }
+    
+    private Scope getGlobalScope() {
+        Scope scope = this;
+        while(scope.parentScope != null) {
+            scope = parentScope;
         }
-        return method;
+        return scope;
     }
     
     public Scope open() {

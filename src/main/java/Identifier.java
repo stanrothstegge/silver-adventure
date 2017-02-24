@@ -345,7 +345,7 @@ class Identifier extends alphaBaseVisitor {
             }
         //global variable
         } else {
-            if (scope.lookupVariable(ctx.global_type().TEXT().getText()) == null) {
+            if (scope.lookupGlobalVariable(ctx.global_type().TEXT().getText()) == null) {
                 assert false : "variable has not been initialized: " + ctx.getText();
             }
         }
