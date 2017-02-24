@@ -13,12 +13,14 @@ import static main.java.DataTypes.typeChecker;
  * Visitor
  */
 class TypeChecker extends alphaBaseVisitor {
+    //todo all declaritions then if statments
 
     Map<String, RenameThis> functions = new HashMap<>();
     String currentVariable = "";                                                                                        //Used to save the key of function
 
     @Override
     public Object visitLanguage(alphaParser.LanguageContext ctx) {
+        System.out.println(ctx.getText());
         return super.visitLanguage(ctx);
     }
 
@@ -45,6 +47,7 @@ class TypeChecker extends alphaBaseVisitor {
     @Override
     public Object visitNumberExpression(alphaParser.NumberExpressionContext ctx) {
         try {
+            functions.get(currentVariable).setId(ctx.getText());                                                        //Add the integer to function
             Pattern p = Pattern.compile("[.]");
             Matcher m = p.matcher(ctx.getText());
             if (m.find()) {                                                                                             //Check if its a double or integer
@@ -55,10 +58,14 @@ class TypeChecker extends alphaBaseVisitor {
                 typeChecker(Integer.parseInt(functions.get(currentVariable).getId()), functions.get(currentVariable).getParams());
             }
             functions.get(currentVariable).setId(ctx.getText());                                                        //Save the number in to the table
-           //Check if the
         } catch (NumberFormatException e) {
-            throw new RuntimeException("Variable =" + ctx.getText() + " Could not be parse to number");
+            throw new RuntimeException("Variable = " + ctx.getText() + " Could not be parse to number");
         }
+        catch(NullPointerException e){
+            throw new RuntimeException("Function couldn't find key for :" +currentVariable +"probably miss typed dataType");
+        }
+
+        currentVariable = "";                                                                                           //Clear for the next variable
         return super.visitNumberExpression(ctx);
     }
 
@@ -69,6 +76,10 @@ class TypeChecker extends alphaBaseVisitor {
 
     @Override
     public Object visitFalseExpression(alphaParser.FalseExpressionContext ctx) {
+        functions.get(currentVariable).setParams(DataTypes.DataType.BOOLEAN);
+        if(!ctx.getText().equals("fs")) throw new RuntimeException("Variable =" + ctx.getText() + " was not fs");
+
+        currentVariable = "";                                                                                           //Clear for the next variable
         return super.visitFalseExpression(ctx);
     }
 
@@ -78,8 +89,14 @@ class TypeChecker extends alphaBaseVisitor {
     }
 
     @Override
-    public Object visitQualeToEpression(alphaParser.QualeToEpressionContext ctx) {
-        return super.visitQualeToEpression(ctx);
+    public Object visitEqualeToExpression(alphaParser.EqualeToExpressionContext ctx) {
+        //todo stuff
+        return super.visitEqualeToExpression(ctx);
+    }
+
+    @Override
+    public Object visitGlobal_type(alphaParser.Global_typeContext ctx) {
+        return super.visitGlobal_type(ctx);
     }
 
     @Override
@@ -92,12 +109,6 @@ class TypeChecker extends alphaBaseVisitor {
         return super.visitGreaterThanExpression(ctx);
     }
 
-    /**
-     * visitDeclaration hold the typechecking for this
-     *
-     * @param ctx
-     * @return
-     */
     @Override
     public Object visitVariableExpression(alphaParser.VariableExpressionContext ctx) {
         return super.visitVariableExpression(ctx);
@@ -120,11 +131,19 @@ class TypeChecker extends alphaBaseVisitor {
 
     @Override
     public Object visitStringExpression(alphaParser.StringExpressionContext ctx) {
+        functions.get(currentVariable).setParams(DataTypes.DataType.STRING);
+        typeChecker(functions.get(currentVariable).getId(), functions.get(currentVariable).getParams());                // should be string
+
+        currentVariable = "";                                                                                           //Clear for the next variable
         return super.visitStringExpression(ctx);
     }
 
     @Override
     public Object visitTrueExpression(alphaParser.TrueExpressionContext ctx) {
+        functions.get(currentVariable).setParams(DataTypes.DataType.BOOLEAN);
+        if(!ctx.getText().equals("tr")) throw new RuntimeException("Variable =" + ctx.getText() + " was not tr");
+
+        currentVariable = "";                                                                                           //Clear for the next variable
         return super.visitTrueExpression(ctx);
     }
 
@@ -140,6 +159,11 @@ class TypeChecker extends alphaBaseVisitor {
 
     @Override
     public Object visitCharExpression(alphaParser.CharExpressionContext ctx) {
+        functions.get(currentVariable).setParams(DataTypes.DataType.CHAR);
+        char c = functions.get(currentVariable).getId().charAt(0);
+        typeChecker(c, functions.get(currentVariable).getParams());                                                     // should be char
+
+        currentVariable = "";                                                                                           //Clear for the next variable
         return super.visitCharExpression(ctx);
     }
 
@@ -160,10 +184,8 @@ class TypeChecker extends alphaBaseVisitor {
 
     @Override
     public Object visitDeclaration(alphaParser.DeclarationContext ctx) {
-        //todo fix this
-        currentVariable = ctx.getText().substring(3);                                                         //All our DataType are 2 long so get everything after that is a Declartion
-        //functions.put(currentVariable, new RenameThis(DataTypes.getEnum(ctx.dataType().getText())));
-
+        currentVariable = ctx.getText().substring(3);                                                                   //All our DataType are 2 long so get everything after that is a Declartion
+        functions.put(currentVariable, new RenameThis(DataTypes.getEnum(ctx.dataType().getText())));
         return super.visitDeclaration(ctx);
     }
 
@@ -253,11 +275,6 @@ class TypeChecker extends alphaBaseVisitor {
     }
 
     @Override
-    public Object visitThrowBlockStatement(alphaParser.ThrowBlockStatementContext ctx) {
-        return super.visitThrowBlockStatement(ctx);
-    }
-
-    @Override
     public Object visitReturnMethodStatement(alphaParser.ReturnMethodStatementContext ctx) {
         return super.visitReturnMethodStatement(ctx);
     }
@@ -289,6 +306,8 @@ class TypeChecker extends alphaBaseVisitor {
 
     @Override
     public Object visitIfStatement(alphaParser.IfStatementContext ctx) {
+        //todo sutff
+
         return super.visitIfStatement(ctx);
     }
 
@@ -308,7 +327,7 @@ class TypeChecker extends alphaBaseVisitor {
     }
 
     @Override
-    public Object visitGlobal_type(alphaParser.Global_typeContext ctx) {
-        return super.visitGlobal_type(ctx);
+    public Object visitThrowBlockStatement(alphaParser.ThrowBlockStatementContext ctx) {
+        return super.visitThrowBlockStatement(ctx);
     }
 }
