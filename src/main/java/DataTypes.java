@@ -71,5 +71,31 @@ class DataTypes {
             throw new RuntimeException("Variable =" + x + " Is not BOOLEAN but:" + dataType);
     }
 
+    /**
+     *
+     * Checks what datatype work with each other in =\
+     *
+     * boolean and true and false
+     * string and char
+     * integer and double
+     * @param dataTypeFirst
+     * @param dataTypeSecond
+     */
+    public static void typeCheckingEqualToExpression(DataType dataTypeFirst , DataType dataTypeSecond){
+        if(dataTypeFirst == dataTypeSecond) return;                                                                     //If both are the same no checking required
+
+        if((DataType.BOOLEAN == dataTypeFirst || DataType.BOOLEAN == dataTypeSecond) || ( DataType.TRUE == dataTypeFirst ||
+                DataType.TRUE == dataTypeSecond || DataType.FALSE == dataTypeFirst
+                || DataType.FALSE == dataTypeSecond )) return;                                                          // checks booleans and true and false
+
+        if(DataType.STRING == dataTypeFirst || DataType.STRING == dataTypeSecond || DataType.CHAR == dataTypeFirst ||
+                DataType.CHAR == dataTypeSecond) return;                                                                //Checks string and char
+
+        if(DataType.INTEGER == dataTypeFirst || DataType.INTEGER == dataTypeSecond || DataType.DOUBLE == dataTypeFirst ||
+                DataType.DOUBLE == dataTypeSecond) return;                                                              //Checks integers and double
+
+        throw new RuntimeException("The = didnt work with " + dataTypeFirst + " and " +dataTypeSecond);
+
+    }
 }
 
