@@ -62,8 +62,8 @@ class Identifier extends alphaBaseVisitor {
     }
 
     @Override
-    public Object visitQualeToEpression(alphaParser.QualeToEpressionContext ctx) {
-        return super.visitQualeToEpression(ctx);
+    public Object visitEqualToExpression(alphaParser.EqualToExpressionContext ctx) {
+        return super.visitEqualToExpression(ctx);
     }
 
     @Override

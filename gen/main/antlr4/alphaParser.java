@@ -1,4 +1,4 @@
-// Generated from E:/Dropbox/Saxion/Jaar 2/Kwartiel 3/Compilers & Operating Systems/Practicumopdracht1/src/main/antlr4\alpha.g4 by ANTLR 4.6
+// Generated from C:/Users/Robin/Documents/School/Jaar 2/Kwartiel 3/Compilers/ProgrammeerTaal/src/main/antlr4\alpha.g4 by ANTLR 4.6
 package main.antlr4;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -129,14 +129,6 @@ public class alphaParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_language; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterLanguage(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitLanguage(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitLanguage(this);
 			else return visitor.visitChildren(this);
@@ -220,14 +212,6 @@ public class alphaParser extends Parser {
 		public TerminalNode RBRACKET() { return getToken(alphaParser.RBRACKET, 0); }
 		public LeftBracketExpressionRightBracketExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterLeftBracketExpressionRightBracketExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitLeftBracketExpressionRightBracketExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitLeftBracketExpressionRightBracketExpression(this);
 			else return visitor.visitChildren(this);
@@ -242,14 +226,6 @@ public class alphaParser extends Parser {
 		}
 		public TerminalNode MINUS() { return getToken(alphaParser.MINUS, 0); }
 		public MinusExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterMinusExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitMinusExpression(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitMinusExpression(this);
@@ -277,14 +253,6 @@ public class alphaParser extends Parser {
 		}
 		public AddCustomExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterAddCustomExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitAddCustomExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitAddCustomExpression(this);
 			else return visitor.visitChildren(this);
@@ -300,14 +268,6 @@ public class alphaParser extends Parser {
 		public TerminalNode MODULO() { return getToken(alphaParser.MODULO, 0); }
 		public ModuloExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterModuloExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitModuloExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitModuloExpression(this);
 			else return visitor.visitChildren(this);
@@ -317,16 +277,23 @@ public class alphaParser extends Parser {
 		public TerminalNode NUMBER() { return getToken(alphaParser.NUMBER, 0); }
 		public NumberExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterNumberExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitNumberExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitNumberExpression(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class EqualToExpressionContext extends ExpressionContext {
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode EQUALTO() { return getToken(alphaParser.EQUALTO, 0); }
+		public EqualToExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitEqualToExpression(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -337,14 +304,6 @@ public class alphaParser extends Parser {
 		}
 		public NotExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterNotExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitNotExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitNotExpression(this);
 			else return visitor.visitChildren(this);
@@ -353,14 +312,6 @@ public class alphaParser extends Parser {
 	public static class FalseExpressionContext extends ExpressionContext {
 		public TerminalNode FALSE() { return getToken(alphaParser.FALSE, 0); }
 		public FalseExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterFalseExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitFalseExpression(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitFalseExpression(this);
@@ -377,14 +328,6 @@ public class alphaParser extends Parser {
 		public TerminalNode SMALLERTHAN() { return getToken(alphaParser.SMALLERTHAN, 0); }
 		public SmallerThanExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterSmallerThanExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitSmallerThanExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitSmallerThanExpression(this);
 			else return visitor.visitChildren(this);
@@ -399,14 +342,6 @@ public class alphaParser extends Parser {
 		}
 		public TerminalNode MULTIPLY() { return getToken(alphaParser.MULTIPLY, 0); }
 		public MultiplyExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterMultiplyExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitMultiplyExpression(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitMultiplyExpression(this);
@@ -423,14 +358,6 @@ public class alphaParser extends Parser {
 		public TerminalNode GREATERTHAN() { return getToken(alphaParser.GREATERTHAN, 0); }
 		public GreaterThanExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterGreaterThanExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitGreaterThanExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitGreaterThanExpression(this);
 			else return visitor.visitChildren(this);
@@ -441,14 +368,6 @@ public class alphaParser extends Parser {
 			return getRuleContext(VariableContext.class,0);
 		}
 		public VariableExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterVariableExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitVariableExpression(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitVariableExpression(this);
@@ -465,14 +384,6 @@ public class alphaParser extends Parser {
 		public TerminalNode DIVIDE() { return getToken(alphaParser.DIVIDE, 0); }
 		public DivideExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterDivideExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitDivideExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitDivideExpression(this);
 			else return visitor.visitChildren(this);
@@ -487,14 +398,6 @@ public class alphaParser extends Parser {
 		}
 		public TerminalNode OR() { return getToken(alphaParser.OR, 0); }
 		public OrExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterOrExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitOrExpression(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitOrExpression(this);
@@ -511,14 +414,6 @@ public class alphaParser extends Parser {
 		public TerminalNode AND() { return getToken(alphaParser.AND, 0); }
 		public AndExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterAndExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitAndExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitAndExpression(this);
 			else return visitor.visitChildren(this);
@@ -528,14 +423,6 @@ public class alphaParser extends Parser {
 		public TerminalNode STRING_TYPE() { return getToken(alphaParser.STRING_TYPE, 0); }
 		public StringExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterStringExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitStringExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitStringExpression(this);
 			else return visitor.visitChildren(this);
@@ -544,14 +431,6 @@ public class alphaParser extends Parser {
 	public static class TrueExpressionContext extends ExpressionContext {
 		public TerminalNode TRUE() { return getToken(alphaParser.TRUE, 0); }
 		public TrueExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterTrueExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitTrueExpression(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitTrueExpression(this);
@@ -568,14 +447,6 @@ public class alphaParser extends Parser {
 		public TerminalNode SMALLEROREQUAL() { return getToken(alphaParser.SMALLEROREQUAL, 0); }
 		public SmallerOrRequalExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterSmallerOrRequalExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitSmallerOrRequalExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitSmallerOrRequalExpression(this);
 			else return visitor.visitChildren(this);
@@ -591,14 +462,6 @@ public class alphaParser extends Parser {
 		public TerminalNode GREATEROREQUAL() { return getToken(alphaParser.GREATEROREQUAL, 0); }
 		public GreaterOrEqualExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterGreaterOrEqualExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitGreaterOrEqualExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitGreaterOrEqualExpression(this);
 			else return visitor.visitChildren(this);
@@ -610,14 +473,6 @@ public class alphaParser extends Parser {
 		}
 		public FunctionCallExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterFunctionCallExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitFunctionCallExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitFunctionCallExpression(this);
 			else return visitor.visitChildren(this);
@@ -626,14 +481,6 @@ public class alphaParser extends Parser {
 	public static class CharExpressionContext extends ExpressionContext {
 		public TerminalNode CHAR_TYPE() { return getToken(alphaParser.CHAR_TYPE, 0); }
 		public CharExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterCharExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitCharExpression(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitCharExpression(this);
@@ -650,14 +497,6 @@ public class alphaParser extends Parser {
 		public TerminalNode PLUS() { return getToken(alphaParser.PLUS, 0); }
 		public PlusExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterPlusExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitPlusExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitPlusExpression(this);
 			else return visitor.visitChildren(this);
@@ -673,39 +512,8 @@ public class alphaParser extends Parser {
 		public TerminalNode NOTEQUALTO() { return getToken(alphaParser.NOTEQUALTO, 0); }
 		public NotEqualToExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterNotEqualToExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitNotEqualToExpression(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitNotEqualToExpression(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class EqualeToExpressionContext extends ExpressionContext {
-		public List<ExpressionContext> expression() {
-			return getRuleContexts(ExpressionContext.class);
-		}
-		public ExpressionContext expression(int i) {
-			return getRuleContext(ExpressionContext.class,i);
-		}
-		public TerminalNode EQUALTO() { return getToken(alphaParser.EQUALTO, 0); }
-		public EqualeToExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterEqualeToExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitEqualeToExpression(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitEqualeToExpression(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1010,7 +818,7 @@ public class alphaParser extends Parser {
 						break;
 					case 10:
 						{
-						_localctx = new EqualeToExpressionContext(new ExpressionContext(_parentctx, _parentState));
+						_localctx = new EqualToExpressionContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(115);
 						if (!(precpred(_ctx, 13))) throw new FailedPredicateException(this, "precpred(_ctx, 13)");
@@ -1086,14 +894,6 @@ public class alphaParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_declaration; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterDeclaration(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitDeclaration(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitDeclaration(this);
 			else return visitor.visitChildren(this);
@@ -1139,14 +939,6 @@ public class alphaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_declarationFill; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterDeclarationFill(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitDeclarationFill(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitDeclarationFill(this);
@@ -1211,14 +1003,6 @@ public class alphaParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_declarationFinal; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterDeclarationFinal(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitDeclarationFinal(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitDeclarationFinal(this);
 			else return visitor.visitChildren(this);
@@ -1259,14 +1043,6 @@ public class alphaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_declarationFunction; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterDeclarationFunction(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitDeclarationFunction(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitDeclarationFunction(this);
@@ -1319,14 +1095,6 @@ public class alphaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_argumentsDeclaration; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterArgumentsDeclaration(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitArgumentsDeclaration(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitArgumentsDeclaration(this);
@@ -1383,14 +1151,6 @@ public class alphaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_argumentsCall; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterArgumentsCall(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitArgumentsCall(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitArgumentsCall(this);
@@ -1457,14 +1217,6 @@ public class alphaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_functionDeclaration; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterFunctionDeclaration(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitFunctionDeclaration(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitFunctionDeclaration(this);
@@ -1564,14 +1316,6 @@ public class alphaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_functionCall; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterFunctionCall(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitFunctionCall(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitFunctionCall(this);
@@ -1715,14 +1459,6 @@ public class alphaParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_printFunction; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterPrintFunction(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitPrintFunction(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitPrintFunction(this);
 			else return visitor.visitChildren(this);
@@ -1774,14 +1510,6 @@ public class alphaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_readFunction; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterReadFunction(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitReadFunction(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitReadFunction(this);
@@ -1855,14 +1583,6 @@ public class alphaParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_throwFunction; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterThrowFunction(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitThrowFunction(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitThrowFunction(this);
 			else return visitor.visitChildren(this);
@@ -1912,14 +1632,6 @@ public class alphaParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_catchFunction; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterCatchFunction(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitCatchFunction(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitCatchFunction(this);
 			else return visitor.visitChildren(this);
@@ -1966,14 +1678,6 @@ public class alphaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_globalStatements; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterGlobalStatements(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitGlobalStatements(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitGlobalStatements(this);
@@ -2034,14 +1738,6 @@ public class alphaParser extends Parser {
 		}
 		public PrintStatementContext(StatementContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterPrintStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitPrintStatement(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitPrintStatement(this);
 			else return visitor.visitChildren(this);
@@ -2052,14 +1748,6 @@ public class alphaParser extends Parser {
 			return getRuleContext(IfStatementContext.class,0);
 		}
 		public IfStatementStatementContext(StatementContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterIfStatementStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitIfStatementStatement(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitIfStatementStatement(this);
@@ -2072,14 +1760,6 @@ public class alphaParser extends Parser {
 		}
 		public WhileMethodStatementContext(StatementContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterWhileMethodStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitWhileMethodStatement(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitWhileMethodStatement(this);
 			else return visitor.visitChildren(this);
@@ -2090,14 +1770,6 @@ public class alphaParser extends Parser {
 			return getRuleContext(ReturnMethodContext.class,0);
 		}
 		public ReturnMethodStatementContext(StatementContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterReturnMethodStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitReturnMethodStatement(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitReturnMethodStatement(this);
@@ -2110,14 +1782,6 @@ public class alphaParser extends Parser {
 		}
 		public FunctionCallStatementContext(StatementContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterFunctionCallStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitFunctionCallStatement(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitFunctionCallStatement(this);
 			else return visitor.visitChildren(this);
@@ -2128,14 +1792,6 @@ public class alphaParser extends Parser {
 			return getRuleContext(ReadFunctionContext.class,0);
 		}
 		public ReadStatementContext(StatementContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterReadStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitReadStatement(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitReadStatement(this);
@@ -2148,14 +1804,6 @@ public class alphaParser extends Parser {
 		}
 		public GlobalStatementContext(StatementContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterGlobalStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitGlobalStatement(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitGlobalStatement(this);
 			else return visitor.visitChildren(this);
@@ -2167,14 +1815,6 @@ public class alphaParser extends Parser {
 		}
 		public ThrowBlockStatementContext(StatementContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterThrowBlockStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitThrowBlockStatement(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitThrowBlockStatement(this);
 			else return visitor.visitChildren(this);
@@ -2185,14 +1825,6 @@ public class alphaParser extends Parser {
 			return getRuleContext(VariableContext.class,0);
 		}
 		public PlusPlusStatementContext(StatementContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterPlusPlusStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitPlusPlusStatement(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitPlusPlusStatement(this);
@@ -2311,14 +1943,6 @@ public class alphaParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_returnMethod; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterReturnMethod(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitReturnMethod(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitReturnMethod(this);
 			else return visitor.visitChildren(this);
@@ -2398,14 +2022,6 @@ public class alphaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_throwBlock; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterThrowBlock(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitThrowBlock(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitThrowBlock(this);
@@ -2499,14 +2115,6 @@ public class alphaParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_function; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterFunction(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitFunction(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitFunction(this);
 			else return visitor.visitChildren(this);
@@ -2583,14 +2191,6 @@ public class alphaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_ifStatement; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterIfStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitIfStatement(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitIfStatement(this);
@@ -2723,14 +2323,6 @@ public class alphaParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_whileMethod; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterWhileMethod(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitWhileMethod(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitWhileMethod(this);
 			else return visitor.visitChildren(this);
@@ -2794,14 +2386,6 @@ public class alphaParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_dataType; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterDataType(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitDataType(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitDataType(this);
 			else return visitor.visitChildren(this);
@@ -2847,14 +2431,6 @@ public class alphaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_variable; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterVariable(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitVariable(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitVariable(this);
@@ -2905,14 +2481,6 @@ public class alphaParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_global_type; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).enterGlobal_type(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof alphaListener ) ((alphaListener)listener).exitGlobal_type(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitGlobal_type(this);

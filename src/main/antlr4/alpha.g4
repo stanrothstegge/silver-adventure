@@ -25,7 +25,7 @@ expression
  | expression SMALLEROREQUAL 	expression 					#smallerOrRequalExpression
  | expression GREATERTHAN 		expression 					#greaterThanExpression
  | expression SMALLERTHAN 		expression 					#smallerThanExpression
- | expression EQUALTO 			expression 					#equaleToExpression
+ | expression EQUALTO 			expression 					#equalToExpression
  | expression NOTEQUALTO 		expression 					#notEqualToExpression
  | expression AND 				expression 					#andExpression
  | expression OR 				expression 					#orExpression
