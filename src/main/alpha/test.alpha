@@ -1,10 +1,10 @@
 Alpha
-in a = 2;
-in b = 2;
 
-~funct ()
-if (a == b)
-sp ("test");
+do b = 1 + 1 - 2 * (3 / 4) % 5;
+
+~func ()
+	if ((1 + 1 - 2 * (3 / 4) % 5) == b)
+	sp ("help");
 ☕
 ☕
 Omega

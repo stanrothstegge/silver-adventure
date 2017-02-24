@@ -1,6 +1,7 @@
 package main.java;
 
 import main.antlr4.*;
+import main.java.DataTypes.DataType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +17,14 @@ class TypeChecker extends alphaBaseVisitor {
     //todo all declaritions then if statments
 
     Map<String, RenameThis> functions = new HashMap<>();
+    boolean lock = false;                                                                                               // tried Alpha in c = 1 / 2; Omega , didnt go to variable first but number so i locked so code didn't run that wasn't supposed to
+    boolean printFunction = false;
+    boolean isVariable = false;
+    boolean isNumber = false;
+    boolean isBoolean = false;
     String currentVariable = "";                                                                                        //Used to save the key of function
+
+
 
     @Override
     public Object visitLanguage(alphaParser.LanguageContext ctx) {
@@ -31,6 +39,14 @@ class TypeChecker extends alphaBaseVisitor {
 
     @Override
     public Object visitMinusExpression(alphaParser.MinusExpressionContext ctx) {
+        lock = true;                                                                                                    //Didn't follow the tree flow, so now i just lock everything
+        visit(ctx.expression(0));                                                                                    //Goes to the function and fills a boolean result
+        DataType first =  dataTypeChecker(ctx.expression(0).getText());                                              //Check boolean result
+        lock = true;                                                                                                    //Didn't follow the tree flow, so now i just lock everything
+        visit(ctx.expression(1));                                                                                    //Goes to the function and fills a boolean result
+        DataType second = dataTypeChecker(ctx.expression(1).getText());                                              //Check boolean result
+
+        DataTypes.typeCheckingMath(first,second);                                                                        //Check if its Integer or double
         return super.visitMinusExpression(ctx);
     }
 
@@ -41,31 +57,44 @@ class TypeChecker extends alphaBaseVisitor {
 
     @Override
     public Object visitModuloExpression(alphaParser.ModuloExpressionContext ctx) {
+        lock = true;                                                                                                    //Didn't follow the tree flow, so now i just lock everything
+        visit(ctx.expression(0));                                                                                    //Goes to the function and fills a boolean result
+        DataType first =  dataTypeChecker(ctx.expression(0).getText());                                              //Check boolean result
+        lock = true;                                                                                                    //Didn't follow the tree flow, so now i just lock everything
+        visit(ctx.expression(1));                                                                                    //Goes to the function and fills a boolean result
+        DataType second = dataTypeChecker(ctx.expression(1).getText());                                              //Check boolean result
+
+        DataTypes.typeCheckingMath(first,second);                                                                        //Check if its Integer or double
         return super.visitModuloExpression(ctx);
     }
 
     @Override
     public Object visitNumberExpression(alphaParser.NumberExpressionContext ctx) {
-        try {
-            functions.get(currentVariable).setId(ctx.getText());                                                        //Add the integer to function
-            Pattern p = Pattern.compile("[.]");
-            Matcher m = p.matcher(ctx.getText());
-            if (m.find()) {                                                                                             //Check if its a double or integer
-                functions.get(currentVariable).setParams(DataTypes.DataType.DOUBLE);
-                typeChecker(Double.parseDouble(functions.get(currentVariable).getId()), functions.get(currentVariable).getParams());
-            } else {
-                functions.get(currentVariable).setParams(DataTypes.DataType.INTEGER);
-                typeChecker(Integer.parseInt(functions.get(currentVariable).getId()), functions.get(currentVariable).getParams());
+        if(!currentVariable.equals("") && !lock) {
+            try {
+                functions.get(currentVariable).setId(ctx.getText());                                                        //Add the integer to function
+                Pattern p = Pattern.compile("[.]");
+                Matcher m = p.matcher(ctx.getText());
+                if (m.find()) {                                                                                             //Check if its a double or integer
+                    functions.get(currentVariable).setParams(DataType.DOUBLE);
+                    typeChecker(Double.parseDouble(functions.get(currentVariable).getId()), functions.get(currentVariable).getParams());
+                } else {
+                    functions.get(currentVariable).setParams(DataType.INTEGER);
+                    typeChecker(Integer.parseInt(functions.get(currentVariable).getId()), functions.get(currentVariable).getParams());
+                }
+                functions.get(currentVariable).setId(ctx.getText());                                                        //Save the number in to the table
+
+                currentVariable = "";                                                                                           //Clear for the next variable
+            } catch (NumberFormatException e) {
+                throw new RuntimeException("Variable = " + ctx.getText() + " Could not be parse to number");
+            } catch (NullPointerException e) {
+                throw new RuntimeException("Function couldn't find key for :" + currentVariable + "probably miss typed dataType");
             }
-            functions.get(currentVariable).setId(ctx.getText());                                                        //Save the number in to the table
-        } catch (NumberFormatException e) {
-            throw new RuntimeException("Variable = " + ctx.getText() + " Could not be parse to number");
-        }
-        catch(NullPointerException e){
-            throw new RuntimeException("Function couldn't find key for :" +currentVariable +"probably miss typed dataType");
+        }else{
+            lock = false;
+            isNumber = true;
         }
 
-        currentVariable = "";                                                                                           //Clear for the next variable
         return super.visitNumberExpression(ctx);
     }
 
@@ -76,23 +105,74 @@ class TypeChecker extends alphaBaseVisitor {
 
     @Override
     public Object visitFalseExpression(alphaParser.FalseExpressionContext ctx) {
-        functions.get(currentVariable).setParams(DataTypes.DataType.BOOLEAN);
-        if(!ctx.getText().equals("fs")) throw new RuntimeException("Variable =" + ctx.getText() + " was not fs");
 
-        currentVariable = "";                                                                                           //Clear for the next variable
+        if(!currentVariable.equals("") && !lock) {
+            functions.get(currentVariable).setParams(DataType.BOOLEAN);
+            if (!ctx.getText().equals("fs")) throw new RuntimeException("Variable =" + ctx.getText() + " was not fs");
+
+            currentVariable = "";                                                                                           //Clear for the next variable
+        }else{
+            lock = false;
+            isBoolean = true;
+        }
         return super.visitFalseExpression(ctx);
     }
 
     @Override
     public Object visitSmallerThanExpression(alphaParser.SmallerThanExpressionContext ctx) {
+        lock = true;                                                                                                    //Didn't follow the tree flow, so now i just lock everything
+        visit(ctx.expression(0));                                                                                    //Goes to the function and fills a boolean result
+        DataType first =  dataTypeChecker(ctx.expression(0).getText());                                              //Check boolean result
+        lock = true;                                                                                                    //Didn't follow the tree flow, so now i just lock everything
+        visit(ctx.expression(1));                                                                                    //Goes to the function and fills a boolean result
+        DataType second = dataTypeChecker(ctx.expression(1).getText());                                              //Check boolean result
+
+        DataTypes.typeCheckingMath(first,second);                                                                        //Check if its Integer or double
         return super.visitSmallerThanExpression(ctx);
     }
 
     @Override
-    public Object visitEqualeToExpression(alphaParser.EqualeToExpressionContext ctx) {
-        //todo stuff
-        return super.visitEqualeToExpression(ctx);
+    public Object visitEqualToExpression(alphaParser.EqualToExpressionContext ctx) {
+        lock = true;                                                                                                    //Didn't follow the tree flow, so now i just lock everything
+        visit(ctx.expression(0));                                                                                    //Goes to the function and fills a boolean result
+        DataType first =  dataTypeChecker(ctx.expression(0).getText());                                              //Check boolean result
+        lock = true;                                                                                                    //Didn't follow the tree flow, so now i just lock everything
+        visit(ctx.expression(1));                                                                                    //Goes to the function and fills a boolean result
+        DataType second = dataTypeChecker(ctx.expression(1).getText());                                              //Check boolean result
+
+        DataTypes.typeCheckingEqualToExpression(first, second);                                                         //Check if the 2 datatype are compatible
+
+        return super.visitEqualToExpression(ctx);
     }
+
+    /**
+     * Checks what datatype it is by what boolean is filled
+     *
+     * @param text the key if its a function
+     * @return DataType
+     */
+    private DataType dataTypeChecker(String text){
+        DataType result;
+        if(isVariable){
+            System.out.println("is variable: " + text);
+             result = functions.get(text).getParams();
+        }else if(isNumber) {
+            System.out.println("is number: " + text);
+             result = DataType.INTEGER;
+        }else if(isBoolean) {
+            System.out.println("is boolean: " + text);
+             result = DataType.BOOLEAN;
+        }else{
+            System.out.println("is string: " + text);
+             result = DataType.STRING;
+        }
+
+        isNumber = false;                                                                                               //Reset booleans
+        isVariable = false;
+        isBoolean = false;
+        return result;
+    }
+
 
     @Override
     public Object visitGlobal_type(alphaParser.Global_typeContext ctx) {
@@ -101,21 +181,46 @@ class TypeChecker extends alphaBaseVisitor {
 
     @Override
     public Object visitMultiplyExpression(alphaParser.MultiplyExpressionContext ctx) {
+        lock = true;                                                                                                    //Didn't follow the tree flow, so now i just lock everything
+        visit(ctx.expression(0));                                                                                    //Goes to the function and fills a boolean result
+        DataType first =  dataTypeChecker(ctx.expression(0).getText());                                              //Check boolean result
+        lock = true;                                                                                                    //Didn't follow the tree flow, so now i just lock everything
+        visit(ctx.expression(1));                                                                                    //Goes to the function and fills a boolean result
+        DataType second = dataTypeChecker(ctx.expression(1).getText());                                              //Check boolean result
+
+        DataTypes.typeCheckingMath(first,second);                                                                        //Check if its Integer or double
         return super.visitMultiplyExpression(ctx);
     }
 
     @Override
     public Object visitGreaterThanExpression(alphaParser.GreaterThanExpressionContext ctx) {
+        lock = true;                                                                                                    //Didn't follow the tree flow, so now i just lock everything
+        visit(ctx.expression(0));                                                                                    //Goes to the function and fills a boolean result
+        DataType first =  dataTypeChecker(ctx.expression(0).getText());                                              //Check boolean result
+        lock = true;                                                                                                    //Didn't follow the tree flow, so now i just lock everything
+        visit(ctx.expression(1));                                                                                    //Goes to the function and fills a boolean result
+        DataType second = dataTypeChecker(ctx.expression(1).getText());                                              //Check boolean result
+
+        DataTypes.typeCheckingMath(first,second);                                                                        //Check if its Integer or double
         return super.visitGreaterThanExpression(ctx);
     }
 
     @Override
     public Object visitVariableExpression(alphaParser.VariableExpressionContext ctx) {
+        isVariable = true;
         return super.visitVariableExpression(ctx);
     }
 
     @Override
     public Object visitDivideExpression(alphaParser.DivideExpressionContext ctx) {
+        lock = true;                                                                                                    //Didn't follow the tree flow, so now i just lock everything
+        visit(ctx.expression(0));                                                                                    //Goes to the function and fills a boolean result
+        DataType first =  dataTypeChecker(ctx.expression(0).getText());                                              //Check boolean result
+        lock = true;                                                                                                    //Didn't follow the tree flow, so now i just lock everything
+        visit(ctx.expression(1));                                                                                    //Goes to the function and fills a boolean result
+        DataType second = dataTypeChecker(ctx.expression(1).getText());                                              //Check boolean result
+
+        DataTypes.typeCheckingMath(first,second);                                                                        //Check if its Integer or double
         return super.visitDivideExpression(ctx);
     }
 
@@ -131,24 +236,45 @@ class TypeChecker extends alphaBaseVisitor {
 
     @Override
     public Object visitStringExpression(alphaParser.StringExpressionContext ctx) {
-        functions.get(currentVariable).setParams(DataTypes.DataType.STRING);
-        typeChecker(functions.get(currentVariable).getId(), functions.get(currentVariable).getParams());                // should be string
+        if(!printFunction && !currentVariable.equals("") && !lock) {
+            System.out.println(ctx.getText());
+            functions.get(currentVariable).setParams(DataType.STRING);
+            typeChecker(functions.get(currentVariable).getId(), functions.get(currentVariable).getParams());                // should be string
 
-        currentVariable = "";                                                                                           //Clear for the next variable
+            currentVariable = "";                                                                                       //Clear for the next variable
+            printFunction = false;
+        }else{
+            lock = false;
+            isVariable = false;
+        }
+
         return super.visitStringExpression(ctx);
     }
 
     @Override
     public Object visitTrueExpression(alphaParser.TrueExpressionContext ctx) {
-        functions.get(currentVariable).setParams(DataTypes.DataType.BOOLEAN);
-        if(!ctx.getText().equals("tr")) throw new RuntimeException("Variable =" + ctx.getText() + " was not tr");
+        if(!currentVariable.equals("")&& !lock) {
+            functions.get(currentVariable).setParams(DataType.BOOLEAN);
+            if (!ctx.getText().equals("tr")) throw new RuntimeException("Variable =" + ctx.getText() + " was not tr");
 
-        currentVariable = "";                                                                                           //Clear for the next variable
+            currentVariable = "";                                                                                           //Clear for the next variable
+        }else{
+            lock = false;
+            isBoolean = true;
+        }
         return super.visitTrueExpression(ctx);
     }
 
     @Override
     public Object visitSmallerOrRequalExpression(alphaParser.SmallerOrRequalExpressionContext ctx) {
+        lock = true;                                                                                                    //Didn't follow the tree flow, so now i just lock everything
+        visit(ctx.expression(0));                                                                                    //Goes to the function and fills a boolean result
+        DataType first =  dataTypeChecker(ctx.expression(0).getText());                                              //Check boolean result
+        lock = true;                                                                                                    //Didn't follow the tree flow, so now i just lock everything
+        visit(ctx.expression(1));                                                                                    //Goes to the function and fills a boolean result
+        DataType second = dataTypeChecker(ctx.expression(1).getText());                                              //Check boolean result
+
+        DataTypes.typeCheckingMath(first,second);                                                                        //Check if its Integer or double
         return super.visitSmallerOrRequalExpression(ctx);
     }
 
@@ -159,33 +285,61 @@ class TypeChecker extends alphaBaseVisitor {
 
     @Override
     public Object visitCharExpression(alphaParser.CharExpressionContext ctx) {
-        functions.get(currentVariable).setParams(DataTypes.DataType.CHAR);
-        char c = functions.get(currentVariable).getId().charAt(0);
-        typeChecker(c, functions.get(currentVariable).getParams());                                                     // should be char
+        if(!currentVariable.equals("")) {
+            functions.get(currentVariable).setParams(DataType.CHAR);
+            char c = functions.get(currentVariable).getId().charAt(0);
+            typeChecker(c, functions.get(currentVariable).getParams());                                                     // should be char
 
-        currentVariable = "";                                                                                           //Clear for the next variable
+            currentVariable = "";                                                                                           //Clear for the next variable
+        }
         return super.visitCharExpression(ctx);
     }
 
     @Override
     public Object visitPlusExpression(alphaParser.PlusExpressionContext ctx) {
+        lock = true;                                                                                                    //Didn't follow the tree flow, so now i just lock everything
+        visit(ctx.expression(0));                                                                                    //Goes to the function and fills a boolean result
+        DataType first =  dataTypeChecker(ctx.expression(0).getText());                                              //Check boolean result
+        lock = true;                                                                                                    //Didn't follow the tree flow, so now i just lock everything
+        visit(ctx.expression(1));                                                                                    //Goes to the function and fills a boolean result
+        DataType second = dataTypeChecker(ctx.expression(1).getText());                                              //Check boolean result
+
+        DataTypes.typeCheckingMath(first,second);                                                                        //Check if its Integer or double
         return super.visitPlusExpression(ctx);
     }
 
     @Override
     public Object visitNotEqualToExpression(alphaParser.NotEqualToExpressionContext ctx) {
+        lock = true;                                                                                                    //Didn't follow the tree flow, so now i just lock everything
+        visit(ctx.expression(0));                                                                                    //Goes to the function and fills a boolean result
+        DataType first =  dataTypeChecker(ctx.expression(0).getText());                                              //Check boolean result
+        lock = true;                                                                                                    //Didn't follow the tree flow, so now i just lock everything
+        visit(ctx.expression(1));                                                                                    //Goes to the function and fills a boolean result
+        DataType second = dataTypeChecker(ctx.expression(1).getText());                                              //Check boolean result
+
+        DataTypes.typeCheckingEqualToExpression(first, second);                                                         //Check if the 2 datatype are compatible
         return super.visitNotEqualToExpression(ctx);
     }
 
     @Override
     public Object visitGreaterOrEqualExpression(alphaParser.GreaterOrEqualExpressionContext ctx) {
+        lock = true;                                                                                                    //Didn't follow the tree flow, so now i just lock everything
+        visit(ctx.expression(0));                                                                                    //Goes to the function and fills a boolean result
+        DataType first =  dataTypeChecker(ctx.expression(0).getText());                                              //Check boolean result
+        lock = true;                                                                                                    //Didn't follow the tree flow, so now i just lock everything
+        visit(ctx.expression(1));                                                                                    //Goes to the function and fills a boolean result
+        DataType second = dataTypeChecker(ctx.expression(1).getText());                                              //Check boolean result
+
+       DataTypes.typeCheckingMath(first,second);                                                                        //Check if its Integer or double
         return super.visitGreaterOrEqualExpression(ctx);
     }
 
     @Override
     public Object visitDeclaration(alphaParser.DeclarationContext ctx) {
-        currentVariable = ctx.getText().substring(3);                                                                   //All our DataType are 2 long so get everything after that is a Declartion
-        functions.put(currentVariable, new RenameThis(DataTypes.getEnum(ctx.dataType().getText())));
+        if(currentVariable.equals("")) {
+            currentVariable = ctx.getText().substring(3);                                                                   //All our DataType are 2 long so get everything after that is a Declartion
+            functions.put(currentVariable, new RenameThis(DataTypes.getEnum(ctx.dataType().getText())));
+        }
         return super.visitDeclaration(ctx);
     }
 
@@ -226,6 +380,7 @@ class TypeChecker extends alphaBaseVisitor {
 
     @Override
     public Object visitPrintFunction(alphaParser.PrintFunctionContext ctx) {
+        printFunction = true;
         return super.visitPrintFunction(ctx);
     }
 
@@ -306,8 +461,6 @@ class TypeChecker extends alphaBaseVisitor {
 
     @Override
     public Object visitIfStatement(alphaParser.IfStatementContext ctx) {
-        //todo sutff
-
         return super.visitIfStatement(ctx);
     }
 
