@@ -1,11 +1,20 @@
 package main.java;
 
 import main.antlr4.*;
+import org.antlr.v4.runtime.CommonToken;
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.tree.ParseTree;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Visitor
  */
 class Identifier extends alphaBaseVisitor {
+    private Scope scope = new Scope();
+    
     @Override
     public Object visitLanguage(alphaParser.LanguageContext ctx) {
         return super.visitLanguage(ctx);
@@ -13,7 +22,12 @@ class Identifier extends alphaBaseVisitor {
 
     @Override
     public Object visitLeftBracketExpressionRightBracketExpression(alphaParser.LeftBracketExpressionRightBracketExpressionContext ctx) {
-        return super.visitLeftBracketExpressionRightBracketExpression(ctx);
+        scope = scope.open();
+        
+        Object object = super.visitLeftBracketExpressionRightBracketExpression(ctx);
+        
+        scope = scope.close();
+        return object;
     }
 
     @Override
@@ -122,13 +136,17 @@ class Identifier extends alphaBaseVisitor {
     }
 
     @Override
-    public Object visitGreatOrRequalExpression(alphaParser.GreatOrRequalExpressionContext ctx) {
-        return super.visitGreatOrRequalExpression(ctx);
+    public Object visitGreaterOrEqualExpression(alphaParser.GreaterOrEqualExpressionContext ctx) {
+        return super.visitGreaterOrEqualExpression(ctx);
     }
 
     @Override
     public Object visitDeclaration(alphaParser.DeclarationContext ctx) {
-        return super.visitDeclaration(ctx);
+        if (scope.declareVariable(ctx.TEXT().getText(), DataTypes.getEnum(ctx.dataType().getText()))) {
+            return super.visitDeclaration(ctx);
+        }
+        assert false: "declared something that already exists: " + ctx.getText();
+        return null;
     }
 
     @Override
@@ -192,8 +210,48 @@ class Identifier extends alphaBaseVisitor {
     }
 
     @Override
-    public Object visitStatement(alphaParser.StatementContext ctx) {
-        return super.visitStatement(ctx);
+    public Object visitGlobalStatement(alphaParser.GlobalStatementContext ctx) {
+        return super.visitGlobalStatement(ctx);
+    }
+
+    @Override
+    public Object visitPlusPlusStatement(alphaParser.PlusPlusStatementContext ctx) {
+        return super.visitPlusPlusStatement(ctx);
+    }
+
+    @Override
+    public Object visitFunctionCallStatement(alphaParser.FunctionCallStatementContext ctx) {
+        return super.visitFunctionCallStatement(ctx);
+    }
+
+    @Override
+    public Object visitPrintStatement(alphaParser.PrintStatementContext ctx) {
+        return super.visitPrintStatement(ctx);
+    }
+
+    @Override
+    public Object visitReadStatement(alphaParser.ReadStatementContext ctx) {
+        return super.visitReadStatement(ctx);
+    }
+
+    @Override
+    public Object visitThrowBlackStatement(alphaParser.ThrowBlackStatementContext ctx) {
+        return super.visitThrowBlackStatement(ctx);
+    }
+
+    @Override
+    public Object visitReturnMethodStatement(alphaParser.ReturnMethodStatementContext ctx) {
+        return super.visitReturnMethodStatement(ctx);
+    }
+
+    @Override
+    public Object visitWhileMethodStatement(alphaParser.WhileMethodStatementContext ctx) {
+        return super.visitWhileMethodStatement(ctx);
+    }
+
+    @Override
+    public Object visitIfStatementStatement(alphaParser.IfStatementStatementContext ctx) {
+        return super.visitIfStatementStatement(ctx);
     }
 
     @Override
@@ -213,7 +271,27 @@ class Identifier extends alphaBaseVisitor {
 
     @Override
     public Object visitIfStatement(alphaParser.IfStatementContext ctx) {
-        return super.visitIfStatement(ctx);
+        for(ParseTree t: ctx.children) {
+            switch (t.getText()) {
+                case "if":
+                    scope = scope.open();
+                    break;
+                case "ef":
+                    scope = scope.close();
+                    scope = scope.open();
+                    break;
+                case "el":
+                    scope = scope.close();
+                    scope = scope.open();
+                    break;
+                default:
+                    visit(t);
+            }
+        }
+
+        scope = scope.close();
+        
+        return null;
     }
 
     @Override
@@ -228,6 +306,11 @@ class Identifier extends alphaBaseVisitor {
 
     @Override
     public Object visitVariable(alphaParser.VariableContext ctx) {
+        if (scope.lookupVariable(ctx.TEXT().getText()) == null) {
+            assert false: "variable has not been initialized: " + ctx.getText();
+        }
         return super.visitVariable(ctx);
     }
+    
+    
 }

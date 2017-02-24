@@ -21,7 +21,7 @@ expression
  | expression MODULO			expression 					#moduloExpression
  | expression PLUS 				expression 					#plusExpression
  | expression MINUS 			expression 					#minusExpression
- | expression GREATEROREQUAL 	expression 					#greatOrRequalExpression
+ | expression GREATEROREQUAL 	expression 					#greaterOrEqualExpression
  | expression SMALLEROREQUAL 	expression 					#smallerOrRequalExpression
  | expression GREATERTHAN 		expression 					#greaterThanExpression
  | expression SMALLERTHAN 		expression 					#smallerThanExpression
@@ -70,15 +70,16 @@ expression
  globalStatements: declarationFinal | declaration ';';
  
  statement
-     : (globalStatements 
-     | '++' (variable) ';'
-     | functionCall 
-     | printFunction 
-     | readFunction
-     | throwBlock
-     | ifStatement
-     | returnMethod
-     | whileMethod);
+     : globalStatements 		#globalStatement
+     | '++' (variable) ';'		#plusPlusStatement
+     | functionCall 			#functionCallStatement
+     | printFunction 			#printStatement
+     | readFunction				#readStatement
+     | throwBlock				#throwBlackStatement
+     | ifStatement				#ifStatementStatement
+     | returnMethod				#returnMethodStatement
+     | whileMethod				#whileMethodStatement
+     ;
      
  returnMethod: RETURN ' ' (expression (', '(expression))*)? ';';
  
@@ -181,7 +182,7 @@ TAB: [ \t\r\u000C] -> skip; //must enable tab character in inteljij
 //COMMENTS
 COMMENT: '/*' .*? '*/' -> skip;//Everything between /* and */
 LINE_COMMENT: '//' ~[\r\n]* -> skip;//Everything after //
-NEWLINE: '\n' -> skip;
+NEWLINE: [\n] -> skip;
 
 
 

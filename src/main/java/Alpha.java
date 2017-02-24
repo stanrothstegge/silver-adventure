@@ -32,8 +32,8 @@ public class Alpha {
        // SemanticEvaluator semanticEvaluator = new SemanticEvaluator();
         //semanticEvaluator.visit(expression);
 
-       // Identifier identifier = new Identifier();
-       // identifier.visit(expression);
+       Identifier identifier = new Identifier();
+       identifier.visit(expression);
 
 
         // then type check

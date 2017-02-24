@@ -6,7 +6,7 @@ import java.util.HashMap;
 /**
  * Created by Robin on 22-2-2017.
  */
-public class Scope {
+class Scope {
 
     final Scope parentScope;
     private final HashMap<String, DataTypes.DataType> variables = new HashMap<>();

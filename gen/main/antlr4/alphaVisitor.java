@@ -1,4 +1,4 @@
-// Generated from E:/Dropbox/Saxion/Jaar 2/Kwartiel 3/Compilers & Operating Systems/Practicumopdracht1/src/main/antlr4\alpha.g4 by ANTLR 4.6
+// Generated from C:/Users/Robin/Documents/School/Jaar 2/Kwartiel 3/Compilers/ProgrammeerTaal/src/main/antlr4\alpha.g4 by ANTLR 4.6
 package main.antlr4;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -143,6 +143,13 @@ public interface alphaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSmallerOrRequalExpression(alphaParser.SmallerOrRequalExpressionContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code greaterOrEqualExpression}
+	 * labeled alternative in {@link alphaParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGreaterOrEqualExpression(alphaParser.GreaterOrEqualExpressionContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code functionCallExpression}
 	 * labeled alternative in {@link alphaParser#expression}.
 	 * @param ctx the parse tree
@@ -170,13 +177,6 @@ public interface alphaVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitNotEqualToExpression(alphaParser.NotEqualToExpressionContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code greatOrRequalExpression}
-	 * labeled alternative in {@link alphaParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitGreatOrRequalExpression(alphaParser.GreatOrRequalExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link alphaParser#declaration}.
 	 * @param ctx the parse tree
@@ -256,11 +256,68 @@ public interface alphaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitGlobalStatements(alphaParser.GlobalStatementsContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link alphaParser#statement}.
+	 * Visit a parse tree produced by the {@code globalStatement}
+	 * labeled alternative in {@link alphaParser#statement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitStatement(alphaParser.StatementContext ctx);
+	T visitGlobalStatement(alphaParser.GlobalStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code plusPlusStatement}
+	 * labeled alternative in {@link alphaParser#statement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPlusPlusStatement(alphaParser.PlusPlusStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code functionCallStatement}
+	 * labeled alternative in {@link alphaParser#statement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunctionCallStatement(alphaParser.FunctionCallStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code printStatement}
+	 * labeled alternative in {@link alphaParser#statement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPrintStatement(alphaParser.PrintStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code readStatement}
+	 * labeled alternative in {@link alphaParser#statement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitReadStatement(alphaParser.ReadStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code throwBlackStatement}
+	 * labeled alternative in {@link alphaParser#statement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitThrowBlackStatement(alphaParser.ThrowBlackStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ifStatementStatement}
+	 * labeled alternative in {@link alphaParser#statement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIfStatementStatement(alphaParser.IfStatementStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code returnMethodStatement}
+	 * labeled alternative in {@link alphaParser#statement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitReturnMethodStatement(alphaParser.ReturnMethodStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code whileMethodStatement}
+	 * labeled alternative in {@link alphaParser#statement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitWhileMethodStatement(alphaParser.WhileMethodStatementContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link alphaParser#returnMethod}.
 	 * @param ctx the parse tree

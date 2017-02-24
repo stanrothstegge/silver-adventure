@@ -154,15 +154,15 @@ class TypeChecker extends alphaBaseVisitor {
     }
 
     @Override
-    public Object visitGreatOrRequalExpression(alphaParser.GreatOrRequalExpressionContext ctx) {
-        return super.visitGreatOrRequalExpression(ctx);
+    public Object visitGreaterOrEqualExpression(alphaParser.GreaterOrEqualExpressionContext ctx) {
+        return super.visitGreaterOrEqualExpression(ctx);
     }
 
     @Override
     public Object visitDeclaration(alphaParser.DeclarationContext ctx) {
         //todo fix this
         currentVariable = ctx.getText().substring(3);                                                         //All our DataType are 2 long so get everything after that is a Declartion
-        functions.put(currentVariable, new RenameThis(DataTypes.getEnum(ctx.dataType().getText())));
+        //functions.put(currentVariable, new RenameThis(DataTypes.getEnum(ctx.dataType().getText())));
 
         return super.visitDeclaration(ctx);
     }
@@ -228,8 +228,48 @@ class TypeChecker extends alphaBaseVisitor {
     }
 
     @Override
-    public Object visitStatement(alphaParser.StatementContext ctx) {
-        return super.visitStatement(ctx);
+    public Object visitGlobalStatement(alphaParser.GlobalStatementContext ctx) {
+        return super.visitGlobalStatement(ctx);
+    }
+
+    @Override
+    public Object visitPlusPlusStatement(alphaParser.PlusPlusStatementContext ctx) {
+        return super.visitPlusPlusStatement(ctx);
+    }
+
+    @Override
+    public Object visitFunctionCallStatement(alphaParser.FunctionCallStatementContext ctx) {
+        return super.visitFunctionCallStatement(ctx);
+    }
+
+    @Override
+    public Object visitPrintStatement(alphaParser.PrintStatementContext ctx) {
+        return super.visitPrintStatement(ctx);
+    }
+
+    @Override
+    public Object visitReadStatement(alphaParser.ReadStatementContext ctx) {
+        return super.visitReadStatement(ctx);
+    }
+
+    @Override
+    public Object visitThrowBlackStatement(alphaParser.ThrowBlackStatementContext ctx) {
+        return super.visitThrowBlackStatement(ctx);
+    }
+
+    @Override
+    public Object visitReturnMethodStatement(alphaParser.ReturnMethodStatementContext ctx) {
+        return super.visitReturnMethodStatement(ctx);
+    }
+
+    @Override
+    public Object visitWhileMethodStatement(alphaParser.WhileMethodStatementContext ctx) {
+        return super.visitWhileMethodStatement(ctx);
+    }
+
+    @Override
+    public Object visitIfStatementStatement(alphaParser.IfStatementStatementContext ctx) {
+        return super.visitIfStatementStatement(ctx);
     }
 
     @Override

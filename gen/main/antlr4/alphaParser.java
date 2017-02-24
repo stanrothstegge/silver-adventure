@@ -1,4 +1,4 @@
-// Generated from E:/Dropbox/Saxion/Jaar 2/Kwartiel 3/Compilers & Operating Systems/Practicumopdracht1/src/main/antlr4\alpha.g4 by ANTLR 4.6
+// Generated from C:/Users/Robin/Documents/School/Jaar 2/Kwartiel 3/Compilers/ProgrammeerTaal/src/main/antlr4\alpha.g4 by ANTLR 4.6
 package main.antlr4;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -47,7 +47,7 @@ public class alphaParser extends Parser {
 		"' * '", "' / '", "' % '", "'('", "')'", "' < '", "' > '", "' == '", "' != '", 
 		"' <= '", "' >= '", "' || '", "' && '", "'! '", "'ty'", "'ca'", "'th'", 
 		"'if'", "'ef'", "'el'", "'wh'", null, "'gl'", null, "'sp'", "'he'", "'re'", 
-		"'Alpha'", "'Omega'", null, null, null, null, null, null, null, "'\n'"
+		"'Alpha'", "'Omega'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
 		null, null, null, null, null, null, null, null, null, null, "INTEGER", 
@@ -451,6 +451,21 @@ public class alphaParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
+	public static class GreaterOrEqualExpressionContext extends ExpressionContext {
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode GREATEROREQUAL() { return getToken(alphaParser.GREATEROREQUAL, 0); }
+		public GreaterOrEqualExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitGreaterOrEqualExpression(this);
+			else return visitor.visitChildren(this);
+		}
+	}
 	public static class FunctionCallExpressionContext extends ExpressionContext {
 		public FunctionCallContext functionCall() {
 			return getRuleContext(FunctionCallContext.class,0);
@@ -498,21 +513,6 @@ public class alphaParser extends Parser {
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitNotEqualToExpression(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class GreatOrRequalExpressionContext extends ExpressionContext {
-		public List<ExpressionContext> expression() {
-			return getRuleContexts(ExpressionContext.class);
-		}
-		public ExpressionContext expression(int i) {
-			return getRuleContext(ExpressionContext.class,i);
-		}
-		public TerminalNode GREATEROREQUAL() { return getToken(alphaParser.GREATEROREQUAL, 0); }
-		public GreatOrRequalExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitGreatOrRequalExpression(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -769,7 +769,7 @@ public class alphaParser extends Parser {
 						break;
 					case 6:
 						{
-						_localctx = new GreatOrRequalExpressionContext(new ExpressionContext(_parentctx, _parentState));
+						_localctx = new GreaterOrEqualExpressionContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(101);
 						if (!(precpred(_ctx, 17))) throw new FailedPredicateException(this, "precpred(_ctx, 17)");
@@ -1721,40 +1721,112 @@ public class alphaParser extends Parser {
 	}
 
 	public static class StatementContext extends ParserRuleContext {
-		public GlobalStatementsContext globalStatements() {
-			return getRuleContext(GlobalStatementsContext.class,0);
-		}
-		public FunctionCallContext functionCall() {
-			return getRuleContext(FunctionCallContext.class,0);
-		}
-		public PrintFunctionContext printFunction() {
-			return getRuleContext(PrintFunctionContext.class,0);
-		}
-		public ReadFunctionContext readFunction() {
-			return getRuleContext(ReadFunctionContext.class,0);
-		}
-		public ThrowBlockContext throwBlock() {
-			return getRuleContext(ThrowBlockContext.class,0);
-		}
-		public IfStatementContext ifStatement() {
-			return getRuleContext(IfStatementContext.class,0);
-		}
-		public ReturnMethodContext returnMethod() {
-			return getRuleContext(ReturnMethodContext.class,0);
-		}
-		public WhileMethodContext whileMethod() {
-			return getRuleContext(WhileMethodContext.class,0);
-		}
-		public VariableContext variable() {
-			return getRuleContext(VariableContext.class,0);
-		}
 		public StatementContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_statement; }
+	 
+		public StatementContext() { }
+		public void copyFrom(StatementContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	public static class PrintStatementContext extends StatementContext {
+		public PrintFunctionContext printFunction() {
+			return getRuleContext(PrintFunctionContext.class,0);
+		}
+		public PrintStatementContext(StatementContext ctx) { copyFrom(ctx); }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitStatement(this);
+			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitPrintStatement(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class IfStatementStatementContext extends StatementContext {
+		public IfStatementContext ifStatement() {
+			return getRuleContext(IfStatementContext.class,0);
+		}
+		public IfStatementStatementContext(StatementContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitIfStatementStatement(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class WhileMethodStatementContext extends StatementContext {
+		public WhileMethodContext whileMethod() {
+			return getRuleContext(WhileMethodContext.class,0);
+		}
+		public WhileMethodStatementContext(StatementContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitWhileMethodStatement(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ReturnMethodStatementContext extends StatementContext {
+		public ReturnMethodContext returnMethod() {
+			return getRuleContext(ReturnMethodContext.class,0);
+		}
+		public ReturnMethodStatementContext(StatementContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitReturnMethodStatement(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class FunctionCallStatementContext extends StatementContext {
+		public FunctionCallContext functionCall() {
+			return getRuleContext(FunctionCallContext.class,0);
+		}
+		public FunctionCallStatementContext(StatementContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitFunctionCallStatement(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ReadStatementContext extends StatementContext {
+		public ReadFunctionContext readFunction() {
+			return getRuleContext(ReadFunctionContext.class,0);
+		}
+		public ReadStatementContext(StatementContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitReadStatement(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class GlobalStatementContext extends StatementContext {
+		public GlobalStatementsContext globalStatements() {
+			return getRuleContext(GlobalStatementsContext.class,0);
+		}
+		public GlobalStatementContext(StatementContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitGlobalStatement(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ThrowBlackStatementContext extends StatementContext {
+		public ThrowBlockContext throwBlock() {
+			return getRuleContext(ThrowBlockContext.class,0);
+		}
+		public ThrowBlackStatementContext(StatementContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitThrowBlackStatement(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class PlusPlusStatementContext extends StatementContext {
+		public VariableContext variable() {
+			return getRuleContext(VariableContext.class,0);
+		}
+		public PlusPlusStatementContext(StatementContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitPlusPlusStatement(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1763,18 +1835,20 @@ public class alphaParser extends Parser {
 		StatementContext _localctx = new StatementContext(_ctx, getState());
 		enterRule(_localctx, 30, RULE_statement);
 		try {
-			enterOuterAlt(_localctx, 1);
-			{
 			setState(265);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,22,_ctx) ) {
 			case 1:
+				_localctx = new GlobalStatementContext(_localctx);
+				enterOuterAlt(_localctx, 1);
 				{
 				setState(253);
 				globalStatements();
 				}
 				break;
 			case 2:
+				_localctx = new PlusPlusStatementContext(_localctx);
+				enterOuterAlt(_localctx, 2);
 				{
 				setState(254);
 				match(T__8);
@@ -1787,48 +1861,61 @@ public class alphaParser extends Parser {
 				}
 				break;
 			case 3:
+				_localctx = new FunctionCallStatementContext(_localctx);
+				enterOuterAlt(_localctx, 3);
 				{
 				setState(258);
 				functionCall();
 				}
 				break;
 			case 4:
+				_localctx = new PrintStatementContext(_localctx);
+				enterOuterAlt(_localctx, 4);
 				{
 				setState(259);
 				printFunction();
 				}
 				break;
 			case 5:
+				_localctx = new ReadStatementContext(_localctx);
+				enterOuterAlt(_localctx, 5);
 				{
 				setState(260);
 				readFunction();
 				}
 				break;
 			case 6:
+				_localctx = new ThrowBlackStatementContext(_localctx);
+				enterOuterAlt(_localctx, 6);
 				{
 				setState(261);
 				throwBlock();
 				}
 				break;
 			case 7:
+				_localctx = new IfStatementStatementContext(_localctx);
+				enterOuterAlt(_localctx, 7);
 				{
 				setState(262);
 				ifStatement();
 				}
 				break;
 			case 8:
+				_localctx = new ReturnMethodStatementContext(_localctx);
+				enterOuterAlt(_localctx, 8);
 				{
 				setState(263);
 				returnMethod();
 				}
 				break;
 			case 9:
+				_localctx = new WhileMethodStatementContext(_localctx);
+				enterOuterAlt(_localctx, 9);
 				{
 				setState(264);
 				whileMethod();
 				}
 				break;
-			}
 			}
 		}
 		catch (RecognitionException re) {
