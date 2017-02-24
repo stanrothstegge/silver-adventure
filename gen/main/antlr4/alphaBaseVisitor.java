@@ -382,4 +382,11 @@ public class alphaBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements 
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitVariable(alphaParser.VariableContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitGlobal_type(alphaParser.Global_typeContext ctx) { return visitChildren(ctx); }
 }

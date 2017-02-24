@@ -360,4 +360,10 @@ public interface alphaVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitVariable(alphaParser.VariableContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link alphaParser#global_type}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGlobal_type(alphaParser.Global_typeContext ctx);
 }

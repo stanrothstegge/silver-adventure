@@ -306,4 +306,9 @@ class TypeChecker extends alphaBaseVisitor {
     public Object visitVariable(alphaParser.VariableContext ctx) {
         return super.visitVariable(ctx);
     }
+
+    @Override
+    public Object visitGlobal_type(alphaParser.Global_typeContext ctx) {
+        return super.visitGlobal_type(ctx);
+    }
 }

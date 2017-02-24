@@ -345,10 +345,15 @@ class Identifier extends alphaBaseVisitor {
             }
         //global variable
         } else {
-            
+            if (scope.lookupVariable(ctx.global_type().TEXT().getText()) == null) {
+                assert false : "variable has not been initialized: " + ctx.getText();
+            }
         }
         return super.visitVariable(ctx);
     }
-    
-    
+
+    @Override
+    public Object visitGlobal_type(alphaParser.Global_typeContext ctx) {
+        return super.visitGlobal_type(ctx);
+    }
 }
