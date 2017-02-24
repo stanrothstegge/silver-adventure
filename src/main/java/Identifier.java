@@ -13,7 +13,11 @@ class Identifier extends alphaBaseVisitor {
     public Object visitLanguage(alphaParser.LanguageContext ctx) {
         System.out.println(ctx.getText());
         System.out.println(ctx.children);
-        return super.visitLanguage(ctx);
+        Object object = super.visitLanguage(ctx);
+        if (scope.lookupMethod("pizza") == null) {
+            assert false: "function pizza does not exist, this is required";
+        }
+        return object;
     }
 
     @Override
@@ -139,6 +143,10 @@ class Identifier extends alphaBaseVisitor {
     @Override
     public Object visitDeclaration(alphaParser.DeclarationContext ctx) {
         if (scope.declareVariable(ctx.TEXT().getText(), DataTypes.getEnum(ctx.dataType().getText()))) {
+            if (declaringFunction) {
+                method.addParameter(DataTypes.getEnum(ctx.dataType().getText()));
+            }
+            
             return super.visitDeclaration(ctx);
         }
         assert false: "declared something that already exists: " + ctx.getText();
@@ -162,6 +170,7 @@ class Identifier extends alphaBaseVisitor {
 
     @Override
     public Object visitArgumentsDeclaration(alphaParser.ArgumentsDeclarationContext ctx) {
+        
         return super.visitArgumentsDeclaration(ctx);
     }
 
@@ -170,13 +179,44 @@ class Identifier extends alphaBaseVisitor {
         return super.visitArgumentsCall(ctx);
     }
 
+    private boolean declaringFunction = false;
+    private Method method;
+    
     @Override
     public Object visitFunctionDeclaration(alphaParser.FunctionDeclarationContext ctx) {
-        return super.visitFunctionDeclaration(ctx);
+        //count the amount of ~ to determine if there are return types
+        boolean returntypes = false;
+        method = new Method();
+        if (ctx.getText().length() - ctx.getText().replace("~", "").length() == 2) {
+            returntypes = true;
+        }
+        for(ParseTree t: ctx.children) {
+            switch (t.getText()) {
+                case "~":
+                    if (returntypes && !declaringFunction) {
+                        //global variable that is used to get method filled
+                        declaringFunction = true;
+                    }
+                    break;
+                default:
+                    visit(t);
+            }
+        }
+
+        scope.declareMethod(ctx.TEXT().getText(), method);
+        method = null;
+        declaringFunction = false;
+
+        return null;
     }
 
     @Override
     public Object visitFunctionCall(alphaParser.FunctionCallContext ctx) {
+        if (scope.lookupMethod(ctx.TEXT().getText()) != null) {
+            return super.visitFunctionCall(ctx);
+        }
+        
+        assert false: "method " + ctx.TEXT().getText() + " does not exist";
         return super.visitFunctionCall(ctx);
     }
 
@@ -286,7 +326,10 @@ class Identifier extends alphaBaseVisitor {
 
     @Override
     public Object visitFunction(alphaParser.FunctionContext ctx) {
-        return super.visitFunction(ctx);
+        scope = scope.open();
+        Object object = super.visitFunction(ctx);
+        scope.close();
+        return object;
     }
 
     @Override
@@ -333,6 +376,10 @@ class Identifier extends alphaBaseVisitor {
 
     @Override
     public Object visitDataType(alphaParser.DataTypeContext ctx) {
+        //if declaring return types for a function
+        if (declaringFunction) {
+            method.addReturnValue(DataTypes.getEnum(ctx.getText()));
+        }
         return super.visitDataType(ctx);
     }
 

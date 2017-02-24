@@ -6,13 +6,21 @@ in b = 2;
 //a = c;
 //invalid end
 
-~funct ()
-if (a == b)
+~funct (in a = 2, in d)
+if (a == gl.a)
 sp ("test");
-in d = 2;
+☕
+d = 2;
 //invalid start
 //ef (gl.d == b)
 //invalid end
 ☕
+
+~pizza ()
+2 * funct (3);
+//invalid start
+//fake ();
+//invalid end
 ☕
+
 Omega

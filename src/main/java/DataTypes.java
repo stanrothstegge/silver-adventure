@@ -42,6 +42,8 @@ class DataTypes {
             case "fs":
                 return DataType.FALSE;
             default:
+                //this should never happen
+                assert false: "invalid datatype declared: " + type;
                 return null;
         }
     }

@@ -34,7 +34,7 @@ class Scope {
     public boolean declareMethod(String name, Method method) {
         Scope globalscope = getGlobalScope();
         if (!globalscope.methods.containsKey(name)) {
-            methods.put(name, method);
+            globalscope.methods.put(name, method);
             return true;
         }
         return false;
@@ -52,14 +52,14 @@ class Scope {
         return getGlobalScope().lookupVariable(name);
     }
     
-    public Method lookupMethods(String name) {        
+    public Method lookupMethod(String name) {        
         return getGlobalScope().methods.get(name);
     }
     
     private Scope getGlobalScope() {
         Scope scope = this;
         while(scope.parentScope != null) {
-            scope = parentScope;
+            scope = scope.parentScope;
         }
         return scope;
     }

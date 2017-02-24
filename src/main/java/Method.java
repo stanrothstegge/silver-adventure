@@ -7,12 +7,14 @@ import java.util.Arrays;
  * Created by Robin on 22-2-2017.
  */
 public class Method {
-    public final ArrayList<DataTypes.DataType> returnValues = new ArrayList<>();
-    public final ArrayList<DataTypes.DataType> parameters = new ArrayList<>();
+    private ArrayList<DataTypes.DataType> returnValues = new ArrayList<>();
+    private ArrayList<DataTypes.DataType> parameters = new ArrayList<>();
 
-    public Method(DataTypes.DataType[] returnValues, DataTypes.DataType[] parameters) {
-        this.returnValues.addAll(Arrays.asList(returnValues));
+    public void addReturnValue(DataTypes.DataType type) {
+        returnValues.add(type);
+    }
 
-        this.parameters.addAll(Arrays.asList(parameters));
+    public void addParameter(DataTypes.DataType type) {
+        parameters.add(type);
     }
 }
