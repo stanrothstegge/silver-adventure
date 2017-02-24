@@ -1,13 +1,7 @@
 package main.java;
 
 import main.antlr4.*;
-import org.antlr.v4.runtime.CommonToken;
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Visitor
@@ -17,7 +11,8 @@ class Identifier extends alphaBaseVisitor {
     
     @Override
     public Object visitLanguage(alphaParser.LanguageContext ctx) {
-        
+        System.out.println(ctx.getText());
+        System.out.println(ctx.children);
         return super.visitLanguage(ctx);
     }
 
@@ -343,8 +338,14 @@ class Identifier extends alphaBaseVisitor {
 
     @Override
     public Object visitVariable(alphaParser.VariableContext ctx) {
-        if (scope.lookupVariable(ctx.TEXT().getText()) == null) {
-            assert false: "variable has not been initialized: " + ctx.getText();
+        //local variable
+        if (ctx.TEXT() != null) {
+            if (scope.lookupVariable(ctx.TEXT().getText()) == null) {
+                assert false : "variable has not been initialized: " + ctx.getText();
+            }
+        //global variable
+        } else {
+            
         }
         return super.visitVariable(ctx);
     }

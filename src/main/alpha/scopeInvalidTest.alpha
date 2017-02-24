@@ -11,7 +11,7 @@ if (a == b)
 sp ("test");
 in d = 2;
 //invalid start
-//ef (d == b)
+ef (gl.d == b)
 //invalid end
 ☕
 ☕
