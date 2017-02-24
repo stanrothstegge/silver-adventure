@@ -97,5 +97,16 @@ class DataTypes {
         throw new RuntimeException("The = didnt work with " + dataTypeFirst + " and " +dataTypeSecond);
 
     }
+
+    /**
+     * Check all the < > >= <=
+     * And + - / *
+     * @param dataTypeFirst DataType
+     * @param dataTypeSecond DataType
+     */
+    public static void typeCheckingMath(DataType dataTypeFirst , DataType dataTypeSecond) throws RuntimeException {
+        if(DataType.INTEGER == dataTypeFirst || DataType.INTEGER == dataTypeFirst || DataType.DOUBLE == dataTypeSecond || DataType.DOUBLE == dataTypeSecond) return;
+        throw new RuntimeException("Wasnt a double or integer " + dataTypeFirst + " and " +dataTypeSecond);
+    }
 }
 
