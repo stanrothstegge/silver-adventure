@@ -436,6 +436,8 @@ class TypeChecker extends alphaBaseVisitor {
 
     @Override
     public Object visitWhileMethodStatement(alphaParser.WhileMethodStatementContext ctx) {
+
+
         return super.visitWhileMethodStatement(ctx);
     }
 

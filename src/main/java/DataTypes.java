@@ -86,18 +86,36 @@ class DataTypes {
     public static void typeCheckingEqualToExpression(DataType dataTypeFirst , DataType dataTypeSecond){
         if(dataTypeFirst == dataTypeSecond) return;                                                                     //If both are the same no checking required
 
-        if((DataType.BOOLEAN == dataTypeFirst || DataType.BOOLEAN == dataTypeSecond) || ( DataType.TRUE == dataTypeFirst ||
-                DataType.TRUE == dataTypeSecond || DataType.FALSE == dataTypeFirst
-                || DataType.FALSE == dataTypeSecond )) return;                                                          // checks booleans and true and false
-
-        if(DataType.STRING == dataTypeFirst || DataType.STRING == dataTypeSecond || DataType.CHAR == dataTypeFirst ||
-                DataType.CHAR == dataTypeSecond) return;                                                                //Checks string and char
-
-        if(DataType.INTEGER == dataTypeFirst || DataType.INTEGER == dataTypeSecond || DataType.DOUBLE == dataTypeFirst ||
-                DataType.DOUBLE == dataTypeSecond) return;                                                              //Checks integers and double
-
-        throw new RuntimeException("The = didnt work with " + dataTypeFirst + " and " +dataTypeSecond);
-
+        switch (dataTypeFirst){
+            case BOOLEAN:                                                                                               // checks booleans and true and false
+            case FALSE:
+            case TRUE:
+                switch (dataTypeSecond){
+                    case BOOLEAN:
+                    case FALSE:
+                    case TRUE: return;
+                    default:
+                        throw new RuntimeException("The = didnt work with " + dataTypeFirst + " and " +dataTypeSecond);
+                }
+            case STRING:                                                                                                //Checks string and char
+            case CHAR:
+                switch (dataTypeSecond){
+                    case STRING:
+                    case CHAR: return;
+                        default:
+                            throw new RuntimeException("The = didnt work with " + dataTypeFirst + " and " +dataTypeSecond);
+                }
+            case DOUBLE:                                                                                                //Check double and integer
+            case INTEGER:
+                switch (dataTypeSecond){
+                    case DOUBLE:
+                    case INTEGER: return;
+                    default:
+                        throw new RuntimeException("The = didnt work with " + dataTypeFirst + " and " +dataTypeSecond);
+                }
+            default:
+                throw new RuntimeException("The = didnt work with " + dataTypeFirst + " and " +dataTypeSecond);
+        }
     }
 
     /**
@@ -107,8 +125,19 @@ class DataTypes {
      * @param dataTypeSecond DataType
      */
     public static void typeCheckingMath(DataType dataTypeFirst , DataType dataTypeSecond) throws RuntimeException {
-        if(DataType.INTEGER == dataTypeFirst || DataType.INTEGER == dataTypeFirst || DataType.DOUBLE == dataTypeSecond || DataType.DOUBLE == dataTypeSecond) return;
-        throw new RuntimeException("Wasnt a double or integer " + dataTypeFirst + " and " +dataTypeSecond);
+        switch (dataTypeFirst) {
+            case DOUBLE:                                                                                                //Check double and integer
+            case INTEGER:
+                switch (dataTypeSecond) {
+                    case DOUBLE:
+                    case INTEGER:
+                        return;
+                    default:
+                        throw new RuntimeException("Wasnt a double or integer " + dataTypeFirst + " and " +dataTypeSecond);
+                }
+            default:
+                throw new RuntimeException("Wasnt a double or integer " + dataTypeFirst + " and " +dataTypeSecond);
+        }
     }
 }
 
