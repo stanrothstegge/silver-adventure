@@ -1,10 +1,77 @@
 Alpha
+	in a = 2;//int
+	do b = 2.2;//double
+	st c = "zin";//string
+	ch d = 'c';//char
+	bo e = tr;//boolean true
 
-do b = 1 + 1 - 2 * (3 / 4) % 5;
 
-~func ()
-	if ((1 + 1 - 2 * (3 / 4) % 5) == b)
-	sp ("help");
-☕
-☕
+	~do~ func ()// function returns double
+		ty// try
+			++a;
+			th ("AAaaa");
+		ca (e)//catch
+			sp (e);//sout
+		☕
+		do y = a + 1 - 2 * (3 / 4) % 5;// math 1.5
+
+		if (! e)//shoud never enter this
+			st a1 = "shoul";// 5 letter limit
+			st a2 = "dnt s";
+			st a3 = "ee th";
+			st a4 = "is";
+			sp (a1 + a2 + a3 + a4);
+		ef (b > 5)//shoud never enter this
+			st a1 = "shoul";
+			st a2 = "dnt s";
+			st a3 = "ee th";
+			st a4 = "is";
+			sp (a1 + a2 + a3 + a4);
+		el//else
+			if (b < 5 && b == b && b != a || fs)// fs - false
+				if (1 >= 2 && 2 <= 1 && ! fs)
+					sp ("nice!");
+					b = 66.00;
+				☕
+			☕
+		☕
+
+		re b;// return b 66.00
+	☕
+	~func1 (in a)
+		d = "g";
+	☕
+	~st in ch~ func2 ()//multiple-return-values string, int and char
+		re "pizza", 6, 'p';
+	☕
+
+	~pizza ()
+		do rt = 0.00;
+		4 * rt = func ();//run function 4 times
+		sp (rt);//prints 264.00
+		func1 ();// returns nothing but chances default
+		sp (d);// should be g
+
+		wh (true)
+			++a;
+		☕
+		//functon 2
+		st pizza = "geen";
+		in int = 5;
+		ch char = "o";
+		pizza, int, char = func2 ();
+		sp (\+ pizza "cost" int char);//pizza + "cost" + int + char
+		//function 2 part 2
+		st pizz2, in int2, ch char2 = func2 ();
+		sp (\+ pizz2 "cost2" int2 char2);//pizz2 + "cost2" + int2 + char2
+		//try throw catch
+		ty//try
+			th ("help");//trow
+		ca (e)
+			sp (e);
+		☕
+
+		sp ("end");
+	☕
+
 Omega

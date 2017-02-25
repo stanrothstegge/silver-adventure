@@ -13,7 +13,7 @@ Alpha
 		ca (e)//catch
 			sp (e);//sout
 		☕
-		//do b = a + 1 - 2 * (3 / 4) % 5;// math 1.5
+		do y = a + 1 - 2 * (3 / 4) % 5;// math 1.5
 
 		if (! e)//shoud never enter this
 			st a1 = "shoul";// 5 letter limit
@@ -21,14 +21,14 @@ Alpha
 			st a3 = "ee th";
 			st a4 = "is";
 			sp (a1 + a2 + a3 + a4);
-		ef (b > gl.b)//shoud never enter this
+		ef (b > 5)//shoud never enter this
 			st a1 = "shoul";
 			st a2 = "dnt s";
 			st a3 = "ee th";
 			st a4 = "is";
 			sp (a1 + a2 + a3 + a4);
 		el//else
-			if (b < gl.b && b == b && b != a || fs)// fs - false
+			if (b < 5 && b == b && b != a || fs)// fs - false
 				if (1 >= 2 && 2 <= 1 && ! fs)
 					sp ("nice!");
 					b = 66.00;
@@ -39,7 +39,7 @@ Alpha
 		re b;// return b 66.00
 	☕
 	~func1 (in a)
-		gl.d = "g";
+		d = "g";
 	☕
 	~st in ch~ func2 ()//multiple-return-values string, int and char
 		re "pizza", 6, 'p';
@@ -50,7 +50,7 @@ Alpha
 		4 * rt = func ();//run function 4 times
 		sp (rt);//prints 264.00
 		func1 ();// returns nothing but chances default
-		sp (gl.d);// should be g
+		sp (d);// should be g
 
 		wh (true)
 			++a;

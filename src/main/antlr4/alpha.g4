@@ -103,7 +103,7 @@ expression
 
 //--collections--
  dataType: INTEGER | DOUBLE | STRING | CHAR | BOOLEAN;
- variable: TEXT | global_type;
+ variable: TEXT;
 
 /*
 =============================================
@@ -152,10 +152,6 @@ ELSE: 'el';
 WHILE: 'wh';
 
 COFFEE: '☕' | '\u2615';
-
-//global variables
-THIS: 'gl';
-global_type: THIS '.' TEXT;
 
 //in & out
 PRINT: 'sp';

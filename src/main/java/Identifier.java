@@ -8,14 +8,14 @@ import org.antlr.v4.runtime.tree.ParseTree;
  */
 class Identifier extends alphaBaseVisitor {
     private Scope scope = new Scope();
-    
+
     @Override
     public Object visitLanguage(alphaParser.LanguageContext ctx) {
         System.out.println(ctx.getText());
         System.out.println(ctx.children);
         Object object = super.visitLanguage(ctx);
         if (scope.lookupMethod("pizza") == null) {
-            assert false: "function pizza does not exist, this is required";
+            assert false : "function pizza does not exist, this is required";
         }
         return object;
     }
@@ -23,9 +23,9 @@ class Identifier extends alphaBaseVisitor {
     @Override
     public Object visitLeftBracketExpressionRightBracketExpression(alphaParser.LeftBracketExpressionRightBracketExpressionContext ctx) {
         scope = scope.open();
-        
+
         Object object = super.visitLeftBracketExpressionRightBracketExpression(ctx);
-        
+
         scope = scope.close();
         return object;
     }
@@ -146,10 +146,10 @@ class Identifier extends alphaBaseVisitor {
             if (declaringFunction) {
                 method.addParameter(DataTypes.getEnum(ctx.dataType().getText()));
             }
-            
+
             return super.visitDeclaration(ctx);
         }
-        assert false: "declared something that already exists: " + ctx.getText();
+        assert false : "declared something that already exists: " + ctx.getText();
         return null;
     }
 
@@ -170,7 +170,7 @@ class Identifier extends alphaBaseVisitor {
 
     @Override
     public Object visitArgumentsDeclaration(alphaParser.ArgumentsDeclarationContext ctx) {
-        
+
         return super.visitArgumentsDeclaration(ctx);
     }
 
@@ -181,7 +181,7 @@ class Identifier extends alphaBaseVisitor {
 
     private boolean declaringFunction = false;
     private Method method;
-    
+
     @Override
     public Object visitFunctionDeclaration(alphaParser.FunctionDeclarationContext ctx) {
         //count the amount of ~ to determine if there are return types
@@ -190,7 +190,7 @@ class Identifier extends alphaBaseVisitor {
         if (ctx.getText().length() - ctx.getText().replace("~", "").length() == 2) {
             returntypes = true;
         }
-        for(ParseTree t: ctx.children) {
+        for (ParseTree t : ctx.children) {
             switch (t.getText()) {
                 case "~":
                     if (returntypes && !declaringFunction) {
@@ -215,8 +215,8 @@ class Identifier extends alphaBaseVisitor {
         if (scope.lookupMethod(ctx.TEXT().getText()) != null) {
             return super.visitFunctionCall(ctx);
         }
-        
-        assert false: "method " + ctx.TEXT().getText() + " does not exist";
+
+        assert false : "method " + ctx.TEXT().getText() + " does not exist";
         return super.visitFunctionCall(ctx);
     }
 
@@ -237,7 +237,7 @@ class Identifier extends alphaBaseVisitor {
 
     @Override
     public Object visitCatchFunction(alphaParser.CatchFunctionContext ctx) {
-        for(ParseTree t: ctx.children) {
+        for (ParseTree t : ctx.children) {
             switch (t.getText()) {
                 case "ca":
                     scope = scope.close();
@@ -310,7 +310,7 @@ class Identifier extends alphaBaseVisitor {
 
     @Override
     public Object visitThrowBlock(alphaParser.ThrowBlockContext ctx) {
-        for(ParseTree t: ctx.children) {
+        for (ParseTree t : ctx.children) {
             switch (t.getText()) {
                 case "ty":
                     //scope closed in visitCatchFunction
@@ -334,7 +334,7 @@ class Identifier extends alphaBaseVisitor {
 
     @Override
     public Object visitIfStatement(alphaParser.IfStatementContext ctx) {
-        for(ParseTree t: ctx.children) {
+        for (ParseTree t : ctx.children) {
             switch (t.getText()) {
                 case "if":
                     scope = scope.open();
@@ -353,13 +353,13 @@ class Identifier extends alphaBaseVisitor {
         }
 
         scope = scope.close();
-        
+
         return null;
     }
 
     @Override
     public Object visitWhileMethod(alphaParser.WhileMethodContext ctx) {
-        for(ParseTree t: ctx.children) {
+        for (ParseTree t : ctx.children) {
             switch (t.getText()) {
                 case "wh":
                     scope = scope.open();
@@ -385,22 +385,10 @@ class Identifier extends alphaBaseVisitor {
 
     @Override
     public Object visitVariable(alphaParser.VariableContext ctx) {
-        //local variable
-        if (ctx.TEXT() != null) {
-            if (scope.lookupVariable(ctx.TEXT().getText()) == null) {
-                assert false : "variable has not been initialized: " + ctx.getText();
-            }
-        //global variable
-        } else {
-            if (scope.lookupGlobalVariable(ctx.global_type().TEXT().getText()) == null) {
-                assert false : "variable has not been initialized: " + ctx.getText();
-            }
+        if (scope.lookupVariable(ctx.TEXT().getText()) == null) {
+            assert false : "variable has not been initialized: " + ctx.getText();
         }
         return super.visitVariable(ctx);
     }
 
-    @Override
-    public Object visitGlobal_type(alphaParser.Global_typeContext ctx) {
-        return super.visitGlobal_type(ctx);
-    }
 }

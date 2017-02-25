@@ -18,7 +18,7 @@ public class Alpha {
 
         //week 1
         //Load in the file and  create lexer from it
-        alphaLexer lexer = new alphaLexer(new ANTLRFileStream("src/main/alpha/scopeInvalidTest.alpha"));
+        alphaLexer lexer = new alphaLexer(new ANTLRFileStream("src/main/alpha/test.alpha"));
         //run scanner to create stream of tokens
         CommonTokenStream tokens = new CommonTokenStream(lexer);
 
@@ -32,8 +32,8 @@ public class Alpha {
        // SemanticEvaluator semanticEvaluator = new SemanticEvaluator();
         //semanticEvaluator.visit(expression);
 
-       Identifier identifier = new Identifier();
-       identifier.visit(expression);
+      // Identifier identifier = new Identifier();
+      // identifier.visit(expression);
 
 
         // then type check
