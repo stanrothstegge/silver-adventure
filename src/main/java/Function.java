@@ -3,11 +3,11 @@ package main.java;
 /**
  * Created by Garcia on 22/02/2017.
  */
-public class RenameThis {
+public class Function {
     private String id;
     private DataTypes.DataType params;
 
-    public RenameThis(DataTypes.DataType params) {
+    public Function(DataTypes.DataType params) {
         this.params = params;
     }
 

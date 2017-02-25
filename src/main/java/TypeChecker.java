@@ -16,7 +16,7 @@ import static main.java.DataTypes.typeChecker;
 class TypeChecker extends alphaBaseVisitor {
     //todo all declaritions then if statments
 
-    Map<String, RenameThis> functions = new HashMap<>();
+    Map<String, Function> functions = new HashMap<>();
     boolean lock = false;                                                                                               // tried Alpha in c = 1 / 2; Omega , didnt go to variable first but number so i locked so code didn't run that wasn't supposed to
     boolean printFunction = false;
     boolean isVariable = false;
@@ -338,7 +338,7 @@ class TypeChecker extends alphaBaseVisitor {
     public Object visitDeclaration(alphaParser.DeclarationContext ctx) {
         if(currentVariable.equals("")) {
             currentVariable = ctx.getText().substring(3);                                                                   //All our DataType are 2 long so get everything after that is a Declartion
-            functions.put(currentVariable, new RenameThis(DataTypes.getEnum(ctx.dataType().getText())));
+            functions.put(currentVariable, new Function(DataTypes.getEnum(ctx.dataType().getText())));
         }
         return super.visitDeclaration(ctx);
     }
