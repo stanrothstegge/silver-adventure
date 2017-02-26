@@ -222,14 +222,6 @@ class TypeChecker extends alphaBaseVisitor {
         return super.visitDeclaration(ctx);
     }
 
-    @Override
-    public Object visitPrintFunction(alphaParser.PrintFunctionContext ctx) {
-        DataTypeCarrier a = (DataTypeCarrier) visit(ctx.expression());
-        if(a.type != DataType.STRING)
-            throw new RuntimeException("Print string =" + ctx.getText());
-        return super.visitPrintFunction(ctx);
-    }
-
     /**
      * Math
      * @param ctx

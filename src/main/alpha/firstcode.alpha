@@ -11,7 +11,7 @@ Alpha
 			++a;
 			th ("AAaaa");
 		ca (e)//catch
-			sp (e);//sout
+			sp (c);//sout
 		☕
 		do y = a + 1 - 2 * (3 / 4) % 5;// math 1.5
 
@@ -38,7 +38,7 @@ Alpha
 
 		re b;// return b 66.00
 	☕
-	~func1 (in a)
+	~func1 (in f)
 		d = "g";
 	☕
 	~st in ch~ func2 ()//multiple-return-values string, int and char
@@ -48,11 +48,11 @@ Alpha
 	~pizza ()
 		do rt = 0.00;
 		4 * rt = func ();//run function 4 times
-		sp (rt);//prints 264.00
+		sp ("fukc");//prints 264.00
 		func1 ();// returns nothing but chances default
 		sp (d);// should be g
 
-		wh (true)
+		wh (tr)
 			++a;
 		☕
 		//functon 2
