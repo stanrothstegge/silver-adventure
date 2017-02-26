@@ -137,5 +137,34 @@ class DataTypes {
                 throw new RuntimeException("Wasnt a double or integer " + dataTypeFirst + " and " +dataTypeSecond);
         }
     }
+    /**
+     * Check all the < > >= <=
+     * And + - / *
+     * @param dataTypeFirst DataType
+     * @param dataTypeSecond DataType
+     */
+    public static void typeCheckingMathAndString(DataType dataTypeFirst , DataType dataTypeSecond) throws RuntimeException {
+        switch (dataTypeFirst) {
+            case DOUBLE:                                                                                                //Check double and integer
+            case INTEGER:
+                switch (dataTypeSecond) {
+                    case DOUBLE:
+                    case INTEGER:
+                        return;
+                    default:
+                        throw new RuntimeException("Wasnt a double or integer " + dataTypeFirst + " and " +dataTypeSecond);
+                }
+            case STRING:                                                                                                //Checks string and char
+            case CHAR:
+                switch (dataTypeSecond){
+                    case STRING:
+                    case CHAR: return;
+                    default:
+                        throw new RuntimeException("The = didnt work with " + dataTypeFirst + " and " +dataTypeSecond);
+                }
+            default:
+                throw new RuntimeException("Wasnt a String Or Integer " + dataTypeFirst + " and " +dataTypeSecond);
+        }
+    }
 }
 
