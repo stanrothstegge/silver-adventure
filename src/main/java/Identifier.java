@@ -3,6 +3,8 @@ package main.java;
 import main.antlr4.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 
+import java.util.ArrayList;
+
 /**
  * Visitor
  */
@@ -11,12 +13,19 @@ class Identifier extends alphaBaseVisitor {
 
     @Override
     public Object visitLanguage(alphaParser.LanguageContext ctx) {
-        System.out.println(ctx.getText());
-        System.out.println(ctx.children);
         Object object = super.visitLanguage(ctx);
+        
+        //check if main (pizza) is called
         if (scope.lookupMethod("pizza") == null) {
-            assert false : "function pizza does not exist, this is required";
+            throw new RuntimeException("function pizza does not exist, this is required");
         }
+
+        //check if all called methods actually exist
+        ArrayList<String> seenMethods = scope.seenMethodsExist();
+        if (seenMethods.size() > 0) {
+            throw new RuntimeException("functions " + seenMethods + "  do not exist, these are called");
+        }
+        
         return object;
     }
 
@@ -149,8 +158,7 @@ class Identifier extends alphaBaseVisitor {
 
             return super.visitDeclaration(ctx);
         }
-        assert false : "declared something that already exists: " + ctx.getText();
-        return null;
+        throw new RuntimeException("declared something that already exists: " + ctx.getText());
     }
 
     @Override
@@ -212,11 +220,7 @@ class Identifier extends alphaBaseVisitor {
 
     @Override
     public Object visitFunctionCall(alphaParser.FunctionCallContext ctx) {
-        if (scope.lookupMethod(ctx.TEXT().getText()) != null) {
-            return super.visitFunctionCall(ctx);
-        }
-
-        assert false : "method " + ctx.TEXT().getText() + " does not exist";
+        scope.seenMethod(ctx.TEXT().getText());
         return super.visitFunctionCall(ctx);
     }
 
@@ -386,7 +390,9 @@ class Identifier extends alphaBaseVisitor {
     @Override
     public Object visitVariable(alphaParser.VariableContext ctx) {
         if (scope.lookupVariable(ctx.TEXT().getText()) == null) {
-            assert false : "variable has not been initialized: " + ctx.getText();
+            System.err.println(ctx);
+            System.err.println(ctx.depth());
+            throw new RuntimeException("variable has not been initialized: " + ctx.getText());
         }
         return super.visitVariable(ctx);
     }
