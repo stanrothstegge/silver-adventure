@@ -1,6 +1,7 @@
 package main.java;
 
 import javax.xml.crypto.Data;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -24,7 +25,7 @@ class Scope {
     }
     
     public boolean declareVariable(String name, DataTypes.DataType type) {
-        if (!variables.containsKey(name)) {
+        if (lookupVariable(name) == null) {
             variables.put(name, type);
             return true;
         }
@@ -47,13 +48,27 @@ class Scope {
         }
         return type;
     }
-
-    public DataTypes.DataType lookupGlobalVariable(String name) {
-        return getGlobalScope().lookupVariable(name);
-    }
     
     public Method lookupMethod(String name) {        
         return getGlobalScope().methods.get(name);
+    }
+
+    private ArrayList<String> seenMethods = new ArrayList<>();
+
+    public void seenMethod(String name) {
+        getGlobalScope().seenMethods.add(name);
+    }
+
+    public ArrayList<String> seenMethodsExist() {
+        ArrayList<String> seenMethodsExist = new ArrayList<>();
+        seenMethodsExist.addAll(getGlobalScope().seenMethods);
+        
+        for(String s: getGlobalScope().seenMethods) {
+            if (getGlobalScope().methods.get(s) != null) {
+                seenMethodsExist.remove(s);
+            }
+        }
+        return seenMethodsExist;
     }
     
     private Scope getGlobalScope() {
