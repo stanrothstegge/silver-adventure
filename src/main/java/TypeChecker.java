@@ -24,7 +24,6 @@ class TypeChecker extends alphaBaseVisitor {
 
     @Override
     public Object visitLanguage(alphaParser.LanguageContext ctx) {
-        System.out.println(ctx.getText());
         return super.visitLanguage(ctx);
     }
 
@@ -58,7 +57,8 @@ class TypeChecker extends alphaBaseVisitor {
     @Override
     public Object visitFalseExpression(alphaParser.FalseExpressionContext ctx) {
         if (!currentVariable.equals("")) {
-            variables.get(currentVariable).setParams(DataType.BOOLEAN);
+            variables.get(currentVariable).setId(ctx.getText());                                            //Set char
+            DataTypes.checkBoolean(DataType.TRUE, variables.get(currentVariable).getParams());
             if (!ctx.getText().equals("fs")) throw new RuntimeException("Variable =" + ctx.getText() + " was not fs");
 
             currentVariable = "";                                                                                           //Clear for the next variable
@@ -95,16 +95,14 @@ class TypeChecker extends alphaBaseVisitor {
     }
 
     @Override
-    public Object visitVariableExpression(alphaParser.VariableExpressionContext ctx) {
+    public Object visitVariable(alphaParser.VariableContext ctx) {
         try {
-            System.out.println(ctx.getText());
             return new DataTypeCarrier(variables.get(ctx.getText()).getParams());
         } catch (NullPointerException ex) {
             System.out.println(ex.getMessage());
         }
         return null;
     }
-
 
     @Override
     public Object visitDivideExpression(alphaParser.DivideExpressionContext ctx) {
@@ -124,8 +122,9 @@ class TypeChecker extends alphaBaseVisitor {
     @Override
     public Object visitStringExpression(alphaParser.StringExpressionContext ctx) {
         if (!currentVariable.equals("")) {
-            System.out.println(ctx.getText());
-            variables.get(currentVariable).setParams(DataType.STRING);
+            if (variables.get(currentVariable).getParams() != DataType.STRING)
+                throw new RuntimeException("Char =" + ctx.getText() + " was string");                                   //todo char2 wordt niet weggehaald als hij in de printfuncite komt??
+            variables.get(currentVariable).setId(ctx.getText());                                            //Set char
             typeChecker(variables.get(currentVariable).getId(), variables.get(currentVariable).getParams());                // should be string
 
             currentVariable = "";                                                                                       //Clear for the next variable
@@ -133,12 +132,13 @@ class TypeChecker extends alphaBaseVisitor {
         return new DataTypeCarrier(DataType.STRING);
     }
 
+
     @Override
     public Object visitTrueExpression(alphaParser.TrueExpressionContext ctx) {
         if (!currentVariable.equals("")) {
-            variables.get(currentVariable).setParams(DataType.BOOLEAN);
+            variables.get(currentVariable).setId(ctx.getText());
+            DataTypes.checkBoolean(DataType.TRUE, variables.get(currentVariable).getParams());
             if (!ctx.getText().equals("tr")) throw new RuntimeException("Variable =" + ctx.getText() + " was not tr");
-
             currentVariable = "";                                                                                           //Clear for the next variable
         }
         return new DataTypeCarrier(DataType.TRUE);
@@ -148,33 +148,51 @@ class TypeChecker extends alphaBaseVisitor {
     public Object visitSmallerOrEqualExpression(alphaParser.SmallerOrEqualExpressionContext ctx) {
         return checkMathType(ctx);
     }
+
     @Override
     public Object visitFunctionDeclaration(alphaParser.FunctionDeclarationContext ctx) {
-        List dataTypes =  ctx.dataType();                                                                                //possible list of datatypes
+        List dataTypes = ctx.dataType();                                                                                //possible list of datatypes
         currentFunction = ctx.TEXT().getText();                                                                         //Get function name
         ArrayList<DataTypes.DataType> dataTypeArrayList = new ArrayList<>();                                            //Create list that hold datatypes
-       if(dataTypes.size() > 0){                                                                                        //Check if function has return var
-           for (Object dataType: dataTypes) {                                                                           //Loop through all return types
-               dataTypeArrayList.add(DataTypes.getEnum(((java.util.ArrayList)
-                       ((alphaParser.DataTypeContext)dataType).children).get(0).toString()));                           //Get datatype and add to the list
-           }
-          functions.put(currentFunction,new Function(dataTypeArrayList));                                                  //Add to the hashmap for later use
-       }
+        if (dataTypes.size() > 0) {                                                                                        //Check if function has return var
+            for (Object dataType : dataTypes) {                                                                           //Loop through all return types
+                dataTypeArrayList.add(DataTypes.getEnum(((java.util.ArrayList)
+                        ((alphaParser.DataTypeContext) dataType).children).get(0).toString()));                           //Get datatype and add to the list
+            }
+            functions.put(currentFunction, new Function(dataTypeArrayList));                                                  //Add to the hashmap for later use
+        } else {
+            functions.put(currentFunction, new Function());
+        }
+
+        if (ctx.argumentsDeclaration() != null) {
+            ArrayList<DataType> argumentTypes = (ArrayList<DataType>) visit(ctx.argumentsDeclaration());
+            functions.get(currentFunction).setArgumentTypes(argumentTypes);
+
+        }
+
         return super.visitFunctionDeclaration(ctx);
     }
+
 
     @Override
     public Object visitArgumentsDeclaration(alphaParser.ArgumentsDeclarationContext ctx) {
         //these declartion are added to variable
-        return super.visitArgumentsDeclaration(ctx);
+        ArrayList<DataType> argumentTypes = new ArrayList<>();
+        for (int i = 0; i < ctx.declarationFunction().size(); i++) {
+            argumentTypes.add(((DataTypeCarrier) visit(ctx.declarationFunction(i))).type);
+        }
+        System.out.println(ctx.getText() + "   test");
+        if(!ctx.getText().contains(" = "))
+            currentVariable ="";
+        return argumentTypes;
     }
 
     @Override
     public Object visitReturnMethodStatement(alphaParser.ReturnMethodStatementContext ctx) {
         int amount = ctx.returnMethod().expression().size();                                                            //Get how many
-        if(amount > 0) {
+        if (amount > 0) {
             for (int i = 0; i < amount; i++) {
-                if(functions.get(currentFunction).getReturnType(i) != ((DataTypeCarrier) visit(ctx.returnMethod().expression(i))).type)
+                if (functions.get(currentFunction).getReturnType(i) != ((DataTypeCarrier) visit(ctx.returnMethod().expression(i))).type)
                     throw new RuntimeException("Function didnt return correct datatype Expected :"
                             + functions.get(currentFunction).getReturnType(i) + "got "
                             + ctx.returnMethod().expression(i).getText());
@@ -184,25 +202,40 @@ class TypeChecker extends alphaBaseVisitor {
         return super.visitReturnMethodStatement(ctx);
     }
 
-
     @Override
-    public Object visitFunctionCallExpression(alphaParser.FunctionCallExpressionContext ctx) {
+    public Object visitFunctionCall(alphaParser.FunctionCallContext ctx) {
+        Function function = functions.get(ctx.TEXT().getText());
         //todo: function return and argument type checking
-        return super.visitFunctionCallExpression(ctx);
+
+        //return checking
+        int returntypes = 0;
+        for (int i = 0; i < ctx.children.size(); i++) {
+            if (ctx.children.get(i) instanceof alphaParser.DeclarationContext ||
+                    ctx.children.get(i) instanceof alphaParser.VariableContext) {
+                DataTypeCarrier carrier = (DataTypeCarrier) visit(ctx.children.get(i));
+                if (function.getReturnType(returntypes) != carrier.type) {
+                    throw new RuntimeException("return type was incorrect: " + carrier.type + " expected: " + function.getReturnType(returntypes));
+                }
+                ++returntypes;
+            }
+        }
+
+        //arguments checking;
+        if (ctx.argumentsCall() != null) {
+            for (int i = 0; i < ctx.argumentsCall().expression().size(); i++) {
+                DataTypeCarrier carrier = (DataTypeCarrier) visit(ctx.argumentsCall().expression().get(i));
+                if (carrier.type != function.getArgument(i)) {
+                    throw new RuntimeException("argument was of the wrong type: " + carrier.type + " , expected: " + function.getArgument(i));
+                }
+            }
+        }
+
+        return super.visitFunctionCall(ctx);
     }
-
-    @Override
-    public Object visitArgumentsCall(alphaParser.ArgumentsCallContext ctx) {
-        //todo
-        return super.visitArgumentsCall(ctx);
-    }
-
-
 
     @Override
     public Object visitCharExpression(alphaParser.CharExpressionContext ctx) {
         if (!currentVariable.equals("")) {
-            variables.get(currentVariable).setParams(DataType.CHAR);                                                    //Set datatype
             variables.get(currentVariable).setId(ctx.CHAR_TYPE().getText());                                            //Set char
             char c = variables.get(currentVariable).getId().charAt(1);
             typeChecker(c, variables.get(currentVariable).getParams());                                                 // should be char
@@ -214,10 +247,9 @@ class TypeChecker extends alphaBaseVisitor {
     @Override
     public Object visitPlusExpression(alphaParser.PlusExpressionContext ctx) {
         DataTypeCarrier a = (DataTypeCarrier) visit(ctx.expression(0));
-        DataTypeCarrier b= (DataTypeCarrier) visit(ctx.expression(1));
+        DataTypeCarrier b = (DataTypeCarrier) visit(ctx.expression(1));
 
-        DataTypes.typeCheckingMathAndString(a.type,b.type);
-        System.out.println("Is Integer :" + ctx.getText());
+        DataTypes.typeCheckingMathAndString(a.type, b.type);
         return a;
     }
 
@@ -229,10 +261,8 @@ class TypeChecker extends alphaBaseVisitor {
                 Pattern p = Pattern.compile("[.]");
                 Matcher m = p.matcher(ctx.getText());
                 if (m.find()) {                                                                                             //Check if its a double or integer
-                    variables.get(currentVariable).setParams(DataType.DOUBLE);
                     typeChecker(Double.parseDouble(variables.get(currentVariable).getId()), variables.get(currentVariable).getParams());
                 } else {
-                    variables.get(currentVariable).setParams(DataType.INTEGER);
                     typeChecker(Integer.parseInt(variables.get(currentVariable).getId()), variables.get(currentVariable).getParams());
                 }
                 variables.get(currentVariable).setId(ctx.getText());                                                        //Save the number in to the table
@@ -251,7 +281,7 @@ class TypeChecker extends alphaBaseVisitor {
     @Override
     public Object visitNotEqualToExpression(alphaParser.NotEqualToExpressionContext ctx) {
         DataTypeCarrier a = (DataTypeCarrier) visit(ctx.expression(0));
-        DataTypeCarrier b= (DataTypeCarrier) visit(ctx.expression(1));
+        DataTypeCarrier b = (DataTypeCarrier) visit(ctx.expression(1));
         DataTypes.typeCheckingEqualToExpression(a.type, b.type);                                                         //Check if the 2 datatype are compatible
         return a;
     }
@@ -263,23 +293,36 @@ class TypeChecker extends alphaBaseVisitor {
 
     @Override
     public Object visitDeclaration(alphaParser.DeclarationContext ctx) {
-        if (currentVariable.equals("")) {
-            currentVariable = ctx.getText().substring(3);                                                                   //All our DataType are 2 long so get everything after that is a Declartion
-            variables.put(currentVariable, new Function(DataTypes.getEnum(ctx.dataType().getText())));
+        currentVariable = ctx.TEXT().getText();                                                                         //All our DataType are 2 long so get everything after that is a Declartion
+        variables.put(currentVariable, new Function(DataTypes.getEnum(ctx.dataType().getText())));
+        return new DataTypeCarrier(DataTypes.getEnum(ctx.dataType().getText()));
+    }
+
+    @Override
+    public Object visitDeclarationFill(alphaParser.DeclarationFillContext ctx) {
+        if(ctx.declaration() != null){
+            visit(ctx.declaration());
+            System.out.println(ctx.getText());
+            if(!ctx.getText().contains(" = "))
+                currentVariable ="";
         }
-        return super.visitDeclaration(ctx);
+        if(ctx.expression() != null)
+            visit(ctx.expression());
+        if(ctx.variable() != null)
+            visit(ctx.variable());
+    return null;
     }
 
     /**
      * Math
+     *
      * @param ctx
      * @return
      */
-    private DataTypeCarrier checkMathType(alphaParser.ExpressionContext ctx){
+    private DataTypeCarrier checkMathType(alphaParser.ExpressionContext ctx) {
         DataTypeCarrier a = (DataTypeCarrier) visit(ctx.getChild(0));
-        DataTypeCarrier b= (DataTypeCarrier) visit(ctx.getChild(2));
-        DataTypes.typeCheckingMath(a.type,b.type);
-        System.out.println("Is Integer :" + ctx.getText());
+        DataTypeCarrier b = (DataTypeCarrier) visit(ctx.getChild(2));
+        DataTypes.typeCheckingMath(a.type, b.type);
         return a;
     }
 

@@ -49,10 +49,12 @@ class DataTypes {
 
     public static void typeChecker(Integer x, DataType dataType) throws RuntimeException {
         if(dataType != DataType.INTEGER)
+            if(dataType != DataType.DOUBLE)
             throw new RuntimeException("Variable =" + x + " Is not Integer but:" + dataType);
     }
     public static void typeChecker(Double x, DataType dataType) throws RuntimeException{
         if(dataType != DataType.DOUBLE)
+            if(dataType != DataType.INTEGER)
             throw new RuntimeException("Variable =" + x + " Is not DOUBLE but:" + dataType);
     }
 
@@ -116,6 +118,27 @@ class DataTypes {
         }
     }
 
+    /**
+     * Check all booleans
+     * @param dataTypeFirst
+     * @param dataTypeSecond
+     * @throws RuntimeException
+     */
+    public static void checkBoolean(DataType dataTypeFirst , DataType dataTypeSecond) throws RuntimeException {
+        switch (dataTypeFirst) {
+            case BOOLEAN:                                                                                               // checks booleans and true and false
+            case FALSE:
+            case TRUE:
+                switch (dataTypeSecond) {
+                    case BOOLEAN:
+                    case FALSE:
+                    case TRUE:
+                        return;
+                    default:
+                        throw new RuntimeException("The = didnt work with " + dataTypeFirst + " and " + dataTypeSecond);
+                }
+        }
+    }
     /**
      * Check all the < > >= <=
      * And + - / *

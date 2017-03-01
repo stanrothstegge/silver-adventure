@@ -9,6 +9,9 @@ public class Function {
     private String id;
     private DataTypes.DataType param;
     private ArrayList<DataTypes.DataType> returnType;
+    private ArrayList<DataTypes.DataType> argumentTypes;
+
+    public Function() {}
 
     public Function(DataTypes.DataType params) {
         this.param = params;
@@ -38,5 +41,11 @@ public class Function {
         return returnType.get(select);
     }
 
+    public void setArgumentTypes(ArrayList<DataTypes.DataType> argumentTypes) {
+        this.argumentTypes = argumentTypes;
+    }
 
+    public DataTypes.DataType getArgument(int i) {
+        return argumentTypes.get(i);
+    }
 }
