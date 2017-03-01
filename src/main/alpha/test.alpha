@@ -1,26 +1,13 @@
 Alpha
-in a = 2;
-in b = 2;
-// invalid start
-//in a = b;
-//a = c;
-//invalid end
+in yy = 1;
+st fb = 2;
+
+~st in ch~ func (ch a, in b, in c = 2)
+	re "pizza", 6, 'p';
+☕
 
 ~pizza ()
-2 * funct (3);
-//invalid start
-//fake ();
-//invalid end
-☕
 
-~funct (in c = 2, in d)
-if (c == a)
-sp ("test");
+st pizza, in g, ch char = func ('a', 2);
 ☕
-d = 2;
-//invalid start
-//ef (d == e)
-//invalid end
-☕
-
 Omega

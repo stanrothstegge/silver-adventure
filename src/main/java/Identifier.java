@@ -23,7 +23,7 @@ class Identifier extends alphaBaseVisitor {
         //check if all called methods actually exist
         ArrayList<String> seenMethods = scope.seenMethodsExist();
         if (seenMethods.size() > 0) {
-            throw new RuntimeException("functions " + seenMethods + "  do not exist, these are called");
+            throw new RuntimeException("variables " + seenMethods + "  do not exist, these are called");
         }
         
         return object;
