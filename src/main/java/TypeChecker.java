@@ -51,7 +51,11 @@ class TypeChecker extends alphaBaseVisitor {
 
     @Override
     public Object visitNotExpression(alphaParser.NotExpressionContext ctx) {
-        return super.visitNotExpression(ctx);
+        DataType type = ((DataTypeCarrier) visit(ctx.expression())).type;
+        
+        DataTypes.checkBoolean(type, DataType.BOOLEAN);
+        
+        return type;
     }
 
     @Override
@@ -64,6 +68,16 @@ class TypeChecker extends alphaBaseVisitor {
             currentVariable = "";                                                                                           //Clear for the next variable
         }
         return new DataTypeCarrier(DataType.FALSE);
+    }
+
+    @Override
+    public Object visitThrowFunction(alphaParser.ThrowFunctionContext ctx) {
+        return null;
+    }
+
+    @Override
+    public Object visitPrintFunction(alphaParser.PrintFunctionContext ctx) {
+        return null;
     }
 
     @Override
@@ -122,8 +136,9 @@ class TypeChecker extends alphaBaseVisitor {
     @Override
     public Object visitStringExpression(alphaParser.StringExpressionContext ctx) {
         if (!currentVariable.equals("")) {
-            if (variables.get(currentVariable).getParams() != DataType.STRING)
-                throw new RuntimeException("Char =" + ctx.getText() + " was string");                                   //todo char2 wordt niet weggehaald als hij in de printfuncite komt??
+            if (variables.get(currentVariable).getParams() != DataType.STRING) {
+                throw new RuntimeException("Char "+ currentVariable +" = " + ctx.getText() + " was supposed to be string");                                  //todo char2 wordt niet weggehaald als hij in de printfuncite komt??
+            }
             variables.get(currentVariable).setId(ctx.getText());                                            //Set char
             typeChecker(variables.get(currentVariable).getId(), variables.get(currentVariable).getParams());                // should be string
 
@@ -300,17 +315,30 @@ class TypeChecker extends alphaBaseVisitor {
 
     @Override
     public Object visitDeclarationFill(alphaParser.DeclarationFillContext ctx) {
+        DataTypeCarrier data1;
         if(ctx.declaration() != null){
-            visit(ctx.declaration());
+            data1 = (DataTypeCarrier) visit(ctx.declaration());
             System.out.println(ctx.getText());
             if(!ctx.getText().contains(" = "))
                 currentVariable ="";
+        } else {
+            data1 = (DataTypeCarrier) visit(ctx.variable());
         }
-        if(ctx.expression() != null)
-            visit(ctx.expression());
-        if(ctx.variable() != null)
-            visit(ctx.variable());
-    return null;
+        
+        DataTypeCarrier data2;
+        Object object = visit(ctx.expression());
+        if (object instanceof DataTypeCarrier) {
+            data2 = (DataTypeCarrier) object;
+            
+            try {
+                DataTypes.typeCheckingExpression(data1.type, data2.type);
+            } catch (RuntimeException e) {
+                throw new RuntimeException("Variable: " + currentVariable + e.getMessage());
+            }
+            return data1;
+        }
+        
+        return null;
     }
 
     /**

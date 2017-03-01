@@ -119,6 +119,56 @@ class DataTypes {
     }
 
     /**
+     *
+     * Checks what datatype work with each other in expressions
+     *
+     * boolean and true and false
+     * string and char
+     * integer and double
+     * @param dataTypeFirst
+     * @param dataTypeSecond
+     */
+    public static void typeCheckingExpression(DataType dataTypeFirst , DataType dataTypeSecond){
+        if(dataTypeFirst == dataTypeSecond) return;                                                                     //If both are the same no checking required
+
+        switch (dataTypeFirst){
+            case BOOLEAN:                                                                                               // checks booleans and true and false
+            case FALSE:
+            case TRUE:
+                switch (dataTypeSecond){
+                    case BOOLEAN:
+                    case FALSE:
+                    case TRUE: return;
+                    default:
+                        throw new RuntimeException("didnt work with " + dataTypeFirst + " and " +dataTypeSecond);
+                }
+            case STRING:                                                                                                //Checks string and char
+                switch (dataTypeSecond){
+                    case STRING:
+                    case CHAR: return;
+                    default:
+                        throw new RuntimeException("didnt work with " + dataTypeFirst + " and " +dataTypeSecond);
+                }
+            case CHAR:
+                switch (dataTypeSecond){
+                    case CHAR: return;
+                    default:
+                        throw new RuntimeException("didnt work with " + dataTypeFirst + " and " +dataTypeSecond);
+                }
+            case DOUBLE:                                                                                                //Check double and integer
+            case INTEGER:
+                switch (dataTypeSecond){
+                    case DOUBLE:
+                    case INTEGER: return;
+                    default:
+                        throw new RuntimeException("didnt work with " + dataTypeFirst + " and " +dataTypeSecond);
+                }
+            default:
+                throw new RuntimeException("didnt work with " + dataTypeFirst + " and " +dataTypeSecond);
+        }
+    }
+
+    /**
      * Check all booleans
      * @param dataTypeFirst
      * @param dataTypeSecond
@@ -139,6 +189,7 @@ class DataTypes {
                 }
         }
     }
+    
     /**
      * Check all the < > >= <=
      * And + - / *

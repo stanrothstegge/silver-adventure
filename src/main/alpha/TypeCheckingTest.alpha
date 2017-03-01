@@ -31,14 +31,11 @@ bo by = tr;
 //by = 1;
 //by = 22.33;
 
-
-
 ~st in ch~ func (ch a, in b, in c = 2)
 	re "pizza", 6, 'p';
 ☕
 
 ~pizza ()
-
 st pizza, in g, ch char = func ('a', 2);
 ☕
 Omega
