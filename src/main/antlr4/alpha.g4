@@ -22,7 +22,7 @@ expression
  | expression PLUS 				expression 					#plusExpression
  | expression MINUS 			expression 					#minusExpression
  | expression GREATEROREQUAL 	expression 					#greaterOrEqualExpression
- | expression SMALLEROREQUAL 	expression 					#smallerOrRequalExpression
+ | expression SMALLEROREQUAL 	expression 					#smallerOrEqualExpression
  | expression GREATERTHAN 		expression 					#greaterThanExpression
  | expression SMALLERTHAN 		expression 					#smallerThanExpression
  | expression EQUALTO 			expression 					#equalToExpression

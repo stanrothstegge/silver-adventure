@@ -142,13 +142,20 @@ class TypeChecker extends alphaBaseVisitor {
     }
 
     @Override
-    public Object visitSmallerOrRequalExpression(alphaParser.SmallerOrRequalExpressionContext ctx) {
+    public Object visitSmallerOrEqualExpression(alphaParser.SmallerOrEqualExpressionContext ctx) {
         return checkMathType(ctx);
     }
 
     @Override
     public Object visitFunctionCallExpression(alphaParser.FunctionCallExpressionContext ctx) {
+        //todo: function return and argument type checking
         return super.visitFunctionCallExpression(ctx);
+    }
+
+    @Override
+    public Object visitReturnMethodStatement(alphaParser.ReturnMethodStatementContext ctx) {
+        //todo: function return type checking
+        return super.visitReturnMethodStatement(ctx);
     }
 
     @Override

@@ -1,4 +1,4 @@
-// Generated from E:/Dropbox/Saxion/Jaar 2/Kwartiel 3/Compilers & Operating Systems/Practicumopdracht1/src/main/antlr4\alpha.g4 by ANTLR 4.6
+// Generated from C:/Users/Robin/Documents/School/Jaar 2/Kwartiel 3/Compilers/ProgrammeerTaal/src/main/antlr4\alpha.g4 by ANTLR 4.6
 package main.antlr4;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -87,6 +87,13 @@ public interface alphaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitMultiplyExpression(alphaParser.MultiplyExpressionContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code smallerOrEqualExpression}
+	 * labeled alternative in {@link alphaParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSmallerOrEqualExpression(alphaParser.SmallerOrEqualExpressionContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code greaterThanExpression}
 	 * labeled alternative in {@link alphaParser#expression}.
 	 * @param ctx the parse tree
@@ -135,13 +142,6 @@ public interface alphaVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitTrueExpression(alphaParser.TrueExpressionContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code smallerOrRequalExpression}
-	 * labeled alternative in {@link alphaParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSmallerOrRequalExpression(alphaParser.SmallerOrRequalExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code greaterOrEqualExpression}
 	 * labeled alternative in {@link alphaParser#expression}.

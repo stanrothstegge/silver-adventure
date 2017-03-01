@@ -1,4 +1,4 @@
-// Generated from E:/Dropbox/Saxion/Jaar 2/Kwartiel 3/Compilers & Operating Systems/Practicumopdracht1/src/main/antlr4\alpha.g4 by ANTLR 4.6
+// Generated from C:/Users/Robin/Documents/School/Jaar 2/Kwartiel 3/Compilers/ProgrammeerTaal/src/main/antlr4\alpha.g4 by ANTLR 4.6
 package main.antlr4;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -345,6 +345,21 @@ public class alphaParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
+	public static class SmallerOrEqualExpressionContext extends ExpressionContext {
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode SMALLEROREQUAL() { return getToken(alphaParser.SMALLEROREQUAL, 0); }
+		public SmallerOrEqualExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitSmallerOrEqualExpression(this);
+			else return visitor.visitChildren(this);
+		}
+	}
 	public static class GreaterThanExpressionContext extends ExpressionContext {
 		public List<ExpressionContext> expression() {
 			return getRuleContexts(ExpressionContext.class);
@@ -431,21 +446,6 @@ public class alphaParser extends Parser {
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitTrueExpression(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class SmallerOrRequalExpressionContext extends ExpressionContext {
-		public List<ExpressionContext> expression() {
-			return getRuleContexts(ExpressionContext.class);
-		}
-		public ExpressionContext expression(int i) {
-			return getRuleContext(ExpressionContext.class,i);
-		}
-		public TerminalNode SMALLEROREQUAL() { return getToken(alphaParser.SMALLEROREQUAL, 0); }
-		public SmallerOrRequalExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitSmallerOrRequalExpression(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -778,7 +778,7 @@ public class alphaParser extends Parser {
 						break;
 					case 7:
 						{
-						_localctx = new SmallerOrRequalExpressionContext(new ExpressionContext(_parentctx, _parentState));
+						_localctx = new SmallerOrEqualExpressionContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(104);
 						if (!(precpred(_ctx, 16))) throw new FailedPredicateException(this, "precpred(_ctx, 16)");
