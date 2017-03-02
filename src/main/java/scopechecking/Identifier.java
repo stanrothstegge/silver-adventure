@@ -1,14 +1,16 @@
-package main.java;
+package main.java.scopechecking;
 
 import main.antlr4.*;
+import main.java.shared.DataTypes;
+import main.java.shared.Method;
+import main.java.shared.Scope;
 import org.antlr.v4.runtime.tree.ParseTree;
-
 import java.util.ArrayList;
 
 /**
  * Visitor
  */
-class Identifier extends alphaBaseVisitor {
+public class Identifier extends alphaBaseVisitor {
     private Scope scope = new Scope();
 
     @Override

@@ -1,7 +1,7 @@
-package main.java;
+package main.java.typechecking;
 
 import main.antlr4.*;
-import main.java.DataTypes.DataType;
+import main.java.shared.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,12 +10,11 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static main.java.DataTypes.typeChecker;
-
 /**
  * Visitor
  */
-class TypeChecker extends alphaBaseVisitor {
+//todo: garcia mag datatypecarrier maken
+public class TypeChecker extends alphaBaseVisitor {
     Map<String, Function> variables = new HashMap<>();
     Map<String, Function> functions = new HashMap<>();
     String currentVariable = "";                                                                                        //Used to save the key of function
@@ -140,7 +139,7 @@ class TypeChecker extends alphaBaseVisitor {
                 throw new RuntimeException("Char "+ currentVariable +" = " + ctx.getText() + " was supposed to be string");                                  //todo char2 wordt niet weggehaald als hij in de printfuncite komt??
             }
             variables.get(currentVariable).setId(ctx.getText());                                            //Set char
-            typeChecker(variables.get(currentVariable).getId(), variables.get(currentVariable).getParams());                // should be string
+            DataTypes.thatOtherTypeChecker(variables.get(currentVariable).getId(), variables.get(currentVariable).getParams());                // should be string
 
             currentVariable = "";                                                                                       //Clear for the next variable
         }
@@ -168,7 +167,7 @@ class TypeChecker extends alphaBaseVisitor {
     public Object visitFunctionDeclaration(alphaParser.FunctionDeclarationContext ctx) {
         List dataTypes = ctx.dataType();                                                                                //possible list of datatypes
         currentFunction = ctx.TEXT().getText();                                                                         //Get function name
-        ArrayList<DataTypes.DataType> dataTypeArrayList = new ArrayList<>();                                            //Create list that hold datatypes
+        ArrayList<DataType> dataTypeArrayList = new ArrayList<>();                                            //Create list that hold datatypes
         if (dataTypes.size() > 0) {                                                                                        //Check if function has return var
             for (Object dataType : dataTypes) {                                                                           //Loop through all return types
                 dataTypeArrayList.add(DataTypes.getEnum(((java.util.ArrayList)
@@ -253,7 +252,7 @@ class TypeChecker extends alphaBaseVisitor {
         if (!currentVariable.equals("")) {
             variables.get(currentVariable).setId(ctx.CHAR_TYPE().getText());                                            //Set char
             char c = variables.get(currentVariable).getId().charAt(1);
-            typeChecker(c, variables.get(currentVariable).getParams());                                                 // should be char
+            DataTypes.thatOtherTypeChecker(c, variables.get(currentVariable).getParams());                                                 // should be char
             currentVariable = "";                                                                                       //Clear for the next variable
         }
         return new DataTypeCarrier(DataType.CHAR);
@@ -276,9 +275,9 @@ class TypeChecker extends alphaBaseVisitor {
                 Pattern p = Pattern.compile("[.]");
                 Matcher m = p.matcher(ctx.getText());
                 if (m.find()) {                                                                                             //Check if its a double or integer
-                    typeChecker(Double.parseDouble(variables.get(currentVariable).getId()), variables.get(currentVariable).getParams());
+                    DataTypes.thatOtherTypeChecker(Double.parseDouble(variables.get(currentVariable).getId()), variables.get(currentVariable).getParams());
                 } else {
-                    typeChecker(Integer.parseInt(variables.get(currentVariable).getId()), variables.get(currentVariable).getParams());
+                    DataTypes.thatOtherTypeChecker(Integer.parseInt(variables.get(currentVariable).getId()), variables.get(currentVariable).getParams());
                 }
                 variables.get(currentVariable).setId(ctx.getText());                                                        //Save the number in to the table
 

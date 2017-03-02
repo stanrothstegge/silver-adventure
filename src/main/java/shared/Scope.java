@@ -1,16 +1,15 @@
-package main.java;
+package main.java.shared;
 
-import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
  * Created by Robin on 22-2-2017.
  */
-class Scope {
+public class Scope {
 
     final Scope parentScope;
-    private final HashMap<String, DataTypes.DataType> variables = new HashMap<>();
+    private final HashMap<String, DataType> variables = new HashMap<>();
     private final HashMap<String, Method> methods;
     
     private Scope(Scope parentScope) {
@@ -24,7 +23,7 @@ class Scope {
         methods = new HashMap<>();
     }
     
-    public boolean declareVariable(String name, DataTypes.DataType type) {
+    public boolean declareVariable(String name, DataType type) {
         if (lookupVariable(name) == null) {
             variables.put(name, type);
             return true;
@@ -41,8 +40,8 @@ class Scope {
         return false;
     }
     
-    public DataTypes.DataType lookupVariable(String name) {
-        DataTypes.DataType type = variables.get(name);
+    public DataType lookupVariable(String name) {
+        DataType type = variables.get(name);
         if (type == null && parentScope != null) {
             type = parentScope.lookupVariable(name);
         }

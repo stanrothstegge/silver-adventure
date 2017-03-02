@@ -1,8 +1,9 @@
 package main.java;
 
 import main.antlr4.*;
+import main.java.scopechecking.Identifier;
+import main.java.typechecking.TypeChecker;
 import org.antlr.v4.runtime.ANTLRFileStream;
-import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
@@ -10,7 +11,7 @@ import java.io.IOException;
 
 
 /**
- * Creating the best langauche
+ * Creating the best language
  */
 public class Alpha {
 
