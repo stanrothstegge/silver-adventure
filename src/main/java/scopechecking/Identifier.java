@@ -78,7 +78,7 @@ public class Identifier extends alphaBaseVisitor {
             }
         }
 
-        scope.declareMethod(ctx.TEXT().getText(), method);
+        if(!scope.declareMethod(ctx.TEXT().getText(), method)) throw new RuntimeException("iets hier");                 //todo vernaderd later
         method = null;
         declaringFunction = false;
 

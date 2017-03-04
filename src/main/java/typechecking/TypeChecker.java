@@ -8,18 +8,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Visitor
  */
 //todo: garcia mag datatypecarrier maken
 public class TypeChecker extends alphaBaseVisitor {
-    Map<String, Function> variables = new HashMap<>();
-    Map<String, Function> functions = new HashMap<>();
-    String currentVariable = "";                                                                                        //Used to save the key of function
-    String currentFunction = "";                                                                                        //Use to hold the function to get it in the return methode
+    private Map<String, Function> variables = new HashMap<>();
+    private Map<String, Function> functions = new HashMap<>();
+    private String currentVariable = "";                                                                                        //Used to save the key of function
+    private String currentFunction = "";                                                                                        //Use to hold the function to get it in the return methode
 
 
     @Override
@@ -29,18 +27,12 @@ public class TypeChecker extends alphaBaseVisitor {
 
     @Override
     public Object visitLeftBracketExpressionRightBracketExpression(alphaParser.LeftBracketExpressionRightBracketExpressionContext ctx) {
-        DataTypeCarrier a = (DataTypeCarrier) visit(ctx.expression());
-        return a;
+        return visit(ctx.expression());
     }
 
     @Override
     public Object visitMinusExpression(alphaParser.MinusExpressionContext ctx) {
         return checkMathType(ctx);
-    }
-
-    @Override
-    public Object visitAddCustomExpression(alphaParser.AddCustomExpressionContext ctx) {
-        return super.visitAddCustomExpression(ctx);
     }
 
     @Override
@@ -67,7 +59,7 @@ public class TypeChecker extends alphaBaseVisitor {
             try {
                 DataTypes.typeCheckingBoolean(DataType.TRUE, variables.get(currentVariable).getParams());
             } catch (RuntimeException ex) {
-                throw new RuntimeException(errorMessageMaker(ctx,"visitFalseExpression") + ex.getMessage());
+                throw new RuntimeException(errorMessageMaker(ctx, "visitFalseExpression") + ex.getMessage());
             }
             if (!ctx.getText().equals("fs")) throw new RuntimeException("Variable =" + ctx.getText() + " was not fs");
 
@@ -98,7 +90,7 @@ public class TypeChecker extends alphaBaseVisitor {
         try {
             DataTypes.typeCheckingEqualToExpression(a.type, b.type);                                                    //Check if the 2 datatype are compatible
         } catch (RuntimeException ex) {
-            throw new RuntimeException(errorMessageMaker(ctx,"visitEqualToExpression") + ex.getMessage());
+            throw new RuntimeException(errorMessageMaker(ctx, "visitEqualToExpression") + ex.getMessage());
         }
         return a;
     }
@@ -111,7 +103,7 @@ public class TypeChecker extends alphaBaseVisitor {
         try {
             DataTypes.typeCheckDoubleAndInteger(a.type, b.type);
         } catch (RuntimeException ex) {
-            throw new RuntimeException(errorMessageMaker(ctx,"visitMultiplyExpression") + ex.getMessage());
+            throw new RuntimeException(errorMessageMaker(ctx, "visitMultiplyExpression") + ex.getMessage());
         }
         return a;
     }
@@ -135,21 +127,13 @@ public class TypeChecker extends alphaBaseVisitor {
         return checkMathType(ctx);
     }
 
-    @Override
-    public Object visitOrExpression(alphaParser.OrExpressionContext ctx) {
-        return super.visitOrExpression(ctx);
-    }
 
-    @Override
-    public Object visitAndExpression(alphaParser.AndExpressionContext ctx) {
-        return super.visitAndExpression(ctx);
-    }
 
     @Override
     public Object visitStringExpression(alphaParser.StringExpressionContext ctx) {
         if (!currentVariable.equals("")) {
             if (variables.get(currentVariable).getParams() != DataType.STRING) {
-                throw new RuntimeException(errorMessageMaker(ctx,"visitStringExpression Char " + currentVariable
+                throw new RuntimeException(errorMessageMaker(ctx, "visitStringExpression Char " + currentVariable
                         + " = " + ctx.getText() + " was supposed to be string"));
             }
             variables.get(currentVariable).setId(ctx.getText());                                                        //Set char
@@ -166,7 +150,7 @@ public class TypeChecker extends alphaBaseVisitor {
             try {
                 DataTypes.typeCheckingBoolean(DataType.TRUE, variables.get(currentVariable).getParams());
             } catch (RuntimeException ex) {
-                throw new RuntimeException(errorMessageMaker(ctx,"visitTrueExpression") + ex.getMessage());
+                throw new RuntimeException(errorMessageMaker(ctx, "visitTrueExpression") + ex.getMessage());
             }
             currentVariable = "";                                                                                       //Clear for the next variable
         }
@@ -194,7 +178,7 @@ public class TypeChecker extends alphaBaseVisitor {
         }
 
         if (ctx.argumentsDeclaration() != null) {
-            ArrayList<DataType> argumentTypes = (ArrayList<DataType>) visit(ctx.argumentsDeclaration());
+            @SuppressWarnings("unchecked") ArrayList<DataType> argumentTypes = (ArrayList<DataType>) visit(ctx.argumentsDeclaration());
             functions.get(currentFunction).setArgumentTypes(argumentTypes);
 
         }
@@ -221,10 +205,10 @@ public class TypeChecker extends alphaBaseVisitor {
         if (amount > 0) {
             for (int i = 0; i < amount; i++) {
                 if (functions.get(currentFunction).getReturnType(i) != ((DataTypeCarrier) visit(ctx.returnMethod().expression(i))).type)
-                throw new RuntimeException(errorMessageMaker(ctx,
-                        "visitReturnMethodStatement Function didn't return correct DataType Expected :"
-                        + functions.get(currentFunction).getReturnType(i) + "got "
-                        + ctx.returnMethod().expression(i).getText()));
+                    throw new RuntimeException(errorMessageMaker(ctx,
+                            "visitReturnMethodStatement Function didn't return correct DataType Expected :"
+                                    + functions.get(currentFunction).getReturnType(i) + "got "
+                                    + ctx.returnMethod().expression(i).getText()));
 
             }
         }
@@ -243,7 +227,7 @@ public class TypeChecker extends alphaBaseVisitor {
                 if (function.getReturnType(returntypes) != carrier.type) {
                     throw new RuntimeException(errorMessageMaker(ctx,
                             "visitFunctionCall return type was incorrect: "
-                            + carrier.type + " expected: " + function.getReturnType(returntypes)));
+                                    + carrier.type + " expected: " + function.getReturnType(returntypes)));
                 }
                 ++returntypes;
             }
@@ -280,7 +264,7 @@ public class TypeChecker extends alphaBaseVisitor {
         try {
             DataTypes.typeCheckingMathAndString(a.type, b.type);
         } catch (RuntimeException ex) {
-            throw new RuntimeException(errorMessageMaker(ctx,"visitPlusExpression") + ex.getMessage());
+            throw new RuntimeException(errorMessageMaker(ctx, "visitPlusExpression") + ex.getMessage());
         }
         return a;
     }
@@ -294,7 +278,7 @@ public class TypeChecker extends alphaBaseVisitor {
             } catch (NullPointerException e) {
                 throw new RuntimeException(errorMessageMaker(ctx,
                         "visitNumberExpression Function couldn't find key for : "
-                                + currentVariable +" probably miss typed dataType"));
+                                + currentVariable + " probably miss typed dataType"));
             }
         }
 
@@ -308,7 +292,7 @@ public class TypeChecker extends alphaBaseVisitor {
         try {
             DataTypes.typeCheckingEqualToExpression(a.type, b.type);                                                    //Check if the 2 datatype are compatible
         } catch (RuntimeException ex) {
-            throw new RuntimeException(errorMessageMaker(ctx,"visitNotEqualToExpression") + ex.getMessage());
+            throw new RuntimeException(errorMessageMaker(ctx, "visitNotEqualToExpression") + ex.getMessage());
         }
         return a;
     }
@@ -344,7 +328,7 @@ public class TypeChecker extends alphaBaseVisitor {
             try {
                 DataTypes.typeCheckingExpression(data1.type, data2.type);
             } catch (RuntimeException ex) {
-                throw new RuntimeException(errorMessageMaker(ctx,"visitDeclarationFill") + ex.getMessage());
+                throw new RuntimeException(errorMessageMaker(ctx, "visitDeclarationFill") + ex.getMessage());
             }
             return data1;
         }
@@ -355,8 +339,8 @@ public class TypeChecker extends alphaBaseVisitor {
     /**
      * Math
      *
-     * @param ctx
-     * @return
+     * @param ctx ctx
+     * @return DataTypeCarrier
      */
     private DataTypeCarrier checkMathType(alphaParser.ExpressionContext ctx) {
         DataTypeCarrier a = (DataTypeCarrier) visit(ctx.getChild(0));
@@ -364,21 +348,23 @@ public class TypeChecker extends alphaBaseVisitor {
         try {
             DataTypes.typeCheckDoubleAndInteger(a.type, b.type);
         } catch (RuntimeException ex) {
-            throw new RuntimeException(errorMessageMaker(ctx,"checkMathType") + ex.getMessage());
+            throw new RuntimeException(errorMessageMaker(ctx, "checkMathType") + ex.getMessage());
         }
         return a;
     }
 
     /**
      * Creates error message with more detail
-     * @param ctx ctx
+     *
+     * @param ctx  ctx
      * @param text extra text you want to add in front of the message
-     * @return
+     * @return String error msg
      */
-    private String errorMessageMaker(ParserRuleContext ctx, String text){
+    private String errorMessageMaker(ParserRuleContext ctx, String text) {
         String msg = text;
         msg += !currentVariable.equals("") ? " currentVar : " + currentVariable : "";
         msg += !currentFunction.equals("") ? " currentFunction : " + currentVariable : "";
-        return msg += " ctx text :" + ctx.getText();
+        msg += " ctx text :" + ctx.getText();
+        return msg;
     }
 }

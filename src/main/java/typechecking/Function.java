@@ -1,14 +1,13 @@
 package main.java.typechecking;
 
 import main.java.shared.DataType;
-import main.java.shared.DataTypes;
 
 import java.util.ArrayList;
 
 /**
- * Created by Garcia on 22/02/2017.
+ * Used to hold the functions
  */
-public class Function {
+class Function {
     private String id;
     private DataType param;
     private ArrayList<DataType> returnType;

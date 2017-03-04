@@ -13,13 +13,13 @@ import java.io.IOException;
 /**
  * Creating the best language
  */
-public class Alpha {
+class Alpha {
 
     public static void main(String[] args) throws IOException {
 
         //week 1
         //Load in the file and  create lexer from it
-        alphaLexer lexer = new alphaLexer(new ANTLRFileStream("src/main/alpha/TypeCheckingTest.alpha"));
+        alphaLexer lexer = new alphaLexer(new ANTLRFileStream("src/main/alpha/firstcode.alpha"));
         //run scanner to create stream of tokens
         CommonTokenStream tokens = new CommonTokenStream(lexer);
 

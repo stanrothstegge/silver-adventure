@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Created by Robin on 22-2-2017.
+ * //todo robin text hier
  */
 public class Scope {
 
-    final Scope parentScope;
+    private final Scope parentScope;
     private final HashMap<String, DataType> variables = new HashMap<>();
     private final HashMap<String, Method> methods;
 

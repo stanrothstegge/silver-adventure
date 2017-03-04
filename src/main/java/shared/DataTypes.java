@@ -12,7 +12,7 @@ public class DataTypes {
      * @param type String
      * @return DataTypes
      */
-    public static final DataType getEnum(String type) {
+    public static DataType getEnum(String type) {
 
         switch (type) {
             case "in":
@@ -113,7 +113,7 @@ public class DataTypes {
      * @param type           true = string and char are equal
      * @throws RuntimeException
      */
-    public static void typeCheckStringAndChar(DataType dataTypeFirst, DataType dataTypeSecond, boolean type) throws RuntimeException {
+    private static void typeCheckStringAndChar(DataType dataTypeFirst, DataType dataTypeSecond, boolean type) throws RuntimeException {
         if (type) {                                                                                                     //Type 1
             switch (dataTypeFirst) {
                 case STRING:
