@@ -1,7 +1,7 @@
 package main.java.shared;
 
 /**
- * Created by Robin on 2-3-2017.
+ * Holds DataTypes
  */
 public enum DataType {
     /**
