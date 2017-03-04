@@ -79,6 +79,8 @@ public class DataTypes {
      * @param dataTypeSecond DataType
      */
     public static void typeCheckingMathAndString(DataType dataTypeFirst, DataType dataTypeSecond) throws RuntimeException {
+        if (dataTypeFirst == dataTypeSecond)
+            return;
         typeCheckDoubleAndInteger(dataTypeFirst, dataTypeSecond);
         typeCheckStringAndChar(dataTypeFirst, dataTypeSecond, true);
     }
