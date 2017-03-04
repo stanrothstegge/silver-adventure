@@ -138,9 +138,7 @@ public class TypeChecker extends alphaBaseVisitor {
             if (variables.get(currentVariable).getParams() != DataType.STRING) {
                 throw new RuntimeException("Char "+ currentVariable +" = " + ctx.getText() + " was supposed to be string");                                  //todo char2 wordt niet weggehaald als hij in de printfuncite komt??
             }
-            variables.get(currentVariable).setId(ctx.getText());                                            //Set char
-            DataTypes.thatOtherTypeChecker(variables.get(currentVariable).getId(), variables.get(currentVariable).getParams());                // should be string
-
+            variables.get(currentVariable).setId(ctx.getText());                                                        //Set char
             currentVariable = "";                                                                                       //Clear for the next variable
         }
         return new DataTypeCarrier(DataType.STRING);
@@ -251,8 +249,6 @@ public class TypeChecker extends alphaBaseVisitor {
     public Object visitCharExpression(alphaParser.CharExpressionContext ctx) {
         if (!currentVariable.equals("")) {
             variables.get(currentVariable).setId(ctx.CHAR_TYPE().getText());                                            //Set char
-            char c = variables.get(currentVariable).getId().charAt(1);
-            DataTypes.thatOtherTypeChecker(c, variables.get(currentVariable).getParams());                                                 // should be char
             currentVariable = "";                                                                                       //Clear for the next variable
         }
         return new DataTypeCarrier(DataType.CHAR);
@@ -271,17 +267,8 @@ public class TypeChecker extends alphaBaseVisitor {
     public Object visitNumberExpression(alphaParser.NumberExpressionContext ctx) {
         if (!currentVariable.equals("")) {
             try {
-                variables.get(currentVariable).setId(ctx.getText());                                                        //Add the integer to function
-                Pattern p = Pattern.compile("[.]");
-                Matcher m = p.matcher(ctx.getText());
-                if (m.find()) {                                                                                             //Check if its a double or integer
-                    DataTypes.thatOtherTypeChecker(Double.parseDouble(variables.get(currentVariable).getId()), variables.get(currentVariable).getParams());
-                } else {
-                    DataTypes.thatOtherTypeChecker(Integer.parseInt(variables.get(currentVariable).getId()), variables.get(currentVariable).getParams());
-                }
-                variables.get(currentVariable).setId(ctx.getText());                                                        //Save the number in to the table
-
-                currentVariable = "";                                                                                           //Clear for the next variable
+                variables.get(currentVariable).setId(ctx.getText());                                                    //Save the number in to the table
+                currentVariable = "";                                                                                   //Clear for the next variable
             } catch (NumberFormatException e) {
                 throw new RuntimeException("Variable = " + ctx.getText() + " Could not be parse to number");
             } catch (NullPointerException e) {

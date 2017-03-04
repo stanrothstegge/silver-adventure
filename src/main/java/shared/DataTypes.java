@@ -34,34 +34,6 @@ public class DataTypes {
         }
     }
 
-
-    public static void thatOtherTypeChecker(Integer x, DataType dataType) throws RuntimeException {
-        if (dataType != DataType.INTEGER)
-            if (dataType != DataType.DOUBLE)
-                throw new RuntimeException("Variable =" + x + " Is not Integer but:" + dataType);
-    }
-
-    public static void thatOtherTypeChecker(Double x, DataType dataType) throws RuntimeException {
-        if (dataType != DataType.DOUBLE)
-            if (dataType != DataType.INTEGER)
-                throw new RuntimeException("Variable =" + x + " Is not DOUBLE but:" + dataType);
-    }
-
-    public static void thatOtherTypeChecker(String x, DataType dataType) throws RuntimeException {
-        if (dataType != DataType.STRING)
-            throw new RuntimeException("Variable =" + x + " Is not STRING but:" + dataType);
-    }
-
-    public static void thatOtherTypeChecker(Character x, DataType dataType) throws RuntimeException {
-        if (dataType != DataType.CHAR)
-            throw new RuntimeException("Variable =" + x + " Is not CHAR but:" + dataType);
-    }
-
-    public static void thatOtherTypeChecker(Boolean x, DataType dataType) throws RuntimeException {
-        if (dataType != DataType.BOOLEAN)
-            throw new RuntimeException("Variable =" + x + " Is not BOOLEAN but:" + dataType);
-    }
-
     /**
      * Checks what datatype work with each other in =\
      * <p>
