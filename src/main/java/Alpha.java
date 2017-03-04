@@ -19,7 +19,7 @@ public class Alpha {
 
         //week 1
         //Load in the file and  create lexer from it
-        alphaLexer lexer = new alphaLexer(new ANTLRFileStream("src/main/alpha/firstcode.alpha"));
+        alphaLexer lexer = new alphaLexer(new ANTLRFileStream("src/main/alpha/TypeCheckingTest.alpha"));
         //run scanner to create stream of tokens
         CommonTokenStream tokens = new CommonTokenStream(lexer);
 
@@ -29,8 +29,8 @@ public class Alpha {
 
         //week 2
         // Evaluate by running the visitor
-       Identifier identifier = new Identifier();
-       identifier.visit(expression);
+        Identifier identifier = new Identifier();
+        identifier.visit(expression);
         // then type check
         TypeChecker type = new TypeChecker();
         type.visit(expression);

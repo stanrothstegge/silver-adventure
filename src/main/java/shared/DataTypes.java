@@ -30,7 +30,7 @@ public class DataTypes {
             case "fs":
                 return DataType.FALSE;
             default:
-                throw new RuntimeException("Invalid datatype :" + type);                                                 //this should never happen
+                throw new RuntimeException(" Invalid DataType :" + type);                                                 //this should never happen
         }
     }
 
@@ -44,16 +44,12 @@ public class DataTypes {
      * @param dataTypeFirst
      * @param dataTypeSecond
      */
-    public static void typeCheckingEqualToExpression(DataType dataTypeFirst, DataType dataTypeSecond) {
+    public static void typeCheckingEqualToExpression(DataType dataTypeFirst, DataType dataTypeSecond) throws RuntimeException {
         if (dataTypeFirst == dataTypeSecond)
             return;                                                                                                     //If both are the same no checking required
-        typeCheckingBoolean(dataTypeFirst,dataTypeSecond);
-        typeCheckStringAndChar(dataTypeFirst,dataTypeSecond,true);
-        typeCheckDoubleAndInteger(dataTypeFirst,dataTypeSecond);
-        //bo
-        //stirng type 1
-        //double
-
+        typeCheckingBoolean(dataTypeFirst, dataTypeSecond);
+        typeCheckStringAndChar(dataTypeFirst, dataTypeSecond, true);
+        typeCheckDoubleAndInteger(dataTypeFirst, dataTypeSecond);
     }
 
     /**
@@ -66,13 +62,12 @@ public class DataTypes {
      * @param dataTypeFirst
      * @param dataTypeSecond
      */
-    public static void typeCheckingExpression(DataType dataTypeFirst, DataType dataTypeSecond) {
-        if (dataTypeFirst == dataTypeSecond) return;                                                                    //If both are the same no checking required
-        typeCheckingBoolean(dataTypeFirst,dataTypeSecond);
-        typeCheckStringAndChar(dataTypeFirst,dataTypeSecond,false);
-        typeCheckDoubleAndInteger(dataTypeFirst,dataTypeSecond);
-
-
+    public static void typeCheckingExpression(DataType dataTypeFirst, DataType dataTypeSecond) throws RuntimeException {
+        if (dataTypeFirst == dataTypeSecond)
+            return;                                                                    //If both are the same no checking required
+        typeCheckingBoolean(dataTypeFirst, dataTypeSecond);
+        typeCheckStringAndChar(dataTypeFirst, dataTypeSecond, false);
+        typeCheckDoubleAndInteger(dataTypeFirst, dataTypeSecond);
     }
 
 
@@ -84,12 +79,13 @@ public class DataTypes {
      * @param dataTypeSecond DataType
      */
     public static void typeCheckingMathAndString(DataType dataTypeFirst, DataType dataTypeSecond) throws RuntimeException {
-        typeCheckDoubleAndInteger(dataTypeFirst,dataTypeSecond);
-        typeCheckStringAndChar(dataTypeFirst,dataTypeSecond,true);
+        typeCheckDoubleAndInteger(dataTypeFirst, dataTypeSecond);
+        typeCheckStringAndChar(dataTypeFirst, dataTypeSecond, true);
     }
 
     /**
      * Checks all integers and number combinations
+     *
      * @param dataTypeFirst
      * @param dataTypeSecond
      * @throws RuntimeException
@@ -103,7 +99,7 @@ public class DataTypes {
                     case INTEGER:
                         return;
                     default:
-                        throw new RuntimeException("Wasnt a double or integer " + dataTypeFirst + " and " + dataTypeSecond);
+                        throw new RuntimeException(" typeCheckDoubleAndInteger DataType 1: " + dataTypeFirst + " DataType 2: " + dataTypeSecond);
                 }
         }
     }
@@ -111,40 +107,41 @@ public class DataTypes {
     /**
      * Checks all string and char combinations
      * But type == false means char can only == to char
+     *
      * @param dataTypeFirst
      * @param dataTypeSecond
-     * @param type true = string and char are equal
+     * @param type           true = string and char are equal
      * @throws RuntimeException
      */
     public static void typeCheckStringAndChar(DataType dataTypeFirst, DataType dataTypeSecond, boolean type) throws RuntimeException {
-        if (type) {
+        if (type) {                                                                                                     //Type 1
             switch (dataTypeFirst) {
-                case STRING:                                                                                                //Checks string and char
+                case STRING:
                 case CHAR:
                     switch (dataTypeSecond) {
                         case STRING:
                         case CHAR:
                             return;
                         default:
-                            throw new RuntimeException("The = didnt work with " + dataTypeFirst + " and " + dataTypeSecond);
+                            throw new RuntimeException(" typeCheckStringAndChar Type 1 DataType 1: " + dataTypeFirst + " DataType 2: " + dataTypeSecond);
                     }
             }
         } else {
-            switch (dataTypeFirst) {
-                case STRING:                                                                                                //Checks string and char
+            switch (dataTypeFirst) {                                                                                    //Type 2
+                case STRING:
                     switch (dataTypeSecond) {
                         case STRING:
                         case CHAR:
                             return;
                         default:
-                            throw new RuntimeException("didnt work with " + dataTypeFirst + " and " + dataTypeSecond);
+                            throw new RuntimeException(" typeCheckStringAndChar Type 2 (String and String/char) DataType 1: " + dataTypeFirst + " DataType 2: " + dataTypeSecond);
                     }
                 case CHAR:
                     switch (dataTypeSecond) {
                         case CHAR:
                             return;
                         default:
-                            throw new RuntimeException("didnt work with " + dataTypeFirst + " and " + dataTypeSecond);
+                            throw new RuntimeException(" typeCheckStringAndChar Type 2 (char and char) DataType 1: " + dataTypeFirst + " DataType 2: " + dataTypeSecond);
                     }
             }
         }
@@ -152,6 +149,7 @@ public class DataTypes {
 
     /**
      * Checks all boolean combination
+     *
      * @param dataTypeFirst
      * @param dataTypeSecond
      * @throws RuntimeException
@@ -167,7 +165,7 @@ public class DataTypes {
                     case TRUE:
                         return;
                     default:
-                        throw new RuntimeException("The = didnt work with " + dataTypeFirst + " and " + dataTypeSecond);
+                        throw new RuntimeException(" typeCheckingBoolean DataType 1: " + dataTypeFirst + " DataType 2: " + dataTypeSecond);
                 }
         }
     }

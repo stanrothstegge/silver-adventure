@@ -14,7 +14,8 @@ public class Function {
     private ArrayList<DataType> returnType;
     private ArrayList<DataType> argumentTypes;
 
-    public Function() {}
+    public Function() {
+    }
 
     public Function(DataType params) {
         this.param = params;
@@ -24,20 +25,12 @@ public class Function {
         this.returnType = returnType;
     }
 
-    public String getId() {
-        return id;
-    }
-
     public void setId(String id) {
         this.id = id;
     }
 
     public DataType getParams() {
         return param;
-    }
-
-    public void setParams(DataType params) {
-        this.param = params;
     }
 
     public DataType getReturnType(int select) {

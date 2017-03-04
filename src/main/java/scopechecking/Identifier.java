@@ -5,6 +5,7 @@ import main.java.shared.DataTypes;
 import main.java.shared.Method;
 import main.java.shared.Scope;
 import org.antlr.v4.runtime.tree.ParseTree;
+
 import java.util.ArrayList;
 
 /**
@@ -16,7 +17,7 @@ public class Identifier extends alphaBaseVisitor {
     @Override
     public Object visitLanguage(alphaParser.LanguageContext ctx) {
         Object object = super.visitLanguage(ctx);
-        
+
         //check if main (pizza) is called
         if (scope.lookupMethod("pizza") == null) {
             throw new RuntimeException("function pizza does not exist, this is required");
@@ -27,7 +28,7 @@ public class Identifier extends alphaBaseVisitor {
         if (seenMethods.size() > 0) {
             throw new RuntimeException("variables " + seenMethods + "  do not exist, these are called");
         }
-        
+
         return object;
     }
 
@@ -89,7 +90,7 @@ public class Identifier extends alphaBaseVisitor {
         scope.seenMethod(ctx.TEXT().getText());
         return super.visitFunctionCall(ctx);
     }
-    
+
     @Override
     public Object visitCatchFunction(alphaParser.CatchFunctionContext ctx) {
         for (ParseTree t : ctx.children) {

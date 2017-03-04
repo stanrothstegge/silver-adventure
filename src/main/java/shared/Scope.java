@@ -11,7 +11,7 @@ public class Scope {
     final Scope parentScope;
     private final HashMap<String, DataType> variables = new HashMap<>();
     private final HashMap<String, Method> methods;
-    
+
     private Scope(Scope parentScope) {
         this.parentScope = parentScope;
         //can't add methods outside of global scope
@@ -22,7 +22,7 @@ public class Scope {
         parentScope = null;
         methods = new HashMap<>();
     }
-    
+
     public boolean declareVariable(String name, DataType type) {
         if (lookupVariable(name) == null) {
             variables.put(name, type);
@@ -30,7 +30,7 @@ public class Scope {
         }
         return false;
     }
-    
+
     public boolean declareMethod(String name, Method method) {
         Scope globalscope = getGlobalScope();
         if (!globalscope.methods.containsKey(name)) {
@@ -39,7 +39,7 @@ public class Scope {
         }
         return false;
     }
-    
+
     public DataType lookupVariable(String name) {
         DataType type = variables.get(name);
         if (type == null && parentScope != null) {
@@ -47,8 +47,8 @@ public class Scope {
         }
         return type;
     }
-    
-    public Method lookupMethod(String name) {        
+
+    public Method lookupMethod(String name) {
         return getGlobalScope().methods.get(name);
     }
 
@@ -61,27 +61,27 @@ public class Scope {
     public ArrayList<String> seenMethodsExist() {
         ArrayList<String> seenMethodsExist = new ArrayList<>();
         seenMethodsExist.addAll(getGlobalScope().seenMethods);
-        
-        for(String s: getGlobalScope().seenMethods) {
+
+        for (String s : getGlobalScope().seenMethods) {
             if (getGlobalScope().methods.get(s) != null) {
                 seenMethodsExist.remove(s);
             }
         }
         return seenMethodsExist;
     }
-    
+
     private Scope getGlobalScope() {
         Scope scope = this;
-        while(scope.parentScope != null) {
+        while (scope.parentScope != null) {
             scope = scope.parentScope;
         }
         return scope;
     }
-    
+
     public Scope open() {
         return new Scope(this);
     }
-    
+
     public Scope close() {
         return parentScope;
     }

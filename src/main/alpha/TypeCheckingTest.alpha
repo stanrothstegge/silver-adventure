@@ -15,7 +15,7 @@ dy = 1;
 
 st sy = "pizza";
 sy = 'c';
-//sy = 1;
+sy = 1;
 //sy = tr;
 //sy = 22.33;
 
