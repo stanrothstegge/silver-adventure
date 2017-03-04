@@ -51,8 +51,8 @@ public class TypeChecker extends alphaBaseVisitor {
     @Override
     public Object visitNotExpression(alphaParser.NotExpressionContext ctx) {
         DataType type = ((DataTypeCarrier) visit(ctx.expression())).type;
-        
-        DataTypes.checkBoolean(type, DataType.BOOLEAN);
+
+        DataTypes.typeCheckingBoolean(type,DataType.BOOLEAN);
         
         return type;
     }
@@ -61,7 +61,7 @@ public class TypeChecker extends alphaBaseVisitor {
     public Object visitFalseExpression(alphaParser.FalseExpressionContext ctx) {
         if (!currentVariable.equals("")) {
             variables.get(currentVariable).setId(ctx.getText());                                            //Set char
-            DataTypes.checkBoolean(DataType.TRUE, variables.get(currentVariable).getParams());
+            DataTypes.typeCheckingBoolean(DataType.TRUE, variables.get(currentVariable).getParams());
             if (!ctx.getText().equals("fs")) throw new RuntimeException("Variable =" + ctx.getText() + " was not fs");
 
             currentVariable = "";                                                                                           //Clear for the next variable
@@ -98,7 +98,7 @@ public class TypeChecker extends alphaBaseVisitor {
         DataTypeCarrier a = (DataTypeCarrier) visit(ctx.expression(0));
         DataTypeCarrier b = (DataTypeCarrier) visit(ctx.expression(1));
         System.out.println("Is Integer :" + ctx.getText());
-        DataTypes.typeCheckingMath(a.type, b.type);
+        DataTypes.typeCheckDoubleAndInteger(a.type, b.type);
         return a;
     }
 
@@ -151,7 +151,7 @@ public class TypeChecker extends alphaBaseVisitor {
     public Object visitTrueExpression(alphaParser.TrueExpressionContext ctx) {
         if (!currentVariable.equals("")) {
             variables.get(currentVariable).setId(ctx.getText());
-            DataTypes.checkBoolean(DataType.TRUE, variables.get(currentVariable).getParams());
+            DataTypes.typeCheckingBoolean(DataType.TRUE, variables.get(currentVariable).getParams());
             if (!ctx.getText().equals("tr")) throw new RuntimeException("Variable =" + ctx.getText() + " was not tr");
             currentVariable = "";                                                                                           //Clear for the next variable
         }
@@ -349,7 +349,7 @@ public class TypeChecker extends alphaBaseVisitor {
     private DataTypeCarrier checkMathType(alphaParser.ExpressionContext ctx) {
         DataTypeCarrier a = (DataTypeCarrier) visit(ctx.getChild(0));
         DataTypeCarrier b = (DataTypeCarrier) visit(ctx.getChild(2));
-        DataTypes.typeCheckingMath(a.type, b.type);
+        DataTypes.typeCheckDoubleAndInteger(a.type, b.type);
         return a;
     }
 
