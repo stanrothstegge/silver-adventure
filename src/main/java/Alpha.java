@@ -1,6 +1,7 @@
 package main.java;
 
 import main.antlr4.*;
+import main.java.bytecode.CodeGenerator;
 import main.java.scopechecking.Identifier;
 import main.java.typechecking.TypeChecker;
 import org.antlr.v4.runtime.ANTLRFileStream;
@@ -34,7 +35,9 @@ class Alpha {
         // then type check
         TypeChecker type = new TypeChecker();
         type.visit(expression);
-
+        //Byte code generator
+        CodeGenerator codeGenerator = new CodeGenerator();
+        codeGenerator.visit(expression);
         System.out.println("done?");
     }
 }
