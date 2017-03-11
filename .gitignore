@@ -1,6 +1,6 @@
 .idea/codeStyleSettings.xml
 .idea/workspace.xml
-
+.idea/*
 out/*
 .idea/uiDesigner.xml
 .idea/encodings.xml
