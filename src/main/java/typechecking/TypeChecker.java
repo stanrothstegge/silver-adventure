@@ -14,8 +14,8 @@ import java.util.Map;
  */
 //todo: garcia mag datatypecarrier maken
 public class TypeChecker extends alphaBaseVisitor {
-    private Map<String, Function> variables = new HashMap<>();
-    private Map<String, Function> functions = new HashMap<>();
+    public static Map<String, Function> variables = new HashMap<>();
+    public static Map<String, Function> functions = new HashMap<>();
     private String currentVariable = "";                                                                                        //Used to save the key of function
     private String currentFunction = "";                                                                                        //Use to hold the function to get it in the return methode
 

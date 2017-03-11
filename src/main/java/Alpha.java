@@ -36,7 +36,7 @@ class Alpha {
         TypeChecker type = new TypeChecker();
         type.visit(expression);
         //Byte code generator
-        CodeGenerator codeGenerator = new CodeGenerator();
+        CodeGenerator codeGenerator = new CodeGenerator("firstcode");
         codeGenerator.visit(expression);
         System.out.println("done?");
     }

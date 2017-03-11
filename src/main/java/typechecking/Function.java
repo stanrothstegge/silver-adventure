@@ -7,7 +7,7 @@ import java.util.ArrayList;
 /**
  * Used to hold the functions
  */
-class Function {
+public class Function {
     private String id;
     private DataType param;
     private ArrayList<DataType> returnType;

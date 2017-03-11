@@ -3,272 +3,182 @@ package main.java.bytecode;
 
 import main.antlr4.alphaBaseVisitor;
 import main.antlr4.alphaParser;
+import main.java.shared.DataType;
+import main.java.shared.DataTypes;
+import main.java.typechecking.TypeChecker;
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.util.ArrayList;
 
 public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
+    
+    final String fileName;
+
+    public CodeGenerator(String fileName) {
+        this.fileName = fileName;
+    }
+
     @Override
     public ArrayList<String> visitLanguage(alphaParser.LanguageContext ctx) {
-        return super.visitLanguage(ctx);
+        ArrayList<String> list = new ArrayList<>();
+        list.add(".class public " + fileName);
+        list.add(".super java/lang/Object");
+        
+        //Standard initializer (calls java.lang.Object's initializer), in other words: the empty constructor
+        list.add(".method public <init>()V");
+        list.add("aload_0");
+        list.add("invokenonvirtual java/lang/Object/<init>()V");
+        list.add("return");
+        list.add(".end method");
+
+        //first, visit all the global statements
+        for(ParseTree t :ctx.children) {
+            if (t instanceof alphaParser.GlobalStatementContext) {
+                list.addAll(visit(t));
+            }
+        }
+
+        //then visit all the functions
+        for(ParseTree t :ctx.children) {
+            if (t instanceof alphaParser.FunctionContext) {
+                list.addAll(visit(t));
+            }
+        }
+        
+        return list;
     }
 
-    @Override
-    public ArrayList<String> visitLeftBracketExpressionRightBracketExpression(alphaParser.LeftBracketExpressionRightBracketExpressionContext ctx) {
-        return super.visitLeftBracketExpressionRightBracketExpression(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitMinusExpression(alphaParser.MinusExpressionContext ctx) {
-        return super.visitMinusExpression(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitAddCustomExpression(alphaParser.AddCustomExpressionContext ctx) {
-        return super.visitAddCustomExpression(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitModuloExpression(alphaParser.ModuloExpressionContext ctx) {
-        return super.visitModuloExpression(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitNumberExpression(alphaParser.NumberExpressionContext ctx) {
-        return super.visitNumberExpression(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitEqualToExpression(alphaParser.EqualToExpressionContext ctx) {
-        return super.visitEqualToExpression(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitNotExpression(alphaParser.NotExpressionContext ctx) {
-        return super.visitNotExpression(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitFalseExpression(alphaParser.FalseExpressionContext ctx) {
-        return super.visitFalseExpression(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitSmallerThanExpression(alphaParser.SmallerThanExpressionContext ctx) {
-        return super.visitSmallerThanExpression(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitMultiplyExpression(alphaParser.MultiplyExpressionContext ctx) {
-        return super.visitMultiplyExpression(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitSmallerOrEqualExpression(alphaParser.SmallerOrEqualExpressionContext ctx) {
-        return super.visitSmallerOrEqualExpression(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitGreaterThanExpression(alphaParser.GreaterThanExpressionContext ctx) {
-        return super.visitGreaterThanExpression(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitVariableExpression(alphaParser.VariableExpressionContext ctx) {
-        return super.visitVariableExpression(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitDivideExpression(alphaParser.DivideExpressionContext ctx) {
-        return super.visitDivideExpression(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitOrExpression(alphaParser.OrExpressionContext ctx) {
-        return super.visitOrExpression(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitAndExpression(alphaParser.AndExpressionContext ctx) {
-        return super.visitAndExpression(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitStringExpression(alphaParser.StringExpressionContext ctx) {
-        return super.visitStringExpression(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitTrueExpression(alphaParser.TrueExpressionContext ctx) {
-        return super.visitTrueExpression(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitGreaterOrEqualExpression(alphaParser.GreaterOrEqualExpressionContext ctx) {
-        return super.visitGreaterOrEqualExpression(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitFunctionCallExpression(alphaParser.FunctionCallExpressionContext ctx) {
-        return super.visitFunctionCallExpression(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitCharExpression(alphaParser.CharExpressionContext ctx) {
-        return super.visitCharExpression(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitPlusExpression(alphaParser.PlusExpressionContext ctx) {
-        return super.visitPlusExpression(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitNotEqualToExpression(alphaParser.NotEqualToExpressionContext ctx) {
-        return super.visitNotEqualToExpression(ctx);
-    }
-
+    /**
+     *
+     * @param ctx
+     * @return Arraylist with 0: variablename and 1: Datatype (as string)
+     */
     @Override
     public ArrayList<String> visitDeclaration(alphaParser.DeclarationContext ctx) {
-        return super.visitDeclaration(ctx);
+        String variablename = ctx.TEXT().getText();
+        DataType type = DataTypes.getEnum(ctx.dataType().getText());
+        
+        ArrayList<String> list = new ArrayList<>();
+        
+        list.add(variablename);
+        list.add(type.toString());
+        
+        return list;
+    }
+
+    /**
+     * 
+     * @param ctx
+     * @return Arraylist with 0: variablename and 1: Datatype (as string)
+     */
+    @Override
+    public ArrayList<String> visitVariable(alphaParser.VariableContext ctx) {
+        String variableName = ctx.TEXT().getText();
+        DataType type = TypeChecker.variables.get(variableName).getParams();
+
+        ArrayList<String> list = new ArrayList<>();
+
+        list.add(variableName);
+        list.add(type.toString());
+
+        return list;
     }
 
     @Override
     public ArrayList<String> visitDeclarationFill(alphaParser.DeclarationFillContext ctx) {
-        return super.visitDeclarationFill(ctx);
+        ArrayList<String> variable = visit(ctx.children.get(0));
+        String variableName = variable.get(0);
+        DataType type = DataType.valueOf(variable.get(1));
+        
+        ArrayList<String> list = new ArrayList<>();
+        
+        //put the number in memory
+        list.addAll(visit(ctx.expression()));
+        
+        //store number todo: number generation and linking and stuff
+        list.add(TypeConverter.convert(type, false) + "store " /* + number*/);
+        
+        return list;
     }
 
-    @Override
-    public ArrayList<String> visitDeclarationFinal(alphaParser.DeclarationFinalContext ctx) {
-        return super.visitDeclarationFinal(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitDeclarationFunction(alphaParser.DeclarationFunctionContext ctx) {
-        return super.visitDeclarationFunction(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitArgumentsDeclaration(alphaParser.ArgumentsDeclarationContext ctx) {
-        return super.visitArgumentsDeclaration(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitArgumentsCall(alphaParser.ArgumentsCallContext ctx) {
-        return super.visitArgumentsCall(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitFunctionDeclaration(alphaParser.FunctionDeclarationContext ctx) {
-        return super.visitFunctionDeclaration(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitFunctionCall(alphaParser.FunctionCallContext ctx) {
-        return super.visitFunctionCall(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitPrintFunction(alphaParser.PrintFunctionContext ctx) {
-        return super.visitPrintFunction(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitReadFunction(alphaParser.ReadFunctionContext ctx) {
-        return super.visitReadFunction(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitThrowFunction(alphaParser.ThrowFunctionContext ctx) {
-        return super.visitThrowFunction(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitCatchFunction(alphaParser.CatchFunctionContext ctx) {
-        return super.visitCatchFunction(ctx);
-    }
+    private ArrayList<alphaParser.ExpressionContext> globalExpressions = new ArrayList<>();
+    private ArrayList<String> globalVariables = new ArrayList<>();
 
     @Override
     public ArrayList<String> visitGlobalStatements(alphaParser.GlobalStatementsContext ctx) {
-        return super.visitGlobalStatements(ctx);
-    }
+        ArrayList<String> list = new ArrayList<>();
 
-    @Override
-    public ArrayList<String> visitGlobalStatement(alphaParser.GlobalStatementContext ctx) {
-        return super.visitGlobalStatement(ctx);
+        //todo inbouwen in
+        String variableName;
+        DataType type;
+        if (ctx.declaration() != null) {
+            ArrayList<String> variable = visit(ctx.declaration());
+            variableName = variable.get(0);
+            type = DataType.valueOf(variable.get(1));
+        } else {
+            ArrayList<String> variable = visit(ctx.declarationFinal().declarationFill().children.get(0));
+            variableName = variable.get(0);
+            type = DataType.valueOf(variable.get(1));
+            
+            //todo: expressions opslaan om te verwerken in de pizza functie
+            globalExpressions.add(ctx.declarationFinal().declarationFill().expression());
+            globalVariables.add(variableName);
+        }
+        
+        String line = ".field public static " + variableName + " " + TypeConverter.convert(type, true);
+        
+        list.add(line);
+        
+        return list;
     }
-
-    @Override
-    public ArrayList<String> visitPlusPlusStatement(alphaParser.PlusPlusStatementContext ctx) {
-        return super.visitPlusPlusStatement(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitFunctionCallStatement(alphaParser.FunctionCallStatementContext ctx) {
-        return super.visitFunctionCallStatement(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitPrintStatement(alphaParser.PrintStatementContext ctx) {
-        return super.visitPrintStatement(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitReadStatement(alphaParser.ReadStatementContext ctx) {
-        return super.visitReadStatement(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitThrowBlockStatement(alphaParser.ThrowBlockStatementContext ctx) {
-        return super.visitThrowBlockStatement(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitIfStatementStatement(alphaParser.IfStatementStatementContext ctx) {
-        return super.visitIfStatementStatement(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitReturnMethodStatement(alphaParser.ReturnMethodStatementContext ctx) {
-        return super.visitReturnMethodStatement(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitWhileMethodStatement(alphaParser.WhileMethodStatementContext ctx) {
-        return super.visitWhileMethodStatement(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitReturnMethod(alphaParser.ReturnMethodContext ctx) {
-        return super.visitReturnMethod(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitThrowBlock(alphaParser.ThrowBlockContext ctx) {
-        return super.visitThrowBlock(ctx);
-    }
-
+    
     @Override
     public ArrayList<String> visitFunction(alphaParser.FunctionContext ctx) {
-        return super.visitFunction(ctx);
+        ArrayList<String> list = new ArrayList<>();
+
+        String functionName = ctx.functionDeclaration().TEXT().getText();
+        
+        if (functionName.equals("pizza")) {
+            functionName = "main";
+        }
+        
+        list.add(".method public static " + functionName + "(" + visit(ctx.functionDeclaration().argumentsDeclaration()));
+        
+        return list;
     }
 
-    @Override
-    public ArrayList<String> visitIfStatement(alphaParser.IfStatementContext ctx) {
-        return super.visitIfStatement(ctx);
-    }
+    private ArrayList<alphaParser.ExpressionContext> argumentDeclarationExpressions = new ArrayList<>();
+    private ArrayList<String> argumentDeclarationVariables = new ArrayList<>();
 
     @Override
-    public ArrayList<String> visitWhileMethod(alphaParser.WhileMethodContext ctx) {
-        return super.visitWhileMethod(ctx);
+    public ArrayList<String> visitArgumentsDeclaration(alphaParser.ArgumentsDeclarationContext ctx) {
+        ArrayList<String> list = new ArrayList<>();
+        
+        for(ParseTree t: ctx.children) {
+            //variables toevoegen enzo bro
+        }
+        
+        return list;
     }
-
-    @Override
-    public ArrayList<String> visitDataType(alphaParser.DataTypeContext ctx) {
-        return super.visitDataType(ctx);
-    }
-
-    @Override
-    public ArrayList<String> visitVariable(alphaParser.VariableContext ctx) {
-        return super.visitVariable(ctx);
+    
+    //todo: volgens mij nietmeer nodig
+    private void test(alphaParser.GlobalStatementsContext ctx){
+        String variablename;
+        DataType type;
+        if (ctx.declaration() != null) {
+            variablename = ctx.declaration().TEXT().getText();
+            type = DataTypes.getEnum(ctx.declaration().dataType().getText());
+        } else {
+            if (ctx.declarationFinal().declarationFill().declaration() != null) {
+                variablename = ctx.declarationFinal().declarationFill().declaration().TEXT().getText();
+                type = DataTypes.getEnum(ctx.declarationFinal().declarationFill().declaration().dataType().getText());
+            } else {
+                variablename = ctx.declarationFinal().declarationFill().variable().getText();
+                type = TypeChecker.variables.get(variablename).getParams();
+            }
+            globalExpressions.add(ctx.declarationFinal().declarationFill().expression());
+            globalVariables.add(variablename);
+        }
     }
 }
