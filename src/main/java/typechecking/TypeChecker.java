@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Visitor
@@ -126,7 +128,6 @@ public class TypeChecker extends alphaBaseVisitor {
     public Object visitDivideExpression(alphaParser.DivideExpressionContext ctx) {
         return checkMathType(ctx);
     }
-
 
 
     @Override
@@ -273,8 +274,19 @@ public class TypeChecker extends alphaBaseVisitor {
     public Object visitNumberExpression(alphaParser.NumberExpressionContext ctx) {
         if (!currentVariable.equals("")) {
             try {
-                variables.get(currentVariable).setId(ctx.getText());                                                    //Save the number in to the table
-                currentVariable = "";                                                                                   //Clear for the next variable
+                                                                                               //Clear for the next variable
+                variables.get(currentVariable).setId(ctx.getText());                                                    //Add the integer to function
+                Pattern p = Pattern.compile("[.]");
+                Matcher m = p.matcher(ctx.getText());
+                if (m.find()) {                                                                                         //Check if its a double or integer
+                    variables.get(currentVariable).setParam(DataType.DOUBLE);                                           //If double chance it
+                    currentVariable = "";
+                    return new DataTypeCarrier(DataType.DOUBLE);
+                } else {
+                    currentVariable = "";
+                    return new DataTypeCarrier(DataType.INTEGER);
+                }
+
             } catch (NullPointerException e) {
                 throw new RuntimeException(errorMessageMaker(ctx,
                         "visitNumberExpression Function couldn't find key for : "

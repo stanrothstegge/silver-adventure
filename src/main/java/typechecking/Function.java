@@ -32,6 +32,10 @@ class Function {
         return param;
     }
 
+    public void setParam(DataType param) {
+        this.param = param;
+    }
+
     public DataType getReturnType(int select) {
         return returnType.get(select);
     }
