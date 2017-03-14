@@ -102,6 +102,8 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
         //store number todo: number generation and linking and stuff
         list.add(TypeConverter.convert(type, false) + "store " /* + number*/);
         
+        //todo: work out expression
+        
         return list;
     }
 
@@ -112,7 +114,6 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
     public ArrayList<String> visitGlobalStatements(alphaParser.GlobalStatementsContext ctx) {
         ArrayList<String> list = new ArrayList<>();
 
-        //todo inbouwen in
         String variableName;
         DataType type;
         if (ctx.declaration() != null) {
@@ -124,7 +125,7 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
             variableName = variable.get(0);
             type = DataType.valueOf(variable.get(1));
             
-            //todo: expressions opslaan om te verwerken in de pizza functie
+            //expressions opslaan om te verwerken in de pizza functie
             globalExpressions.add(ctx.declarationFinal().declarationFill().expression());
             globalVariables.add(variableName);
         }
@@ -136,17 +137,59 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
         return list;
     }
     
+    private DataType[] returnTypes;
+    
     @Override
     public ArrayList<String> visitFunction(alphaParser.FunctionContext ctx) {
         ArrayList<String> list = new ArrayList<>();
 
         String functionName = ctx.functionDeclaration().TEXT().getText();
+        returnTypes = new DataType[]{DataType.VOID};
         
         if (functionName.equals("pizza")) {
             functionName = "main";
+
+            //hardcoded, main method always gets string array and returns void
+            list.add(".method public static " + functionName + "([Ljava/lang/String;)V");
+            
+        } else {
+            //fill in return types
+            returnTypes = new DataType[ctx.functionDeclaration().dataType().size()];
+            for (int i = 0; i < ctx.functionDeclaration().dataType().size(); i++) {
+                returnTypes[i] = DataTypes.getEnum(ctx.functionDeclaration().dataType(i).getText());
+            }
+            
+            DataType returnType = DataType.VOID;
+            
+            if (returnTypes.length == 1) {
+                returnType = returnTypes[0];
+            }
+            
+            ArrayList<String> arguments = visitArgumentsDeclaration(ctx.functionDeclaration().argumentsDeclaration());
+            
+            list.add(".method public static " + functionName + "("
+                     + ")" + returnType);
+            
         }
         
         list.add(".method public static " + functionName + "(" + visit(ctx.functionDeclaration().argumentsDeclaration()));
+        list.add(".limit stack 10"); //todo replace number with better number
+        list.add(".limit locals 10");
+
+        if (functionName.equals("main")) {
+            //global variables expressions verwerken
+            for (int i = 0; i < globalExpressions.size(); i++) {
+                String variableName = globalVariables.get(i);
+                alphaParser.ExpressionContext expression = globalExpressions.get(i);
+                
+                //todo: do stuff with the expression?
+            }
+
+        }
+        
+        //todo: statements
+        
+        list.add(".end method");
         
         return list;
     }
@@ -159,29 +202,18 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
         ArrayList<String> list = new ArrayList<>();
         
         for(ParseTree t: ctx.children) {
+            alphaParser.DeclarationFunctionContext d = (alphaParser.DeclarationFunctionContext) t;
+            
             //variables toevoegen enzo bro
+            if (d.declaration() != null) {
+                list.add(TypeConverter.convert(d.declaration().dataType().getText(), true));
+            } else {
+                list.add(TypeConverter.convert(d.declarationFill().declaration().dataType().getText(), true));
+                //todo: variabledeclaration
+                //does not currently support the = 2 part of func(int i = 2)
+            }
         }
         
         return list;
-    }
-    
-    //todo: volgens mij nietmeer nodig
-    private void test(alphaParser.GlobalStatementsContext ctx){
-        String variablename;
-        DataType type;
-        if (ctx.declaration() != null) {
-            variablename = ctx.declaration().TEXT().getText();
-            type = DataTypes.getEnum(ctx.declaration().dataType().getText());
-        } else {
-            if (ctx.declarationFinal().declarationFill().declaration() != null) {
-                variablename = ctx.declarationFinal().declarationFill().declaration().TEXT().getText();
-                type = DataTypes.getEnum(ctx.declarationFinal().declarationFill().declaration().dataType().getText());
-            } else {
-                variablename = ctx.declarationFinal().declarationFill().variable().getText();
-                type = TypeChecker.variables.get(variablename).getParams();
-            }
-            globalExpressions.add(ctx.declarationFinal().declarationFill().expression());
-            globalVariables.add(variablename);
-        }
     }
 }

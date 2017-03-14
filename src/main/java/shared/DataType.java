@@ -13,5 +13,5 @@ public enum DataType {
      * BOOLEAN: 'bo';
      * TRUE: 'tr';
      */
-    BOOLEAN, INTEGER, DOUBLE, STRING, CHAR, TRUE, FALSE
+    BOOLEAN, INTEGER, DOUBLE, STRING, CHAR, TRUE, FALSE, VOID
 }
