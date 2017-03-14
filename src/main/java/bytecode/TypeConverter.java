@@ -1,6 +1,7 @@
 package main.java.bytecode;
 
 import main.java.shared.DataType;
+import main.java.shared.DataTypes;
 
 /**
  * Created by Robin on 11-3-2017.
@@ -15,8 +16,19 @@ public class TypeConverter {
                 } else {
                     return "i";
                 }
-                default: return null;
+            case VOID:
+                if (big) {
+                    return "V";
+                } else {
+                    return "";
+                }
+            
+            default: return null;
         }
+    }
+
+    static String convert(String type, boolean big) {
+        return convert(DataTypes.getEnum(type), big);
     }
     
     static String defaultValue(DataType type) {
