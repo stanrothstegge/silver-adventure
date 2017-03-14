@@ -2,19 +2,13 @@ package main.java.shared.model;
 
 import main.java.shared.DataType;
 
-import java.util.ArrayList;
-
 /**
  * Created by Garcia on 14/03/2017.
  */
 public class Variables {
     private String id;
-    private String scope;
+    private String functionName;
     private DataType param;
-
-
-    public Variables() {
-    }
 
     public Variables(DataType params) {
         this.param = params;
@@ -32,11 +26,11 @@ public class Variables {
         this.param = param;
     }
 
-    public String getScope() {
-        return scope;
+    public String getFunctionName() {
+        return functionName;
     }
 
-    public void setScope(String scope) {
-        this.scope = scope;
+    public void setFunctionName(String functionName) {
+        this.functionName = functionName;
     }
 }
