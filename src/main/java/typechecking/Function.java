@@ -9,6 +9,7 @@ import java.util.ArrayList;
  */
 public class Function {
     private String id;
+    private String scope;
     private DataType param;
     private ArrayList<DataType> returnType;
     private ArrayList<DataType> argumentTypes;
@@ -46,5 +47,13 @@ public class Function {
 
     public DataType getArgument(int i) {
         return argumentTypes.get(i);
+    }
+
+    public String getScope() {
+        return scope;
+    }
+
+    public void setScope(String scope) {
+        this.scope = scope;
     }
 }

@@ -3,6 +3,7 @@ package main.java.typechecking;
 import main.antlr4.*;
 import main.java.shared.*;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,8 +19,9 @@ import java.util.regex.Pattern;
 public class TypeChecker extends alphaBaseVisitor {
     public static Map<String, Function> variables = new HashMap<>();
     public static Map<String, Function> functions = new HashMap<>();
-    private String currentVariable = "";                                                                                        //Used to save the key of function
-    private String currentFunction = "";                                                                                        //Use to hold the function to get it in the return methode
+    private String currentVariable = "";                                                                                //Used to save the key of function
+    private String currentFunction = "";                                                                                //Use to hold the function to get it in the return methode
+    private String scope = "";
 
 
     @Override
@@ -274,7 +276,7 @@ public class TypeChecker extends alphaBaseVisitor {
     public Object visitNumberExpression(alphaParser.NumberExpressionContext ctx) {
         if (!currentVariable.equals("")) {
             try {
-                                                                                               //Clear for the next variable
+                //Clear for the next variable
                 variables.get(currentVariable).setId(ctx.getText());                                                    //Add the integer to function
                 Pattern p = Pattern.compile("[.]");
                 Matcher m = p.matcher(ctx.getText());
@@ -318,6 +320,9 @@ public class TypeChecker extends alphaBaseVisitor {
     public Object visitDeclaration(alphaParser.DeclarationContext ctx) {
         currentVariable = ctx.TEXT().getText();                                                                         //All our DataType are 2 long so get everything after that is a Declartion
         variables.put(currentVariable, new Function(DataTypes.getEnum(ctx.dataType().getText())));
+        //todo TEST SCOPE
+        if (!scope.equals(""))
+            variables.get(currentVariable).setScope(scope);                                              //If the variabel is in a function
         return new DataTypeCarrier(DataTypes.getEnum(ctx.dataType().getText()));
     }
 
@@ -326,7 +331,6 @@ public class TypeChecker extends alphaBaseVisitor {
         DataTypeCarrier data1;
         if (ctx.declaration() != null) {
             data1 = (DataTypeCarrier) visit(ctx.declaration());
-            System.out.println(ctx.getText());
             if (!ctx.getText().contains(" = "))
                 currentVariable = "";
         } else {
@@ -379,4 +383,15 @@ public class TypeChecker extends alphaBaseVisitor {
         msg += " ctx text :" + ctx.getText();
         return msg;
     }
+
+    @Override
+    public Object visitFunction(alphaParser.FunctionContext ctx) {
+        scope = ctx.functionDeclaration().TEXT().getText();
+
+        super.visitFunction(ctx);
+
+        scope = "";
+        return null;
+    }
+
 }

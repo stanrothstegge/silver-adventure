@@ -21,6 +21,9 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
 
     @Override
     public ArrayList<String> visitLanguage(alphaParser.LanguageContext ctx) {
+        //todo TEST SCOPE
+        TypeChecker.variables.get(0);
+
         ArrayList<String> list = new ArrayList<>();
         list.add(".class public " + fileName);
         list.add(".super java/lang/Object");
