@@ -1,0 +1,12 @@
+Alpha
+
+~in in~ funct (in a, st b)
+sp ("test");
+re 1, 1;
+☕
+
+~pizza ()
+funct (1, "test");
+☕
+
+Omega

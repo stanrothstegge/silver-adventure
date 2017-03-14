@@ -30,4 +30,11 @@ public class Function {
         return argumentTypes.get(i);
     }
 
+    public ArrayList<DataType> getReturn(){
+        return returnType;
+    }
+
+    public ArrayList<DataType> getArguments(){
+        return argumentTypes;
+    }
 }

@@ -215,6 +215,10 @@ public class TypeChecker extends alphaBaseVisitor {
 
             }
         }
+        //Check return type ammount
+        if(functions.get(currentFunction).getReturn().size() != amount)
+            throw new RuntimeException(errorMessageMaker(ctx,
+                    "visitFunctionCall Missing return values"));
 
         return super.visitReturnMethodStatement(ctx);
     }
@@ -237,6 +241,10 @@ public class TypeChecker extends alphaBaseVisitor {
         }
 
         //arguments checking;
+        //Check ammount arguments
+        if(function.getArguments().size() != ctx.argumentsCall().expression().size())
+            throw new RuntimeException(errorMessageMaker(ctx,
+                "visitFunctionCall Missing arguments"));
         if (ctx.argumentsCall() != null) {
             for (int i = 0; i < ctx.argumentsCall().expression().size(); i++) {
                 DataTypeCarrier carrier = (DataTypeCarrier) visit(ctx.argumentsCall().expression().get(i));
@@ -247,7 +255,6 @@ public class TypeChecker extends alphaBaseVisitor {
                 }
             }
         }
-
         return super.visitFunctionCall(ctx);
     }
 
