@@ -241,11 +241,13 @@ public class TypeChecker extends alphaBaseVisitor {
         }
 
         //arguments checking;
-        //Check ammount arguments
-        if(function.getArguments().size() != ctx.argumentsCall().expression().size())
-            throw new RuntimeException(errorMessageMaker(ctx,
-                "visitFunctionCall Missing arguments"));
         if (ctx.argumentsCall() != null) {
+
+            //Check amount of arguments
+            if(function.getArguments().size() != ctx.argumentsCall().expression().size())
+                throw new RuntimeException(errorMessageMaker(ctx,
+                        "visitFunctionCall Missing arguments"));
+            
             for (int i = 0; i < ctx.argumentsCall().expression().size(); i++) {
                 DataTypeCarrier carrier = (DataTypeCarrier) visit(ctx.argumentsCall().expression().get(i));
                 if (carrier.type != function.getArgument(i)) {
