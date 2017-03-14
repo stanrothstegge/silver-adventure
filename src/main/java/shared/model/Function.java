@@ -1,40 +1,21 @@
-package main.java.typechecking;
+package main.java.shared.model;
 
 import main.java.shared.DataType;
 
 import java.util.ArrayList;
 
 /**
- * Used to hold the functions
+ * Created by Garcia on 14/03/2017.
  */
 public class Function {
-    private String id;
-    private String scope;
-    private DataType param;
     private ArrayList<DataType> returnType;
     private ArrayList<DataType> argumentTypes;
 
     public Function() {
     }
 
-    public Function(DataType params) {
-        this.param = params;
-    }
-
     public Function(ArrayList<DataType> returnType) {
         this.returnType = returnType;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public DataType getParams() {
-        return param;
-    }
-
-    public void setParam(DataType param) {
-        this.param = param;
     }
 
     public DataType getReturnType(int select) {
@@ -49,11 +30,4 @@ public class Function {
         return argumentTypes.get(i);
     }
 
-    public String getScope() {
-        return scope;
-    }
-
-    public void setScope(String scope) {
-        this.scope = scope;
-    }
 }

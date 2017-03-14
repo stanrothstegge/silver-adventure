@@ -2,8 +2,9 @@ package main.java.typechecking;
 
 import main.antlr4.*;
 import main.java.shared.*;
+import main.java.shared.model.Function;
+import main.java.shared.model.Variables;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,9 +16,8 @@ import java.util.regex.Pattern;
 /**
  * Visitor
  */
-//todo: garcia mag datatypecarrier maken
 public class TypeChecker extends alphaBaseVisitor {
-    public static Map<String, Function> variables = new HashMap<>();
+    public static Map<String, Variables> variables = new HashMap<>();
     public static Map<String, Function> functions = new HashMap<>();
     private String currentVariable = "";                                                                                //Used to save the key of function
     private String currentFunction = "";                                                                                //Use to hold the function to get it in the return methode
@@ -319,7 +319,7 @@ public class TypeChecker extends alphaBaseVisitor {
     @Override
     public Object visitDeclaration(alphaParser.DeclarationContext ctx) {
         currentVariable = ctx.TEXT().getText();                                                                         //All our DataType are 2 long so get everything after that is a Declartion
-        variables.put(currentVariable, new Function(DataTypes.getEnum(ctx.dataType().getText())));
+        variables.put(currentVariable, new Variables(DataTypes.getEnum(ctx.dataType().getText())));
         //todo TEST SCOPE
         if (!scope.equals(""))
             variables.get(currentVariable).setScope(scope);                                              //If the variabel is in a function
