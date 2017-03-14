@@ -161,20 +161,28 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
             
             DataType returnType = DataType.VOID;
             
+            //if 1 return type, just do it the normal way
             if (returnTypes.length == 1) {
                 returnType = returnTypes[0];
             }
             
-            ArrayList<String> arguments = visitArgumentsDeclaration(ctx.functionDeclaration().argumentsDeclaration());
+            //setup list of arguments
+            String arguments = "";
+            for(String s: visitArgumentsDeclaration(ctx.functionDeclaration().argumentsDeclaration())) {
+                arguments += s;
+            }
             
-            list.add(".method public static " + functionName + "("
-                     + ")" + returnType);
+            //todo: first argument (spot 0) is called a, second argument (1) is called b, etc
+            
+            list.add(".method public static " + functionName + "(" + arguments + ")" + returnType);
             
         }
         
+        int localSize = returnTypes.length + 10; //todo: replace 10 with amount of variables in function
+        
         list.add(".method public static " + functionName + "(" + visit(ctx.functionDeclaration().argumentsDeclaration()));
-        list.add(".limit stack 10"); //todo replace number with better number
-        list.add(".limit locals 10");
+        list.add(".limit stack " + localSize * 2);
+        list.add(".limit locals " + localSize); 
 
         if (functionName.equals("main")) {
             //global variables expressions verwerken
