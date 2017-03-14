@@ -242,13 +242,14 @@ public class TypeChecker extends alphaBaseVisitor {
 
         //arguments checking;
         if (ctx.argumentsCall() != null) {
-
-            //Check amount of arguments
-            if(function.getArguments().size() != ctx.argumentsCall().expression().size())
-                throw new RuntimeException(errorMessageMaker(ctx,
-                        "visitFunctionCall Missing arguments"));
-            
             for (int i = 0; i < ctx.argumentsCall().expression().size(); i++) {
+                //todo check size
+                //todo get variable
+                //todo set new variable
+
+                System.out.println(ctx.argumentsCall().expression().get(i).getText());
+
+
                 DataTypeCarrier carrier = (DataTypeCarrier) visit(ctx.argumentsCall().expression().get(i));
                 if (carrier.type != function.getArgument(i)) {
                     throw new RuntimeException(errorMessageMaker(ctx,
@@ -256,6 +257,14 @@ public class TypeChecker extends alphaBaseVisitor {
                                     + carrier.type + " , expected: " + function.getArgument(i)));
                 }
             }
+            //Check amount of arguments
+//            if(function.getArguments().size() != ctx.argumentsCall().expression().size())
+//                throw new RuntimeException(errorMessageMaker(ctx,
+//                        "visitFunctionCall Missing arguments"));
+//            if(function.getArguments().size() != ctx.argumentsCall().expression().size()){
+//
+//
+//            }
         }
         return super.visitFunctionCall(ctx);
     }

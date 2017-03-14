@@ -6,7 +6,7 @@ re 1, 1;
 ☕
 
 ~pizza ()
-funct (1);
+funct (1, "test");
 ☕
 
 Omega
