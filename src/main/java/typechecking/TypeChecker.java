@@ -333,9 +333,11 @@ public class TypeChecker extends alphaBaseVisitor {
 
     @Override
     public Object visitDeclaration(alphaParser.DeclarationContext ctx) {
-        currentVariable = ctx.TEXT().getText();                                                                         //All our DataType are 2 long so get everything after that is a Declartion
+        currentVariable = functionName.equals("") ? ctx.TEXT().getText() :
+                functionName + "." + ctx.TEXT().getText(); //All our DataType are 2 long so get everything after that is a Declartion
+
         variables.put(currentVariable, new Variables(DataTypes.getEnum(ctx.dataType().getText())));
-        //todo TEST SCOPE
+
         if (!functionName.equals(""))
             variables.get(currentVariable).setFunctionName(functionName);                                              //If the variabel is in a function
         return new DataTypeCarrier(DataTypes.getEnum(ctx.dataType().getText()));

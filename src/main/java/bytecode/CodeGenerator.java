@@ -5,7 +5,6 @@ import main.antlr4.alphaBaseVisitor;
 import main.antlr4.alphaParser;
 import main.java.shared.DataType;
 import main.java.shared.DataTypes;
-import main.java.shared.model.Variables;
 import main.java.typechecking.TypeChecker;
 import org.antlr.v4.runtime.tree.ParseTree;
 

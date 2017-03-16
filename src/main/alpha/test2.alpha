@@ -1,12 +1,12 @@
 Alpha
 
-~in in~ funct (in a, st b = "lol")
-sp ("test");
+~in in~ funct ()
+in a;
 re 1, 1;
 ☕
 
 ~pizza ()
-funct (1,"test");
+in a;
 ☕
 
 Omega
