@@ -1,5 +1,6 @@
 package main.java.typechecking;
 
+import com.sun.deploy.util.StringUtils;
 import main.antlr4.*;
 import main.java.shared.*;
 import main.java.shared.model.Function;
@@ -183,6 +184,9 @@ public class TypeChecker extends alphaBaseVisitor {
         if (ctx.argumentsDeclaration() != null) {
             @SuppressWarnings("unchecked") ArrayList<DataType> argumentTypes = (ArrayList<DataType>) visit(ctx.argumentsDeclaration());
             functions.get(currentFunction).setArgumentTypes(argumentTypes);
+            //Check must have return ammount
+            functions.get(currentFunction).setAmount(ctx.argumentsDeclaration().getText().length() - ctx.argumentsDeclaration().getText().replace("=", "").length());
+
 
         }
 
@@ -215,8 +219,7 @@ public class TypeChecker extends alphaBaseVisitor {
 
             }
         }
-        //Check return type ammount
-        if(functions.get(currentFunction).getReturn().size() != amount)
+        if (functions.get(currentFunction).getReturn().size() != amount)
             throw new RuntimeException(errorMessageMaker(ctx,
                     "visitFunctionCall Missing return values"));
 
@@ -239,17 +242,13 @@ public class TypeChecker extends alphaBaseVisitor {
                 ++returntypes;
             }
         }
+        //if fucntion is called with no arguments but the are required
+        if (ctx.argumentsCall() == null && function.getAmount() > 0)
+            throw new RuntimeException(errorMessageMaker(ctx,
+                    "visitFunctionCall Missing arguments"));
 
-        //arguments checking;
         if (ctx.argumentsCall() != null) {
             for (int i = 0; i < ctx.argumentsCall().expression().size(); i++) {
-                //todo check size
-                //todo get variable
-                //todo set new variable
-
-                System.out.println(ctx.argumentsCall().expression().get(i).getText());
-
-
                 DataTypeCarrier carrier = (DataTypeCarrier) visit(ctx.argumentsCall().expression().get(i));
                 if (carrier.type != function.getArgument(i)) {
                     throw new RuntimeException(errorMessageMaker(ctx,
@@ -258,16 +257,14 @@ public class TypeChecker extends alphaBaseVisitor {
                 }
             }
             //Check amount of arguments
-//            if(function.getArguments().size() != ctx.argumentsCall().expression().size())
-//                throw new RuntimeException(errorMessageMaker(ctx,
-//                        "visitFunctionCall Missing arguments"));
-//            if(function.getArguments().size() != ctx.argumentsCall().expression().size()){
-//
-//
-//            }
+            if (function.getAmount() > ctx.argumentsCall().expression().size())
+                throw new RuntimeException(errorMessageMaker(ctx,
+                        "visitFunctionCall Missing arguments"));
+
         }
         return super.visitFunctionCall(ctx);
     }
+
 
     @Override
     public Object visitCharExpression(alphaParser.CharExpressionContext ctx) {

@@ -9,6 +9,7 @@ import java.util.ArrayList;
  */
 public class Function {
     private ArrayList<DataType> returnType;
+    private int amount;
     private ArrayList<DataType> argumentTypes;
 
     public Function() {
@@ -34,7 +35,11 @@ public class Function {
         return returnType;
     }
 
-    public ArrayList<DataType> getArguments(){
-        return argumentTypes;
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 }
