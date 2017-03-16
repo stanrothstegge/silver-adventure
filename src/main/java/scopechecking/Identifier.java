@@ -129,7 +129,7 @@ public class Identifier extends alphaBaseVisitor {
     public Object visitFunction(alphaParser.FunctionContext ctx) {
         scope = scope.open();
         Object object = super.visitFunction(ctx);
-        scope.close();
+        scope = scope.close();
         return object;
     }
 
