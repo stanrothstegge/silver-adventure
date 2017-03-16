@@ -1,6 +1,5 @@
 package main.java.typechecking;
 
-import com.sun.deploy.util.StringUtils;
 import main.antlr4.*;
 import main.java.shared.*;
 import main.java.shared.model.Function;
@@ -185,7 +184,8 @@ public class TypeChecker extends alphaBaseVisitor {
             @SuppressWarnings("unchecked") ArrayList<DataType> argumentTypes = (ArrayList<DataType>) visit(ctx.argumentsDeclaration());
             functions.get(currentFunction).setArgumentTypes(argumentTypes);
             //Check must have return ammount
-            functions.get(currentFunction).setAmount(ctx.argumentsDeclaration().getText().length() - ctx.argumentsDeclaration().getText().replace("=", "").length());
+            functions.get(currentFunction).setAmount(ctx.argumentsDeclaration().getText().length() -
+                    ctx.argumentsDeclaration().getText().replace("=", "").length());
 
 
         }
