@@ -6,7 +6,6 @@ import main.antlr4.alphaParser;
 import main.java.shared.DataType;
 import main.java.shared.DataTypes;
 import main.java.typechecking.TypeChecker;
-import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.util.ArrayList;
@@ -177,8 +176,15 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
             list.add(".method public static " + functionName + "(" + arguments + ")" + returnType);
             
         }
-        
-        int localSize = returnTypes.length + 10; //todo: replace 10 with amount of variables in function
+        //Gets amount of variables in function
+        int variableAmount = 0;
+        for (String k: TypeChecker.variables.keySet()) {
+            if(TypeChecker.variables.get(k).getFunctionName().equals(functionName)){
+                variableAmount++;
+            }
+        }
+
+        int localSize = returnTypes.length + variableAmount; //todo: replace 10 with amount of variables in function
         
         list.add(".method public static " + functionName + "(" + visit(ctx.functionDeclaration().argumentsDeclaration()));
         list.add(".limit stack " + localSize * 2);
