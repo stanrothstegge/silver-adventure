@@ -12,7 +12,8 @@ import java.util.ArrayList;
  * Visitor
  */
 public class Identifier extends alphaBaseVisitor {
-    private Scope scope = new Scope();
+    private static Scope scope = new Scope();
+    public static final Scope parentScope = scope;
 
     @Override
     public Object visitLanguage(alphaParser.LanguageContext ctx) {
@@ -61,7 +62,7 @@ public class Identifier extends alphaBaseVisitor {
     public Object visitFunctionDeclaration(alphaParser.FunctionDeclarationContext ctx) {
         //count the amount of ~ to determine if there are return types
         boolean returntypes = false;
-        method = new Method();
+        method = new Method(ctx.TEXT().getText());
         if (ctx.getText().length() - ctx.getText().replace("~", "").length() == 2) {
             returntypes = true;
         }
@@ -78,7 +79,7 @@ public class Identifier extends alphaBaseVisitor {
             }
         }
 
-        if(!scope.declareMethod(ctx.TEXT().getText(), method)) throw new RuntimeException("iets hier");                 //todo vernaderd later
+        if(!scope.declareMethod(method)) throw new RuntimeException("iets hier");                 //todo vernaderd later
         method = null;
         declaringFunction = false;
 
