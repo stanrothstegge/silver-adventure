@@ -3,15 +3,14 @@ package main.java.bytecode;
 
 import main.antlr4.alphaBaseVisitor;
 import main.antlr4.alphaParser;
+import main.java.scopechecking.Identifier;
 import main.java.shared.DataType;
 import main.java.shared.DataTypes;
-import main.java.shared.model.Function;
+import main.java.shared.Scope;
 import main.java.typechecking.TypeChecker;
 import org.antlr.v4.runtime.tree.ParseTree;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+
 
 public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
 
@@ -22,6 +21,7 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
     private DataType[] returnTypes;
     private ArrayList<String> addToMain = new ArrayList<>();
     private ArrayList<String> main = new ArrayList<>();
+    private String functionName = "";
 
 
     public CodeGenerator(String fileName) {
@@ -113,6 +113,22 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
         list.addAll(visit(ctx.expression()));
 
         //store number todo: number generation and linking and stuff
+        Scope parentScope = Identifier.parentScope;
+        Scope scope = parentScope;
+        int number = -1;
+        while (number == -1) {
+            for(Scope s: scope.getChildScope()) {
+                
+                //first find the scope of the current function
+                if (scope == parentScope && functionName.equals(s.getName())) {
+                    scope = s;
+                    break;
+                }
+                
+                //then find the variable and correct scope
+            }
+        }
+        
         list.add(TypeConverter.convert(type, false) + "store " /* + number*/);
 
         //todo: work out expression
@@ -163,6 +179,7 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
     @Override
     public ArrayList<String> visitFunction(alphaParser.FunctionContext ctx) {
         ArrayList<String> list = new ArrayList<>();
+        functionName = ctx.functionDeclaration().TEXT().getText();
 
         String functionName = ctx.functionDeclaration().TEXT().getText();
         returnTypes = new DataType[]{DataType.VOID};
@@ -228,7 +245,6 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
         }
 
         //todo: statements
-
         list.add(".end method" + NEWLINE);
 
         if (functionName.equals("main")) {

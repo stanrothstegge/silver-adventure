@@ -7,45 +7,83 @@ import java.util.HashMap;
  * //todo robin text hier
  */
 public class Scope {
+    
+    private final boolean isGlobalScope;
 
     private final Scope parentScope;
-    private final HashMap<String, DataType> variables = new HashMap<>();
+    private ArrayList<Scope> childScope = new ArrayList<>();
+    
+    private final ArrayList<Variable> variables = new ArrayList<>();
     private final HashMap<String, Method> methods;
+    private final String name;
 
-    private Scope(Scope parentScope) {
+    private Scope(Scope parentScope, String name) {
         this.parentScope = parentScope;
+        this.name = name;
         //can't add methods outside of global scope
         methods = null;
+        isGlobalScope = false;
     }
 
     public Scope() {
         parentScope = null;
+        name = null;
         methods = new HashMap<>();
+        isGlobalScope = true;
     }
 
     public boolean declareVariable(String name, DataType type) {
         if (lookupVariable(name) == null) {
-            variables.put(name, type);
+            
+            //figure out the local number
+            int localNumber = getLocalNumber();
+            
+            variables.add(new Variable(name, type, localNumber));
             return true;
         }
         return false;
     }
 
-    public boolean declareMethod(String name, Method method) {
+    /**
+     * Helper method used to get the next available local number
+     * @return local number
+     */
+    private int getLocalNumber() {
+        if (isGlobalScope) return 0;
+        
+        if (!variables.isEmpty()) { //see if this isn't the global scope
+            return variables.get(variables.size() - 1).localNumber + 1;
+        } else { //the parentscope is the globalscope, it's the first variable.
+            return parentScope.getLocalNumber();
+        }
+    }
+
+    public boolean declareMethod(Method method) {
         Scope globalscope = getGlobalScope();
-        if (!globalscope.methods.containsKey(name)) {
-            globalscope.methods.put(name, method);
+        if (!globalscope.methods.containsKey(method.name)) {
+            globalscope.methods.put(method.name, method);
             return true;
         }
         return false;
     }
 
-    public DataType lookupVariable(String name) {
-        DataType type = variables.get(name);
+    public DataType lookupVariable(String name) {        
+        Variable type = getVariable(name);
         if (type == null && parentScope != null) {
-            type = parentScope.lookupVariable(name);
+            return parentScope.lookupVariable(name);
+        } else if (type != null) {
+            return type.type;
         }
-        return type;
+        return null;
+    }
+    
+    private Variable getVariable(String name) {
+        for(Variable v: variables) {
+            if (v.name.equals(name)) {
+                return v;
+            }
+        }
+        return null;
     }
 
     public Method lookupMethod(String name) {
@@ -77,12 +115,37 @@ public class Scope {
         }
         return scope;
     }
+    
+    private Scope getFunctionScope() {
+        Scope scope = this;
+        while (name == null) {
+            scope = scope.parentScope;
+        }
+        return scope;
+    }
 
+    public Scope open(String name) {
+        childScope.add(new Scope(this, name));
+        return childScope.get(childScope.size() - 1);
+    }
+    
     public Scope open() {
-        return new Scope(this);
+        return open(null);
     }
 
     public Scope close() {
         return parentScope;
+    }
+
+    public ArrayList<Scope> getChildScope() {
+        return childScope;
+    }
+
+    public ArrayList<Variable> getVariables() {
+        return variables;
+    }
+
+    public String getName() {
+        return name;
     }
 }
