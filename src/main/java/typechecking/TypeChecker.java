@@ -120,7 +120,7 @@ public class TypeChecker extends alphaBaseVisitor {
     @Override
     public Object visitVariable(alphaParser.VariableContext ctx) {
         try {
-            return new DataTypeCarrier(variables.get(ctx.getText()).getParams());
+            return new DataTypeCarrier(variables.get(currentFunction + "." + ctx.getText()).getParams());
         } catch (NullPointerException ex) {
             throw new RuntimeException(ex.getMessage());
         }
