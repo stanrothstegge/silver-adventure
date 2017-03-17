@@ -5,6 +5,7 @@ import main.java.shared.*;
 import main.java.shared.model.Function;
 import main.java.shared.model.Variables;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +18,9 @@ import java.util.regex.Pattern;
  * Visitor
  */
 public class TypeChecker extends alphaBaseVisitor {
+    
+    private Scope scope = new Scope();
+    
     public static Map<String, Variables> variables = new HashMap<>();
     public static Map<String, Function> functions = new HashMap<>();
     private String currentVariable = "";                                                                                //Used to save the key of function
@@ -26,12 +30,63 @@ public class TypeChecker extends alphaBaseVisitor {
 
     @Override
     public Object visitLanguage(alphaParser.LanguageContext ctx) {
-        return super.visitLanguage(ctx);
+        super.visitLanguage(ctx);
+        
+        System.out.println("breakpoint");
+        
+        return null;
     }
 
     @Override
     public Object visitLeftBracketExpressionRightBracketExpression(alphaParser.LeftBracketExpressionRightBracketExpressionContext ctx) {
-        return visit(ctx.expression());
+        scope = scope.open();
+
+        Object object = super.visitLeftBracketExpressionRightBracketExpression(ctx);
+
+        scope = scope.close();
+        return object;
+    }
+
+    @Override
+    public Object visitIfStatement(alphaParser.IfStatementContext ctx) {
+        for (ParseTree t : ctx.children) {
+            switch (t.getText()) {
+                case "if":
+                    scope = scope.open();
+                    break;
+                case "ef":
+                    scope = scope.close();
+                    scope = scope.open();
+                    break;
+                case "el":
+                    scope = scope.close();
+                    scope = scope.open();
+                    break;
+                default:
+                    visit(t);
+            }
+        }
+
+        scope = scope.close();
+
+        return null;
+    }
+
+    @Override
+    public Object visitWhileMethod(alphaParser.WhileMethodContext ctx) {
+        for (ParseTree t : ctx.children) {
+            switch (t.getText()) {
+                case "wh":
+                    scope = scope.open();
+                    break;
+                default:
+                    visit(t);
+            }
+        }
+
+        scope = scope.close();
+
+        return null;
     }
 
     @Override
@@ -59,9 +114,8 @@ public class TypeChecker extends alphaBaseVisitor {
     @Override
     public Object visitFalseExpression(alphaParser.FalseExpressionContext ctx) {
         if (!currentVariable.equals("")) {
-            variables.get(currentVariable).setId(ctx.getText());                                                        //Set char
             try {
-                DataTypes.typeCheckingBoolean(DataType.TRUE, variables.get(currentVariable).getParams());
+                DataTypes.typeCheckingBoolean(DataType.TRUE, scope.lookupVariable(currentVariable));
             } catch (RuntimeException ex) {
                 throw new RuntimeException(errorMessageMaker(ctx, "visitFalseExpression") + ex.getMessage());
             }
@@ -120,7 +174,7 @@ public class TypeChecker extends alphaBaseVisitor {
     @Override
     public Object visitVariable(alphaParser.VariableContext ctx) {
         try {
-            return new DataTypeCarrier(variables.get(currentFunction + "." + ctx.getText()).getParams());
+            return new DataTypeCarrier(scope.lookupVariable(currentFunction + "." + ctx.getText()));
         } catch (NullPointerException ex) {
             throw new RuntimeException(ex.getMessage());
         }
@@ -135,11 +189,12 @@ public class TypeChecker extends alphaBaseVisitor {
     @Override
     public Object visitStringExpression(alphaParser.StringExpressionContext ctx) {
         if (!currentVariable.equals("")) {
-            if (variables.get(currentVariable).getParams() != DataType.STRING) {
+            //if (variables.get(currentVariable).getParams() != DataType.STRING) {
+            if (scope.lookupVariable(currentVariable) != DataType.STRING) {
                 throw new RuntimeException(errorMessageMaker(ctx, "visitStringExpression Char " + currentVariable
                         + " = " + ctx.getText() + " was supposed to be string"));
             }
-            variables.get(currentVariable).setId(ctx.getText());                                                        //Set char
+
             currentVariable = "";                                                                                       //Clear for the next variable
         }
         return new DataTypeCarrier(DataType.STRING);
@@ -149,9 +204,9 @@ public class TypeChecker extends alphaBaseVisitor {
     @Override
     public Object visitTrueExpression(alphaParser.TrueExpressionContext ctx) {
         if (!currentVariable.equals("")) {
-            variables.get(currentVariable).setId(ctx.getText());
+            
             try {
-                DataTypes.typeCheckingBoolean(DataType.TRUE, variables.get(currentVariable).getParams());
+                DataTypes.typeCheckingBoolean(DataType.TRUE, scope.lookupVariable(currentVariable));
             } catch (RuntimeException ex) {
                 throw new RuntimeException(errorMessageMaker(ctx, "visitTrueExpression") + ex.getMessage());
             }
@@ -269,10 +324,44 @@ public class TypeChecker extends alphaBaseVisitor {
     @Override
     public Object visitCharExpression(alphaParser.CharExpressionContext ctx) {
         if (!currentVariable.equals("")) {
-            variables.get(currentVariable).setId(ctx.CHAR_TYPE().getText());                                            //Set char
+            
             currentVariable = "";                                                                                       //Clear for the next variable
         }
         return new DataTypeCarrier(DataType.CHAR);
+    }
+
+    @Override
+    public Object visitCatchFunction(alphaParser.CatchFunctionContext ctx) {
+        for (ParseTree t : ctx.children) {
+            switch (t.getText()) {
+                case "ca":
+                    scope = scope.close();
+                    scope = scope.open();
+                    break;
+                default:
+                    visit(t);
+            }
+        }
+
+        scope = scope.close();
+
+        return null;
+    }
+
+    @Override
+    public Object visitThrowBlock(alphaParser.ThrowBlockContext ctx) {
+        for (ParseTree t : ctx.children) {
+            switch (t.getText()) {
+                case "ty":
+                    //scope closed in visitCatchFunction
+                    scope = scope.open();
+                    break;
+                default:
+                    visit(t);
+            }
+        }
+
+        return null;
     }
 
     @Override
@@ -292,11 +381,13 @@ public class TypeChecker extends alphaBaseVisitor {
         if (!currentVariable.equals("")) {
             try {
                 //Clear for the next variable
-                variables.get(currentVariable).setId(ctx.getText());                                                    //Add the integer to function
+                
                 Pattern p = Pattern.compile("[.]");
                 Matcher m = p.matcher(ctx.getText());
                 if (m.find()) {                                                                                         //Check if its a double or integer
-                    variables.get(currentVariable).setParam(DataType.DOUBLE);                                           //If double chance it
+                    
+                    //this line is very old and very confusing, so commented out
+                    //variables.get(currentVariable).setParam(DataType.DOUBLE);                                           //If double change it
                     currentVariable = "";
                     return new DataTypeCarrier(DataType.DOUBLE);
                 } else {
@@ -336,7 +427,13 @@ public class TypeChecker extends alphaBaseVisitor {
         currentVariable = functionName.equals("") ? ctx.TEXT().getText() :
                 functionName + "." + ctx.TEXT().getText(); //All our DataType are 2 long so get everything after that is a Declartion
 
+        //todo: edited this
         variables.put(currentVariable, new Variables(DataTypes.getEnum(ctx.dataType().getText())));
+        
+        //todo: bezig hiermee
+        DataType type = DataTypes.getEnum(ctx.dataType().getText());
+        
+        scope.declareVariable(currentVariable, DataTypes.getEnum(ctx.dataType().getText()));
 
         if (!functionName.equals(""))
             variables.get(currentVariable).setFunctionName(functionName);                                              //If the variabel is in a function
@@ -404,10 +501,12 @@ public class TypeChecker extends alphaBaseVisitor {
     @Override
     public Object visitFunction(alphaParser.FunctionContext ctx) {
         functionName = ctx.functionDeclaration().TEXT().getText();
+        scope = scope.open();
 
         super.visitFunction(ctx);
 
         functionName = "";
+        scope = scope.close();
         return null;
     }
 

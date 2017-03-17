@@ -94,8 +94,14 @@ public class DataTypes {
      */
     public static void typeCheckDoubleAndInteger(DataType dataTypeFirst, DataType dataTypeSecond) throws RuntimeException {
         switch (dataTypeFirst) {
-            case DOUBLE:                                                                                                //Check double and integer
-            case INTEGER:
+            case INTEGER:                                                                                                //Check double and integer
+                switch (dataTypeSecond) {
+                    case INTEGER:
+                        return;
+                    default:
+                        throw new RuntimeException(" typeCheckDoubleAndInteger DataType 1: " + dataTypeFirst + " DataType 2: " + dataTypeSecond);
+                }
+            case DOUBLE:
                 switch (dataTypeSecond) {
                     case DOUBLE:
                     case INTEGER:

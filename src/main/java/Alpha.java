@@ -20,7 +20,7 @@ class Alpha {
 
         //week 1
         //Load in the file and  create lexer from it
-        alphaLexer lexer = new alphaLexer(new ANTLRFileStream("src/main/alpha/test2.alpha"));
+        alphaLexer lexer = new alphaLexer(new ANTLRFileStream("src/main/alpha/scopetexting.alpha"));
         //run scanner to create stream of tokens
         CommonTokenStream tokens = new CommonTokenStream(lexer);
 
@@ -36,7 +36,7 @@ class Alpha {
         TypeChecker type = new TypeChecker();
         type.visit(expression);
         //Byte code generator
-        CodeGenerator codeGenerator = new CodeGenerator("test2");
+        CodeGenerator codeGenerator = new CodeGenerator("scopetexting");
         codeGenerator.visit(expression);
         System.out.println("done?");
     }

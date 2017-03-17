@@ -1,8 +1,11 @@
 Alpha
 
-in z;
-
 ~in in~ funct (in a, in b)
+
+do d = 2;
+do e = 2.2;
+do f = 2.2 + 2;
+in g = 2.2 + 2;
 in c;
 
 if (c)//shoud never enter this
