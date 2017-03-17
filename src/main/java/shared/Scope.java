@@ -7,6 +7,8 @@ import java.util.HashMap;
  * //todo robin text hier
  */
 public class Scope {
+    
+    private final boolean isGlobalScope;
 
     private final Scope parentScope;
     private ArrayList<Scope> childScope = new ArrayList<>();
@@ -20,22 +22,40 @@ public class Scope {
         this.name = name;
         //can't add methods outside of global scope
         methods = null;
+        isGlobalScope = false;
     }
 
     public Scope() {
         parentScope = null;
         name = null;
         methods = new HashMap<>();
+        isGlobalScope = true;
     }
 
     public boolean declareVariable(String name, DataType type) {
         if (lookupVariable(name) == null) {
-            //todo: setup local number
-            int localNumber = -1;
+            
+            //figure out the local number
+            int localNumber = getLocalNumber();
+            
             variables.add(new Variable(name, type, localNumber));
             return true;
         }
         return false;
+    }
+
+    /**
+     * Helper method used to get the next available local number
+     * @return local number
+     */
+    private int getLocalNumber() {
+        if (isGlobalScope) return 0;
+        
+        if (!variables.isEmpty()) { //see if this isn't the global scope
+            return variables.get(variables.size() - 1).localNumber + 1;
+        } else { //the parentscope is the globalscope, it's the first variable.
+            return parentScope.getLocalNumber();
+        }
     }
 
     public boolean declareMethod(Method method) {
