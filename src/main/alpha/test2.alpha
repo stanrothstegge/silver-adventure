@@ -1,12 +1,16 @@
 Alpha
+st d;
+st g = "help";
 
-~in in~ funct ()
-in a;
-re 1, 1;
+~in in~ funct (in a, in b = 1)
+in c;
+
+c = 1;
+re a, b;
 ☕
 
 ~pizza ()
-in a;
+funct (1);
 ☕
 
 Omega

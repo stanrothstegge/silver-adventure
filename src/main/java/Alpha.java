@@ -8,7 +8,9 @@ import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 
 
 /**
@@ -37,7 +39,14 @@ class Alpha {
         type.visit(expression);
         //Byte code generator
         CodeGenerator codeGenerator = new CodeGenerator("test2");
-        codeGenerator.visit(expression);
+        ArrayList<String> output = codeGenerator.visit(expression);
+
+        FileWriter writer = new FileWriter("output.txt");
+        for(String str: output) {
+            writer.write(str + "\r\n");
+        }
+        writer.close();
+
         System.out.println("done?");
     }
 }
