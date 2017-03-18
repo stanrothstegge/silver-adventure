@@ -5,3 +5,4 @@ out/*
 .idea/uiDesigner.xml
 .idea/encodings.xml
 .idea/vcs.xml
+output.txt
