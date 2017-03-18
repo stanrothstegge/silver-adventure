@@ -154,8 +154,7 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
             type = DataType.valueOf(variable.get(1));
 
             //expressions opslaan om te verwerken in de pizza functie
-            System.out.println(ctx.declarationFinal().declarationFill().expression().getText());
-            globalExpressions.add(ctx.declarationFinal().declarationFill().expression());
+            globalExpressions.add(ctx.declarationFinal().declarationFill().expression());                               //todo onnodig?
             globalVariables.add(variableName);
 
             //todo get value

@@ -41,7 +41,7 @@ class Alpha {
         CodeGenerator codeGenerator = new CodeGenerator("test2");
         ArrayList<String> output = codeGenerator.visit(expression);
 
-        FileWriter writer = new FileWriter("output.txt");
+        FileWriter writer = new FileWriter("test2.jasmin");
         for(String str: output) {
             writer.write(str + "\r\n");
         }
