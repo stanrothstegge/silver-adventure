@@ -78,15 +78,16 @@ public class TypeConverter {
     static String generateCommand(DataType type, String value, Command kind) {
         switch (type) {
             case BOOLEAN:
-                return kind == Command.PUT ? "bastore " + value : "baload ";
+                    value = value.equals("tr") ? "1" : "0"; //convert boolean to 1 or 0
+                return kind == Command.PUT ? "iconst_" + value : "iload ";
             case INTEGER:
-                return kind == Command.PUT ? "bipush " + value : "istore ";
+                return kind == Command.PUT ? "bipush " + value : "iload ";
             case DOUBLE:
-                return kind == Command.PUT ? "dastore " + value : "daload "; // takes 2 spaces
+                return kind == Command.PUT ? "ldc2_w " + value : "dload "; // takes 2 spaces
             case STRING:
                 return kind == Command.PUT ? "ldc " + value : "aload "; //todo not sure if works
             case CHAR:
-                return kind == Command.PUT ? "castore " + value : "caload ";
+                return kind == Command.PUT ? "castore " + value : "caload "; //todo fix char
             default:
                 throw new RuntimeException("stuff wnet wrong");
         }

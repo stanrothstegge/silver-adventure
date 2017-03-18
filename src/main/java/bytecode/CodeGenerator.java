@@ -9,12 +9,14 @@ import main.java.shared.DataTypes;
 import main.java.shared.Scope;
 import main.java.typechecking.TypeChecker;
 import org.antlr.v4.runtime.tree.ParseTree;
+
 import java.util.ArrayList;
 
 
 public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
 
     final String fileName;
+    //To make jasmin code readable for debugging
     private static final String NEWLINE = "\r\n";
     private ArrayList<alphaParser.ExpressionContext> globalExpressions = new ArrayList<>();
     private ArrayList<String> globalVariables = new ArrayList<>();
@@ -30,18 +32,10 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
 
     @Override
     public ArrayList<String> visitLanguage(alphaParser.LanguageContext ctx) {
-        //todo TEST SCOPE
-        TypeChecker.variables.get(0);
-
         ArrayList<String> list = new ArrayList<>();
+
         list.add(".class public " + fileName);
         list.add(".super java/lang/Object" + NEWLINE);
-        //Standard initializer (calls java.lang.Object's initializer), in other words: the empty constructor
-        list.add(".method public <init>()V");
-        list.add("aload_0");
-        list.add("invokenonvirtual java/lang/Object/<init>()V");
-        list.add("return");
-        list.add(".end method" + NEWLINE);
 
         //first, visit all the global statements
         for (ParseTree t : ctx.children) {
@@ -49,6 +43,13 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
                 list.addAll(visit(t));
             }
         }
+
+        //Standard initializer (calls java.lang.Object's initializer), in other words: the empty constructor
+        list.add(NEWLINE + ".method public <init>()V");
+        list.add("aload_0");
+        list.add("invokenonvirtual java/lang/Object/<init>()V");
+        list.add("return");
+        list.add(".end method" + NEWLINE);
 
         //then visit all the functions
         for (ParseTree t : ctx.children) {
@@ -58,10 +59,10 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
         }
         //todo count exactle limits and stuff
         //main.set(0,"\r\n.method public static main([Ljava/lang/String;)V");
-        main.set(1,".limit stack 100");
-        main.set(2,".limit locals 100");
+        main.set(1, ".limit stack 100");
+        main.set(2, ".limit locals 100");
         for (int x = 0; x < addToMain.size(); x++) {
-            main.add(x+3, addToMain.get(x));
+            main.add(x + 3, addToMain.get(x));
         }
         list.addAll(main);
         return list;
@@ -117,25 +118,24 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
         Scope scope = parentScope;
         int number = -1;
         while (number == -1) {
-            for(Scope s: scope.getChildScope()) {
-                
+            for (Scope s : scope.getChildScope()) {
+
                 //first find the scope of the current function
                 if (scope == parentScope && functionName.equals(s.getName())) {
                     scope = s;
                     break;
                 }
-                
+
                 //then find the variable and correct scope
             }
         }
-        
+        //todo use commands function for this
         list.add(TypeConverter.convert(type, false) + "store " /* + number*/);
 
         //todo: work out expression
 
         return list;
     }
-
 
 
     @Override
@@ -156,14 +156,18 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
             //expressions opslaan om te verwerken in de pizza functie
             globalExpressions.add(ctx.declarationFinal().declarationFill().expression());                               //todo onnodig?
             globalVariables.add(variableName);
-
             //todo get value
-            //ldc , iconst_1 etc
-            addToMain.add(TypeConverter.generateCommand(type,
-                    ctx.declarationFinal().declarationFill().expression().getText(),Command.PUT));
-            //todo add to main
+            System.out.println(ctx.declarationFinal().declarationFill().expression().children.size());
+            //checks if the value is final
+            if (ctx.declarationFinal().declarationFill().expression().children.size() == 1) {
+                addToMain.add(TypeConverter.generateCommand(type,
+                        ctx.declarationFinal().declarationFill().expression().getText(), Command.PUT));
+            } else { //if not run through children
+                //Visit all the expression children
+                addToMain.addAll(visit(ctx.declarationFinal().declarationFill().expression()));
+            }
             //putstatic Exercise4/counter I
-            addToMain.add("putstatic "+ fileName + "/" + variableName + TypeConverter.convert(type, true));
+            addToMain.add("putstatic " + fileName + "/" + variableName + " " + TypeConverter.convert(type, true));
         }
 
         String line = ".field public static " + variableName + " " + TypeConverter.convert(type, true);
@@ -174,7 +178,6 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
     }
 
 
-
     @Override
     public ArrayList<String> visitFunction(alphaParser.FunctionContext ctx) {
         ArrayList<String> list = new ArrayList<>();
@@ -183,11 +186,12 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
         String functionName = ctx.functionDeclaration().TEXT().getText();
         returnTypes = new DataType[]{DataType.VOID};
 
+        //Main of the programm
         if (functionName.equals("pizza")) {
             functionName = "main";
 
             //hardcoded, main method always gets string array and returns void
-            list.add(NEWLINE +".method public static " + functionName + "([Ljava/lang/String;)V");
+            list.add(NEWLINE + ".method public static " + functionName + "([Ljava/lang/String;)V");
 
         } else {
             //fill in return types
@@ -211,7 +215,7 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
 
             //todo: first argument (spot 0) is called a, second argument (1) is called b, etc
 
-            list.add(NEWLINE +".method public static " + functionName + "(" + arguments + ")" + TypeConverter.convert(returnType, true));
+            list.add(NEWLINE + ".method public static " + functionName + "(" + arguments + ")" + TypeConverter.convert(returnType, true));
 
         }
         //Gets amount of variables in function
@@ -237,11 +241,13 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
 
                 //todo: do stuff with the expression?
             }
+            list.add("return");
 
-        }else{
+        } else {
             //todo call stuff in function
             //todo return statement
         }
+
 
         //todo: statements
         list.add(".end method" + NEWLINE);
@@ -271,6 +277,16 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
                 list.add(TypeConverter.convert(d.declarationFill().declaration().dataType().getText(), true));
             }
         }
+        return list;
+    }
+
+    @Override
+    public ArrayList<String> visitPlusExpression(alphaParser.PlusExpressionContext ctx) {
+        ArrayList<String> list = new ArrayList<>();
+        //todo typechecking
+        list.add("bipush " + ctx.expression(0).getText());
+        list.add("bipush " + ctx.expression(0).getText());
+        list.add("iadd");
         return list;
     }
 }

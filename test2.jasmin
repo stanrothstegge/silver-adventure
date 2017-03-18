@@ -1,26 +1,12 @@
 .class public test2
 .super java/lang/Object
 
+.field public static a I
+
 .method public <init>()V
 aload_0
 invokenonvirtual java/lang/Object/<init>()V
 return
-.end method
-
-.field public static t1 I
-.field public static t2 D
-.field public static t3 Ljava/lang/String;
-.field public static t4 C
-.field public static t5 Z
-.field public static e1 I
-.field public static e2 D
-.field public static e3 Ljava/lang/String;
-.field public static e4 C
-.field public static e5 Z
-
-.method public static funct(II)V
-.limit stack 10
-.limit locals 5
 .end method
 
 
@@ -28,14 +14,9 @@ return
 .limit stack 100
 .limit locals 100
 bipush 1
-putstatic test2/t1I
-dastore 22.33
-putstatic test2/t2D
-ldc "pizza"
-putstatic test2/t3Ljava/lang/String;
-castore 'c'
-putstatic test2/t4C
-bastore tr
-putstatic test2/t5Z
+bipush 1
+iadd
+putstatic test2/a I
+return
 .end method
 

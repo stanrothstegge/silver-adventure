@@ -1,27 +1,8 @@
 Alpha
-in t1 = 1;
-do t2 = 22.33;
-st t3 = "pizza";
-ch t4 = 'c';
-bo t5 = tr;
-
-in e1;
-do e2;
-st e3;
-ch e4;
-bo e5;
-
-
-
-~in in~ funct (in a, in b = 1)
-in c;
-
-c = 1;
-re a, b;
-☕
+in a = 1 + 2;
 
 ~pizza ()
-funct (1);
+
 ☕
 
 Omega
