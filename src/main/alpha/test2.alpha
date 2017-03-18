@@ -1,8 +1,11 @@
 Alpha
-in a = 1 + 2;
 
-~pizza ()
-
+~in~ func ()
+re 1;
 ☕
 
+~pizza ()
+in a = func ();
+
+☕
 Omega

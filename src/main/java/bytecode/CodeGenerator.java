@@ -209,8 +209,11 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
 
             //setup list of arguments
             String arguments = "";
-            for (String s : visitArgumentsDeclaration(ctx.functionDeclaration().argumentsDeclaration())) {
-                arguments += s;
+            //if there are arguments
+            if (ctx.functionDeclaration().argumentsDeclaration() != null) {
+                for (String s : visitArgumentsDeclaration(ctx.functionDeclaration().argumentsDeclaration())) {
+                    arguments += s;
+                }
             }
 
             //todo: first argument (spot 0) is called a, second argument (1) is called b, etc
@@ -233,6 +236,17 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
         list.add(".limit stack " + localSize * 2);
         list.add(".limit locals " + localSize);
 
+        /*----------------------------------------------------------------------------------------------------------*/
+        // handle all function remaining children //
+        /*----------------------------------------------------------------------------------------------------------*/
+
+
+        for (ParseTree t : ctx.children) {
+            if (t instanceof alphaParser.PrintStatementContext)
+                list.addAll(visit(t));
+        }
+
+
         if (functionName.equals("main")) {
             //global variables expressions verwerken
             for (int i = 0; i < globalExpressions.size(); i++) {
@@ -244,8 +258,12 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
             list.add("return");
 
         } else {
-            //todo call stuff in function
             //todo return statement
+            for (ParseTree t : ctx.statement()) {
+                if (t instanceof alphaParser.ReturnMethodStatementContext) {
+                    list.addAll(visit(t)); //todo handle every child
+                }
+            }
         }
 
 
@@ -284,9 +302,31 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
     public ArrayList<String> visitPlusExpression(alphaParser.PlusExpressionContext ctx) {
         ArrayList<String> list = new ArrayList<>();
         //todo typechecking
+        //todo iadd? what if string + string or double + double or 1 + ( 2 + 3)
         list.add("bipush " + ctx.expression(0).getText());
         list.add("bipush " + ctx.expression(0).getText());
         list.add("iadd");
+        return list;
+    }
+
+    @Override
+    public ArrayList<String> visitPrintFunction(alphaParser.PrintFunctionContext ctx) {
+        ArrayList<String> list = new ArrayList<>();
+        //todo handle variables and stuff
+        list.add("getstatic java/lang/System/out Ljava/io/PrintStream;");
+        String printText = "ldc \"";
+        for (ParseTree t : ctx.expression().children) {
+            if (t.getParent() instanceof alphaParser.StringExpressionContext ||
+                    t.getParent() instanceof alphaParser.NumberExpressionContext) {//Handles standalone string and expression
+                printText += ctx.expression().getText().replace("\"", "");
+            }
+            //todo get variable name
+        }
+        //close string
+        list.add(printText + "\"");
+        //list.add("ldc \"" + ctx.expression().getText().replace("\"", "") + "\"");
+        list.add("invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V");
+
         return list;
     }
 }
