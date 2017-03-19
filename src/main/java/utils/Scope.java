@@ -12,6 +12,8 @@ public class Scope {
 
     private final Scope parentScope;
     
+    private final HashMap<String, Integer> scopeSizes;
+    
     private final ArrayList<Variable> variables = new ArrayList<>();
     private final HashMap<String, Method> methods;
     private final String name;
@@ -22,12 +24,14 @@ public class Scope {
         //can't add methods outside of global scope
         methods = null;
         isGlobalScope = false;
+        scopeSizes = null;
     }
 
     public Scope() {
         parentScope = null;
         name = null;
         methods = new HashMap<>();
+        scopeSizes = new HashMap<>();
         isGlobalScope = true;
     }
 
@@ -83,6 +87,14 @@ public class Scope {
             }
         }
         return null;
+    }
+    
+    public int getScopeSize(String functionName) {
+        if (parentScope != null) {
+            throw new RuntimeException("you shouldn't be looking at this outside a global scope");
+        }
+        
+        return scopeSizes.get(functionName);
     }
 
     public Method lookupMethod(String name) {
