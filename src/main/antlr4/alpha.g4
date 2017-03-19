@@ -1,6 +1,8 @@
 grammar alpha;
 //https://github.com/bkiers/tiny-language-antlr4/blob/master/src/main/antlr4/tl/antlr4/TL.g4
 //https://github.com/antlr/grammars-v4
+//https://en.wikipedia.org/wiki/Java_bytecode_instruction_listings
+//http://jasmin.sourceforge.net/instructions.html
 language
     :START
     (globalStatements|function)*

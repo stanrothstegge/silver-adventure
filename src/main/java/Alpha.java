@@ -8,6 +8,7 @@ import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -37,13 +38,16 @@ class Alpha {
         TypeChecker type = new TypeChecker();
         type.visit(expression);
         //Byte code generator
-        CodeGenerator codeGenerator = new CodeGenerator("scopetexting");
-        ArrayList<String> result = codeGenerator.visit(expression);
-        
-        for(String s: result) {
-            System.out.println(s);
+
+        CodeGenerator codeGenerator = new CodeGenerator("test2");
+        ArrayList<String> output = codeGenerator.visit(expression);
+
+        FileWriter writer = new FileWriter("test2.jasmin");
+        for(String str: output) {
+            writer.write(str + "\r\n");
         }
-        
+        writer.close();
+
         System.out.println("done?");
     }
 }
