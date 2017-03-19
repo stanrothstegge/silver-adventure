@@ -1,2 +1,2 @@
-java -jar jasmin.jar test2.jasmin
-java test2
+java -jar jasmin.jar %1.jasmin
+java %1
