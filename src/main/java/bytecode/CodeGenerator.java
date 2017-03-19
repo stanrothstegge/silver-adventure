@@ -118,10 +118,8 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
 
         //put the number in memory
         list.addAll(visit(ctx.expression()));
-        
+
         //store number new way
-        Scope parentScope = Identifier.parentScope;
-        Scope scope = parentScope;
         int number = scope.getVariable(variableName).localNumber;
         
         //todo use commands function for this
@@ -132,6 +130,52 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
         return list;
     }
 
+
+
+    @Override
+    public ArrayList<String> visitStringExpression(alphaParser.StringExpressionContext ctx) {
+        ArrayList<String> list = new ArrayList<>();
+
+        list.add("ldc "+ctx.getText());
+
+        return list;
+    }
+
+    @Override
+    public ArrayList<String> visitDeclarationStatementStatement(alphaParser.DeclarationStatementStatementContext ctx) {
+        ArrayList<String> list = new ArrayList<>();
+
+        for (ParseTree t : ctx.children) {
+            ArrayList<String> temp = visit(t);
+            if(temp != null)
+                list.addAll(temp);
+        }
+        return list;
+    }
+
+    @Override
+    public ArrayList<String> visitDeclarationStatement(alphaParser.DeclarationStatementContext ctx) {
+        ArrayList<String> list = new ArrayList<>();
+
+        for (ParseTree t : ctx.children) {
+            ArrayList<String> temp = visit(t);
+            if(temp != null)
+                list.addAll(temp);
+        }
+        return list;
+    }
+
+    @Override
+    public ArrayList<String> visitDeclarationFinal(alphaParser.DeclarationFinalContext ctx) {
+        ArrayList<String> list = new ArrayList<>();
+
+        for (ParseTree t : ctx.children) {
+            ArrayList<String> temp = visit(t);
+            if(temp != null)
+                list.addAll(temp);
+        }
+        return list;
+    }
 
     @Override
     public ArrayList<String> visitGlobalStatements(alphaParser.GlobalStatementsContext ctx) {
@@ -152,7 +196,6 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
             globalExpressions.add(ctx.declarationFinal().declarationFill().expression());                               //todo onnodig?
             globalVariables.add(variableName);
             //todo get value
-            System.out.println(ctx.declarationFinal().declarationFill().expression().children.size());
             //checks if the value is final
             if (ctx.declarationFinal().declarationFill().expression().children.size() == 1) {
                 addToMain.add(TypeConverter.generateCommand(type,
@@ -239,7 +282,9 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
 
         for (ParseTree t : ctx.statement()) {
             //todo dont visit nullpointers
-                list.addAll(visit(t));
+            ArrayList<String> temp = visit(t);
+            if(temp != null)
+                list.addAll(temp);
         }
 
 
@@ -315,20 +360,19 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
         ArrayList<String> list = new ArrayList<>();
         //todo handle variables and stuff
         list.add("getstatic java/lang/System/out Ljava/io/PrintStream;");
-        String printText = "ldc \"";
+        String printText = "";
         for (ParseTree t : ctx.expression().children) {
             if (t.getParent() instanceof alphaParser.StringExpressionContext ||
                     t.getParent() instanceof alphaParser.NumberExpressionContext) {//Handles standalone string and expression
-                printText += t.getText().replace("\"", "");
+                printText += TypeConverter.generateCommand(DataType.STRING, t.getText(),Command.PUT);
             }
             if(t.getParent() instanceof  alphaParser.VariableExpressionContext){
-                printText +=  scope.getVariable(t.getText());
+                printText += TypeConverter.generateCommand(scope.lookupVariable(t.getText()), Integer.toString(scope.getVariable(t.getText()).localNumber),Command.LOAD);
             }
 
         }
         //close string
-        list.add(printText + "\"");
-        //list.add("ldc \"" + ctx.expression().getText().replace("\"", "") + "\"");
+        list.add(printText);
         list.add("invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V");
 
         return list;

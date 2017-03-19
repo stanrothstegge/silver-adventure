@@ -12,11 +12,15 @@ return
 .method public static main([Ljava/lang/String;)V
 .limit stack 100
 .limit locals 100
+ldc "robin"
+astore 0
 ldc "pizza"
-putstatic test2/a Ljava/lang/String;
-.field public static a Ljava/lang/String;
+astore 1
 getstatic java/lang/System/out Ljava/io/PrintStream;
-ldc "main.java.utils.Variable@7dc7cbad"
+aload 0
+invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+getstatic java/lang/System/out Ljava/io/PrintStream;
+aload 1
 invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
 return
 .end method
