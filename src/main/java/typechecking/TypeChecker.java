@@ -1,18 +1,15 @@
 package main.java.typechecking;
 
 import main.antlr4.*;
-import main.java.shared.model.Function;
-import main.java.shared.model.Variables;
 import main.java.utils.DataType;
 import main.java.utils.DataTypes;
+import main.java.utils.model.Method;
 import main.java.utils.Scope;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,22 +17,17 @@ import java.util.regex.Pattern;
  * Visitor
  */
 public class TypeChecker extends alphaBaseVisitor {
-    
+
     private Scope scope = new Scope();
-    
-    @Deprecated
-    public static Map<String, Variables> variables = new HashMap<>();
-    public static Map<String, Function> functions = new HashMap<>();
-    
+
     private String currentVariable = "";                                                                                //Used to save the key of function
     private String currentFunction = "";                                                                                //Use to hold the function to get it in the return methode
-    private String functionName = "";
 
 
     @Override
     public Object visitLanguage(alphaParser.LanguageContext ctx) {
         super.visitLanguage(ctx);
-        
+
         return null;
     }
 
@@ -43,7 +35,7 @@ public class TypeChecker extends alphaBaseVisitor {
     public Object visitLeftBracketExpressionRightBracketExpression(alphaParser.LeftBracketExpressionRightBracketExpressionContext ctx) {
         scope = scope.open();
 
-        Object object = super.visitLeftBracketExpressionRightBracketExpression(ctx);
+        DataTypeCarrier object = (DataTypeCarrier) visit(ctx.expression());
 
         scope = scope.close();
         return object;
@@ -176,7 +168,7 @@ public class TypeChecker extends alphaBaseVisitor {
     @Override
     public Object visitVariable(alphaParser.VariableContext ctx) {
         try {
-            return new DataTypeCarrier(scope.lookupVariable(currentFunction + "." + ctx.getText()));
+            return new DataTypeCarrier(scope.lookupVariable(ctx.getText()));
         } catch (NullPointerException ex) {
             throw new RuntimeException(ex.getMessage());
         }
@@ -206,7 +198,7 @@ public class TypeChecker extends alphaBaseVisitor {
     @Override
     public Object visitTrueExpression(alphaParser.TrueExpressionContext ctx) {
         if (!currentVariable.equals("")) {
-            
+
             try {
                 DataTypes.typeCheckingBoolean(DataType.TRUE, scope.lookupVariable(currentVariable));
             } catch (RuntimeException ex) {
@@ -232,18 +224,17 @@ public class TypeChecker extends alphaBaseVisitor {
                 dataTypeArrayList.add(DataTypes.getEnum(((java.util.ArrayList)
                         ((alphaParser.DataTypeContext) dataType).children).get(0).toString()));                         //Get datatype and add to the list
             }
-            functions.put(currentFunction, new Function(dataTypeArrayList));                                            //Add to the hashmap for later use
+            scope.declareMethod(new Method(currentFunction).setReturnValues(dataTypeArrayList));
         } else {
-            functions.put(currentFunction, new Function());
+            scope.declareMethod(new Method(currentFunction));
         }
 
         if (ctx.argumentsDeclaration() != null) {
             @SuppressWarnings("unchecked") ArrayList<DataType> argumentTypes = (ArrayList<DataType>) visit(ctx.argumentsDeclaration());
-            functions.get(currentFunction).setArgumentTypes(argumentTypes);
+            scope.lookupMethod(currentFunction).setParameters(argumentTypes);
             //Check must have return ammount
-            functions.get(currentFunction).setAmount(ctx.argumentsDeclaration().getText().length() -
+            scope.lookupMethod(currentFunction).setAmount(ctx.argumentsDeclaration().getText().length() -
                     ctx.argumentsDeclaration().getText().replace("=", "").length());
-
 
         }
 
@@ -268,15 +259,15 @@ public class TypeChecker extends alphaBaseVisitor {
         int amount = ctx.returnMethod().expression().size();                                                            //Get how many
         if (amount > 0) {
             for (int i = 0; i < amount; i++) {
-                if (functions.get(currentFunction).getReturnType(i) != ((DataTypeCarrier) visit(ctx.returnMethod().expression(i))).type)
+                if (scope.lookupMethod(currentFunction).getReturnType(i) != ((DataTypeCarrier) visit(ctx.returnMethod().expression(i))).type)
                     throw new RuntimeException(errorMessageMaker(ctx,
                             "visitReturnMethodStatement Function didn't return correct DataType Expected :"
-                                    + functions.get(currentFunction).getReturnType(i) + "got "
+                                    + scope.lookupMethod(currentFunction).getReturnType(i) + "got "
                                     + ctx.returnMethod().expression(i).getText()));
 
             }
         }
-        if (functions.get(currentFunction).getReturn().size() != amount)
+        if (scope.lookupMethod(currentFunction).getReturn().size() != amount)
             throw new RuntimeException(errorMessageMaker(ctx,
                     "visitFunctionCall Missing return values"));
 
@@ -285,7 +276,7 @@ public class TypeChecker extends alphaBaseVisitor {
 
     @Override
     public Object visitFunctionCall(alphaParser.FunctionCallContext ctx) {
-        Function function = functions.get(ctx.TEXT().getText());
+        Method function = scope.lookupMethod(ctx.TEXT().getText());
         int returntypes = 0;
         for (int i = 0; i < ctx.children.size(); i++) {
             if (ctx.children.get(i) instanceof alphaParser.DeclarationContext ||
@@ -307,10 +298,10 @@ public class TypeChecker extends alphaBaseVisitor {
         if (ctx.argumentsCall() != null) {
             for (int i = 0; i < ctx.argumentsCall().expression().size(); i++) {
                 DataTypeCarrier carrier = (DataTypeCarrier) visit(ctx.argumentsCall().expression().get(i));
-                if (carrier.type != function.getArgument(i)) {
+                if (carrier.type != function.getParameters(i)) {
                     throw new RuntimeException(errorMessageMaker(ctx,
                             "visitFunctionCall argument was of the wrong type: "
-                                    + carrier.type + " , expected: " + function.getArgument(i)));
+                                    + carrier.type + " , expected: " + function.getParameters(i)));
                 }
             }
             //Check amount of arguments
@@ -326,7 +317,7 @@ public class TypeChecker extends alphaBaseVisitor {
     @Override
     public Object visitCharExpression(alphaParser.CharExpressionContext ctx) {
         if (!currentVariable.equals("")) {
-            
+
             currentVariable = "";                                                                                       //Clear for the next variable
         }
         return new DataTypeCarrier(DataType.CHAR);
@@ -383,11 +374,11 @@ public class TypeChecker extends alphaBaseVisitor {
         if (!currentVariable.equals("")) {
             try {
                 //Clear for the next variable
-                
+
                 Pattern p = Pattern.compile("[.]");
                 Matcher m = p.matcher(ctx.getText());
                 if (m.find()) {                                                                                         //Check if its a double or integer
-                    
+
                     //this line is very old and very confusing, so commented out
                     //variables.get(currentVariable).setParam(DataType.DOUBLE);                                           //If double change it
                     currentVariable = "";
@@ -426,19 +417,10 @@ public class TypeChecker extends alphaBaseVisitor {
 
     @Override
     public Object visitDeclaration(alphaParser.DeclarationContext ctx) {
-        currentVariable = functionName.equals("") ? ctx.TEXT().getText() :
-                functionName + "." + ctx.TEXT().getText(); //All our DataType are 2 long so get everything after that is a Declartion
+        currentVariable = ctx.TEXT().getText(); //All our DataType are 2 long so get everything after that is a Declartion
 
-        //todo: edited this
-        variables.put(currentVariable, new Variables(DataTypes.getEnum(ctx.dataType().getText())));
-        
-        //todo: bezig hiermee
-        DataType type = DataTypes.getEnum(ctx.dataType().getText());
-        
         scope.declareVariable(currentVariable, DataTypes.getEnum(ctx.dataType().getText()));
 
-        if (!functionName.equals(""))
-            variables.get(currentVariable).setFunctionName(functionName);                                              //If the variabel is in a function
         return new DataTypeCarrier(DataTypes.getEnum(ctx.dataType().getText()));
     }
 
@@ -503,12 +485,8 @@ public class TypeChecker extends alphaBaseVisitor {
 
     @Override
     public Object visitFunction(alphaParser.FunctionContext ctx) {
-        functionName = ctx.functionDeclaration().TEXT().getText();
         scope = scope.open();
-
         super.visitFunction(ctx);
-
-        functionName = "";
         scope = scope.close();
         return null;
     }

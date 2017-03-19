@@ -1,5 +1,8 @@
 package main.java.utils;
 
+import main.java.utils.model.Method;
+import main.java.utils.model.Variable;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 

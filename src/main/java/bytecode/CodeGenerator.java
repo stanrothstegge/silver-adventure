@@ -219,14 +219,14 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
         }
         //Gets amount of variables in function
         int variableAmount = 0;
-
-        for (String k : TypeChecker.variables.keySet()) {
-            if (TypeChecker.variables.get(k).getFunctionName() != null) {
-                if (TypeChecker.variables.get(k).getFunctionName().equals(functionName)) {
-                    variableAmount++;
-                }
-            }
-        }
+//todo get variableAmmount
+//        for (String k : TypeChecker.variables.keySet()) {
+//            if (TypeChecker.variables.get(k).getFunctionName() != null) {
+//                if (TypeChecker.variables.get(k).getFunctionName().equals(functionName)) {
+//                    variableAmount++;
+//                }
+//            }
+//        }
 
         int localSize = returnTypes.length + variableAmount; //todo: replace 10 with amount of variables in function
 
@@ -234,14 +234,15 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
         list.add(".limit locals " + localSize);
 
         /*----------------------------------------------------------------------------------------------------------*/
-        // handle all function remaining children //
+        // handle all function remaining statements //
         /*----------------------------------------------------------------------------------------------------------*/
 
-
-        for (ParseTree t : ctx.children) {
-            if (t instanceof alphaParser.PrintStatementContext)
+        for (ParseTree t : ctx.statement()) {
+            //todo dont visit nullpointers
                 list.addAll(visit(t));
         }
+
+
 
 
         if (functionName.equals("main")) {
@@ -259,22 +260,12 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
             //todo don't call visit(ctx), inless you realy like stack overflow errors
 //            for (ParseTree t : ctx.statement()) {
 //                if (t instanceof alphaParser.ReturnMethodStatementContext) {
-//                    ArrayList<String> returnList = visit(ctx);
+//                    ArrayList<String> returnList = visit(t);
 //                    list.addAll(returnList); //todo handle every child
 //                }
 //            }
         }
 
-
-        //todo: statements
-        for (int i = 0; i < ctx.children.size(); i++) {
-            
-            //visit each statement
-            ArrayList<String> list2 = visit(ctx.children.get(i));
-            if (list2 != null)
-            list.addAll(list2);
-        }
-        
         list.add(".end method" + NEWLINE);
 
         if (functionName.equals("main")) {
@@ -328,9 +319,12 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
         for (ParseTree t : ctx.expression().children) {
             if (t.getParent() instanceof alphaParser.StringExpressionContext ||
                     t.getParent() instanceof alphaParser.NumberExpressionContext) {//Handles standalone string and expression
-                printText += ctx.expression().getText().replace("\"", "");
+                printText += t.getText().replace("\"", "");
             }
-            //todo get variable name
+            if(t.getParent() instanceof  alphaParser.VariableExpressionContext){
+                printText +=  scope.getVariable(t.getText());
+            }
+
         }
         //close string
         list.add(printText + "\"");

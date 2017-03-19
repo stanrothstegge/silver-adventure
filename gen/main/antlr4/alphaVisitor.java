@@ -1,4 +1,4 @@
-// Generated from C:/Users/Robin/Documents/School/Jaar 2/Kwartiel 3/Compilers/ProgrammeerTaal/src/main/antlr4\alpha.g4 by ANTLR 4.6
+// Generated from E:/Dropbox/Saxion/Jaar 2/Kwartiel 3/Compilers & Operating Systems/Practitum/src/main/antlr4\alpha.g4 by ANTLR 4.6
 package main.antlr4;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -256,12 +256,18 @@ public interface alphaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitGlobalStatements(alphaParser.GlobalStatementsContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code globalStatement}
+	 * Visit a parse tree produced by {@link alphaParser#declarationStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDeclarationStatement(alphaParser.DeclarationStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code declarationStatementStatement}
 	 * labeled alternative in {@link alphaParser#statement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitGlobalStatement(alphaParser.GlobalStatementContext ctx);
+	T visitDeclarationStatementStatement(alphaParser.DeclarationStatementStatementContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code plusPlusStatement}
 	 * labeled alternative in {@link alphaParser#statement}.
