@@ -6,3 +6,5 @@ out/*
 .idea/encodings.xml
 .idea/vcs.xml
 output.txt
+test2.class
+test2.jasmin
