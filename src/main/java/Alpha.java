@@ -19,8 +19,8 @@ import java.util.ArrayList;
 class Alpha {
 
     public static void main(String[] args) throws IOException {
-
-        String fileName = "test2";
+        
+        String fileName = "firstcode";
 
         //week 1
         //Load in the file and  create lexer from it
@@ -49,8 +49,7 @@ class Alpha {
             writer.write(str + "\r\n");
         }
         writer.close();
-
-
+        
         //Run batfile to compile code
         Runtime.getRuntime().exec("cmd /c start run.bat "+fileName);
 

@@ -16,6 +16,7 @@ import java.util.ArrayList;
 public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
 
     final String fileName;
+    
     //To make jasmin code readable for debugging
     private static final String NEWLINE = "\r\n";
     private ArrayList<alphaParser.ExpressionContext> globalExpressions = new ArrayList<>();
@@ -25,7 +26,6 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
     private ArrayList<String> main = new ArrayList<>();
     private String functionName = "";
     private Scope scope = new Scope();
-
 
     public CodeGenerator(String fileName) {
         this.fileName = fileName;
@@ -261,15 +261,7 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
 
         }
         //Gets amount of variables in function
-        int variableAmount = 0;
-//todo get variableAmmount
-//        for (String k : TypeChecker.variables.keySet()) {
-//            if (TypeChecker.variables.get(k).getFunctionName() != null) {
-//                if (TypeChecker.variables.get(k).getFunctionName().equals(functionName)) {
-//                    variableAmount++;
-//                }
-//            }
-//        }
+        int variableAmount = Identifier.parentScope.getScopeSize(functionName);
 
         int localSize = returnTypes.length + variableAmount; //todo: replace 10 with amount of variables in function
 
