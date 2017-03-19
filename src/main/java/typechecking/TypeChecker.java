@@ -1,9 +1,11 @@
 package main.java.typechecking;
 
 import main.antlr4.*;
-import main.java.shared.*;
 import main.java.shared.model.Function;
 import main.java.shared.model.Variables;
+import main.java.utils.DataType;
+import main.java.utils.DataTypes;
+import main.java.utils.Scope;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 

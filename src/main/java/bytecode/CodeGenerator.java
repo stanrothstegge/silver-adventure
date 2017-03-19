@@ -4,9 +4,9 @@ package main.java.bytecode;
 import main.antlr4.alphaBaseVisitor;
 import main.antlr4.alphaParser;
 import main.java.scopechecking.Identifier;
-import main.java.shared.DataType;
-import main.java.shared.DataTypes;
-import main.java.shared.Scope;
+import main.java.utils.DataType;
+import main.java.utils.DataTypes;
+import main.java.utils.Scope;
 import main.java.typechecking.TypeChecker;
 import org.antlr.v4.runtime.tree.ParseTree;
 
@@ -256,11 +256,13 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
 
         } else {
             //todo return statement
-            for (ParseTree t : ctx.statement()) {
-                if (t instanceof alphaParser.ReturnMethodStatementContext) {
-                    list.addAll(visit(t)); //todo handle every child
-                }
-            }
+            //todo don't call visit(ctx), inless you realy like stack overflow errors
+//            for (ParseTree t : ctx.statement()) {
+//                if (t instanceof alphaParser.ReturnMethodStatementContext) {
+//                    ArrayList<String> returnList = visit(ctx);
+//                    list.addAll(returnList); //todo handle every child
+//                }
+//            }
         }
 
 

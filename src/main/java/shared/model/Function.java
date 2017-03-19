@@ -1,6 +1,6 @@
 package main.java.shared.model;
 
-import main.java.shared.DataType;
+import main.java.utils.DataType;
 
 import java.util.ArrayList;
 

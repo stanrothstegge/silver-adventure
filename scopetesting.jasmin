@@ -1,0 +1,38 @@
+.class public scopetesting
+.super java/lang/Object
+
+
+.method public <init>()V
+aload_0
+invokenonvirtual java/lang/Object/<init>()V
+return
+.end method
+
+
+.method public static funct(II)V
+.limit stack 22
+.limit locals 11
+.field public static d D
+.field public static e D
+.field public static f D
+.field public static c I
+.end method
+
+
+.method public static main([Ljava/lang/String;)V
+.limit stack 100
+.limit locals 100
+ldc2_w 2
+putstatic scopetesting/d D
+ldc2_w 2.2
+putstatic scopetesting/e D
+bipush 2.2
+bipush 2.2
+iadd
+putstatic scopetesting/f D
+ldc "shoul"
+putstatic scopetesting/ift Ljava/lang/String;
+return
+.field public static c I
+.end method
+

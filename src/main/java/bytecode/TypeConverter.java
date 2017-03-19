@@ -1,7 +1,7 @@
 package main.java.bytecode;
 
-import main.java.shared.DataType;
-import main.java.shared.DataTypes;
+import main.java.utils.DataType;
+import main.java.utils.DataTypes;
 
 /**
  * Created by Robin on 11-3-2017.

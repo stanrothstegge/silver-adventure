@@ -1,4 +1,4 @@
-package main.java.shared;
+package main.java.utils;
 
 /**
  * Holds DataTypes

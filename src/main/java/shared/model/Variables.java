@@ -1,10 +1,11 @@
 package main.java.shared.model;
 
-import main.java.shared.DataType;
+import main.java.utils.DataType;
 
 /**
  * Created by Garcia on 14/03/2017.
  */
+@Deprecated
 public class Variables {
     
     private String functionName;

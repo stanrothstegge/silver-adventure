@@ -19,10 +19,12 @@ import java.util.ArrayList;
 class Alpha {
 
     public static void main(String[] args) throws IOException {
+        
+        String fileName = "test2";
 
         //week 1
         //Load in the file and  create lexer from it
-        alphaLexer lexer = new alphaLexer(new ANTLRFileStream("src/main/alpha/scopetexting.alpha"));
+        alphaLexer lexer = new alphaLexer(new ANTLRFileStream("src/main/alpha/" + fileName + ".alpha"));
         //run scanner to create stream of tokens
         CommonTokenStream tokens = new CommonTokenStream(lexer);
 
@@ -39,10 +41,10 @@ class Alpha {
         type.visit(expression);
         //Byte code generator
 
-        CodeGenerator codeGenerator = new CodeGenerator("test2");
+        CodeGenerator codeGenerator = new CodeGenerator(fileName);
         ArrayList<String> output = codeGenerator.visit(expression);
 
-        FileWriter writer = new FileWriter("test2.jasmin");
+        FileWriter writer = new FileWriter(fileName + ".jasmin");
         for(String str: output) {
             writer.write(str + "\r\n");
         }

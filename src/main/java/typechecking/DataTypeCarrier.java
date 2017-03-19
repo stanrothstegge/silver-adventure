@@ -1,6 +1,6 @@
 package main.java.typechecking;
 
-import main.java.shared.DataType;
+import main.java.utils.DataType;
 
 /**
  * Object used in TypeChecker

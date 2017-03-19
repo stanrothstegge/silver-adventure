@@ -1,4 +1,4 @@
-package main.java.shared;
+package main.java.utils;
 
 /**
  * Created by Robin on 16-3-2017.

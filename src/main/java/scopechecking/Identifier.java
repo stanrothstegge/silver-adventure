@@ -1,9 +1,9 @@
 package main.java.scopechecking;
 
 import main.antlr4.*;
-import main.java.shared.DataTypes;
-import main.java.shared.Method;
-import main.java.shared.Scope;
+import main.java.utils.DataTypes;
+import main.java.utils.Method;
+import main.java.utils.Scope;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.util.ArrayList;
