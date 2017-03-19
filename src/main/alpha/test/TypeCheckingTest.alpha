@@ -5,7 +5,7 @@ in iy = 1;
 //iy = 'c';
 //iy = "pizza";
 //iy = tr;
-iy = 22.33;
+//iy = 22.33;
 
 do dy = 22.33;
 //dy = 'c';
@@ -15,7 +15,7 @@ dy = 1;
 
 st sy = "pizza";
 sy = 'c';
-sy = 1;
+//sy = 1;
 //sy = tr;
 //sy = 22.33;
 

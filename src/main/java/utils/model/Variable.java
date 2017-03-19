@@ -1,4 +1,6 @@
-package main.java.utils;
+package main.java.utils.model;
+
+import main.java.utils.DataType;
 
 /**
  * Created by Robin on 16-3-2017.

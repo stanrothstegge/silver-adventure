@@ -2,7 +2,7 @@ package main.java.scopechecking;
 
 import main.antlr4.*;
 import main.java.utils.DataTypes;
-import main.java.utils.Method;
+import main.java.utils.model.Method;
 import main.java.utils.Scope;
 import org.antlr.v4.runtime.tree.ParseTree;
 

@@ -70,9 +70,11 @@ expression
  
  //--lines--
  globalStatements: declarationFinal | declaration ';';
- 
+
+declarationStatement: declarationFinal | declaration ';';
+
  statement
-     : globalStatements 		#globalStatement
+     : declarationStatement     #declarationStatementStatement
      | '++' (variable) ';'		#plusPlusStatement
      | functionCall 			#functionCallStatement
      | printFunction 			#printStatement

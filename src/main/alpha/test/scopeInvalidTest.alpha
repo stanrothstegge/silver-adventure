@@ -7,7 +7,7 @@ in b = 2;
 //invalid end
 
 ~funct (in a = 2, in d)
-if (a == gl.a)
+if (a == 1)
 sp ("test");
 ☕
 d = 2;

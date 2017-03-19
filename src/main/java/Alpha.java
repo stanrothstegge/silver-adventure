@@ -10,7 +10,6 @@ import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 
@@ -52,8 +51,10 @@ class Alpha {
         writer.close();
         
         //Run batfile to compile code
-        Process p1 = Runtime.getRuntime().exec("cmd /c start run.bat "+fileName);
-        
+        Runtime.getRuntime().exec("cmd /c start run.bat "+fileName);
+
         System.out.println("done?");
     }
+
+
 }
