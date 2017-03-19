@@ -77,15 +77,15 @@ public class TypeConverter {
         switch (type) {
             case BOOLEAN:
                     value = value.equals("tr") ? "1" : "0"; //convert boolean to 1 or 0
-                return kind == Command.PUT ? "iconst_" + value : "iload ";
+                return kind == Command.PUT ? "iconst_" + value : "iload " + value;
             case INTEGER:
-                return kind == Command.PUT ? "bipush " + value : "iload ";
+                return kind == Command.PUT ? "bipush " + value : "iload " + value;
             case DOUBLE:
-                return kind == Command.PUT ? "ldc2_w " + value : "dload "; // takes 2 spaces
+                return kind == Command.PUT ? "ldc2_w " + value : "dload " + value; // takes 2 spaces
             case STRING:
-                return kind == Command.PUT ? "ldc " + value : "aload "; //todo not sure if works
+                return kind == Command.PUT ? "ldc " + value : "aload " + value; //todo not sure if works
             case CHAR:
-                return kind == Command.PUT ? "castore " + value : "caload "; //todo fix char
+                return kind == Command.PUT ? "castore " + value : "caload " + value; //todo fix char
             default:
                 throw new RuntimeException("stuff wnet wrong");
         }

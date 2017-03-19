@@ -7,3 +7,5 @@ out/*
 .idea/vcs.xml
 output.txt
 firstcode.jasmin
+test2.class
+test2.jasmin
