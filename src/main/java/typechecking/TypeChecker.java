@@ -21,8 +21,10 @@ public class TypeChecker extends alphaBaseVisitor {
     
     private Scope scope = new Scope();
     
+    @Deprecated
     public static Map<String, Variables> variables = new HashMap<>();
     public static Map<String, Function> functions = new HashMap<>();
+    
     private String currentVariable = "";                                                                                //Used to save the key of function
     private String currentFunction = "";                                                                                //Use to hold the function to get it in the return methode
     private String functionName = "";
