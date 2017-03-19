@@ -32,8 +32,6 @@ public class TypeChecker extends alphaBaseVisitor {
     public Object visitLanguage(alphaParser.LanguageContext ctx) {
         super.visitLanguage(ctx);
         
-        System.out.println("breakpoint");
-        
         return null;
     }
 
@@ -498,6 +496,7 @@ public class TypeChecker extends alphaBaseVisitor {
         return msg;
     }
 
+
     @Override
     public Object visitFunction(alphaParser.FunctionContext ctx) {
         functionName = ctx.functionDeclaration().TEXT().getText();
@@ -509,5 +508,4 @@ public class TypeChecker extends alphaBaseVisitor {
         scope = scope.close();
         return null;
     }
-
 }

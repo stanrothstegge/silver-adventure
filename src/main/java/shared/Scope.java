@@ -11,7 +11,6 @@ public class Scope {
     private final boolean isGlobalScope;
 
     private final Scope parentScope;
-    private ArrayList<Scope> childScope = new ArrayList<>();
     
     private final ArrayList<Variable> variables = new ArrayList<>();
     private final HashMap<String, Method> methods;
@@ -77,7 +76,7 @@ public class Scope {
         return null;
     }
     
-    private Variable getVariable(String name) {
+    public Variable getVariable(String name) {
         for(Variable v: variables) {
             if (v.name.equals(name)) {
                 return v;
@@ -125,8 +124,7 @@ public class Scope {
     }
 
     public Scope open(String name) {
-        childScope.add(new Scope(this, name));
-        return childScope.get(childScope.size() - 1);
+        return new Scope(this, name);
     }
     
     public Scope open() {
@@ -135,10 +133,6 @@ public class Scope {
 
     public Scope close() {
         return parentScope;
-    }
-
-    public ArrayList<Scope> getChildScope() {
-        return childScope;
     }
 
     public ArrayList<Variable> getVariables() {

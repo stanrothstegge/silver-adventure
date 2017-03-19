@@ -9,6 +9,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 
 /**
@@ -37,7 +38,12 @@ class Alpha {
         type.visit(expression);
         //Byte code generator
         CodeGenerator codeGenerator = new CodeGenerator("scopetexting");
-        codeGenerator.visit(expression);
+        ArrayList<String> result = codeGenerator.visit(expression);
+        
+        for(String s: result) {
+            System.out.println(s);
+        }
+        
         System.out.println("done?");
     }
 }

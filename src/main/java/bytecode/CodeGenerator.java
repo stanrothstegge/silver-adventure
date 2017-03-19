@@ -16,6 +16,7 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
     
     final String fileName;
     private String functionName = "";
+    private Scope scope = new Scope();
 
     public CodeGenerator(String fileName) {
         this.fileName = fileName;
@@ -69,6 +70,8 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
         list.add(variablename);
         list.add(type.toString());
         
+        scope.declareVariable(variablename, type);
+        
         return list;
     }
 
@@ -80,11 +83,14 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
     @Override
     public ArrayList<String> visitVariable(alphaParser.VariableContext ctx) {
         String variableName = ctx.TEXT().getText();
-        DataType type = TypeChecker.variables.get(variableName).getParams();
+        DataType type = scope.lookupVariable(variableName);
 
         ArrayList<String> list = new ArrayList<>();
 
         list.add(variableName);
+        if (type == null) {
+            type = DataType.VOID;
+        }
         list.add(type.toString());
 
         return list;
@@ -101,24 +107,12 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
         //put the number in memory
         list.addAll(visit(ctx.expression()));
         
-        //store number todo: number generation and linking and stuff
+        //store number
         Scope parentScope = Identifier.parentScope;
         Scope scope = parentScope;
-        int number = -1;
-        while (number == -1) {
-            for(Scope s: scope.getChildScope()) {
-                
-                //first find the scope of the current function
-                if (scope == parentScope && functionName.equals(s.getName())) {
-                    scope = s;
-                    break;
-                }
-                
-                //then find the variable and correct scope
-            }
-        }
+        int number = scope.getVariable(variableName).localNumber;
         
-        list.add(TypeConverter.convert(type, false) + "store " /* + number*/);
+        list.add(TypeConverter.convert(type, false) + "store " + number);
         
         //todo: work out expression
         
@@ -154,13 +148,15 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
         
         return list;
     }
-    
+
     private DataType[] returnTypes;
     
     @Override
-    public ArrayList<String> visitFunction(alphaParser.FunctionContext ctx) {
+    public ArrayList<String> visitFunction(alphaParser.FunctionContext ctx) {        
         ArrayList<String> list = new ArrayList<>();
         functionName = ctx.functionDeclaration().TEXT().getText();
+
+        scope = scope.open(functionName);
 
         String functionName = ctx.functionDeclaration().TEXT().getText();
         returnTypes = new DataType[]{DataType.VOID};
@@ -198,6 +194,9 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
         }
         //Gets amount of variables in function
         int variableAmount = 0;
+        
+        //can figure out variableAmount based on scope in Identifier
+        
         for (String k: TypeChecker.variables.keySet()) {
             if(TypeChecker.variables.get(k).getFunctionName().equals(functionName)){
                 variableAmount++;
@@ -206,7 +205,7 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
 
         int localSize = returnTypes.length + variableAmount; //todo: replace 10 with amount of variables in function
         
-        list.add(".method public static " + functionName + "(" + visit(ctx.functionDeclaration().argumentsDeclaration()));
+        list.add(".method public static " + functionName + "(" + /*visit(ctx.functionDeclaration().argumentsDeclaration())*/ "argumenten enzo hier");
         list.add(".limit stack " + localSize * 2);
         list.add(".limit locals " + localSize); 
 
@@ -222,10 +221,17 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
         }
         
         //todo: statements
+        for (int i = 0; i < ctx.children.size(); i++) {
+            ArrayList<String> list2 = visit(ctx.children.get(i));
+            if (list2 != null)
+            list.addAll(list2);
+        }
         
         list.add(".end method");
         
         functionName = "";
+        
+        scope = scope.close();
         
         return list;
     }
@@ -238,12 +244,15 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
         ArrayList<String> list = new ArrayList<>();
         
         for(ParseTree t: ctx.children) {
+            if (!(t instanceof alphaParser.DeclarationFunctionContext)) continue;
             alphaParser.DeclarationFunctionContext d = (alphaParser.DeclarationFunctionContext) t;
             
             //variables toevoegen enzo bro
             if (d.declaration() != null) {
+                visit(d.declaration());
                 list.add(TypeConverter.convert(d.declaration().dataType().getText(), true));
             } else {
+                visit(d.declarationFill());
                 list.add(TypeConverter.convert(d.declarationFill().declaration().dataType().getText(), true));
                 //todo: variabledeclaration
                 //does not currently support the = 2 part of func(int i = 2)
@@ -251,5 +260,91 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
         }
         
         return list;
+    }
+
+    @Override
+    public ArrayList<String> visitLeftBracketExpressionRightBracketExpression(alphaParser.LeftBracketExpressionRightBracketExpressionContext ctx) {
+        scope = scope.open();
+
+        ArrayList<String> list = super.visitLeftBracketExpressionRightBracketExpression(ctx);
+
+        scope = scope.close();
+        return list;
+    }
+
+    @Override
+    public ArrayList<String> visitIfStatement(alphaParser.IfStatementContext ctx) {
+        for (ParseTree t : ctx.children) {
+            switch (t.getText()) {
+                case "if":
+                    scope = scope.open();
+                    break;
+                case "ef":
+                    scope = scope.close();
+                    scope = scope.open();
+                    break;
+                case "el":
+                    scope = scope.close();
+                    scope = scope.open();
+                    break;
+                default:
+                    visit(t);
+            }
+        }
+
+        scope = scope.close();
+
+        return new ArrayList<>();
+    }
+
+    @Override
+    public ArrayList<String> visitWhileMethod(alphaParser.WhileMethodContext ctx) {
+        for (ParseTree t : ctx.children) {
+            switch (t.getText()) {
+                case "wh":
+                    scope = scope.open();
+                    break;
+                default:
+                    visit(t);
+            }
+        }
+
+        scope = scope.close();
+
+        return new ArrayList<>();
+    }
+
+    @Override
+    public ArrayList<String> visitCatchFunction(alphaParser.CatchFunctionContext ctx) {
+        for (ParseTree t : ctx.children) {
+            switch (t.getText()) {
+                case "ca":
+                    scope = scope.close();
+                    scope = scope.open();
+                    break;
+                default:
+                    visit(t);
+            }
+        }
+
+        scope = scope.close();
+
+        return new ArrayList<>();
+    }
+
+    @Override
+    public ArrayList<String> visitThrowBlock(alphaParser.ThrowBlockContext ctx) {
+        for (ParseTree t : ctx.children) {
+            switch (t.getText()) {
+                case "ty":
+                    //scope closed in visitCatchFunction
+                    scope = scope.open();
+                    break;
+                default:
+                    visit(t);
+            }
+        }
+
+        return new ArrayList<>();
     }
 }
