@@ -16,6 +16,7 @@ public class Scope {
     private final Scope parentScope;
     
     private final HashMap<String, Integer> scopeSizes;
+    private int biggestScope = 0;
     
     private final ArrayList<Variable> variables = new ArrayList<>();
     private final HashMap<String, Method> methods;
@@ -147,6 +148,19 @@ public class Scope {
     }
 
     public Scope close() {
+        //managing storage of scope sizes
+        //if this is functionscope
+        if (parentScope.isGlobalScope) { //add scope size to the hashmap of the globalscope
+            if (!variables.isEmpty() && biggestScope < variables.get(variables.size() - 1).localNumber) {
+                biggestScope = variables.get(variables.size() - 1).localNumber;
+            }
+            parentScope.scopeSizes.put(name, biggestScope);
+        } else { //overwrite biggestscope of parent if yours is bigger
+            if (!variables.isEmpty() && parentScope.biggestScope > variables.get(variables.size() - 1).localNumber) {
+                parentScope.biggestScope = variables.get(variables.size() - 1).localNumber;
+            }
+        }
+        
         return parentScope;
     }
 

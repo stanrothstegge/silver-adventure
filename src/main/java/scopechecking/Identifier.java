@@ -128,7 +128,7 @@ public class Identifier extends alphaBaseVisitor {
 
     @Override
     public Object visitFunction(alphaParser.FunctionContext ctx) {
-        scope = scope.open();
+        scope = scope.open(ctx.functionDeclaration().TEXT().getText());
         Object object = super.visitFunction(ctx);
         scope = scope.close();
         return object;

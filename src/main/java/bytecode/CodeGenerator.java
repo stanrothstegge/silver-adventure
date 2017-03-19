@@ -159,7 +159,8 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
                         ctx.declarationFinal().declarationFill().expression().getText(), Command.PUT));
             } else { //if not run through children
                 //Visit all the expression children
-                addToMain.addAll(visit(ctx.declarationFinal().declarationFill().expression()));
+                //fixme nullpointer city
+//                addToMain.addAll(visit(ctx.declarationFinal().declarationFill().expression()));
             }
             //putstatic Exercise4/counter I
             addToMain.add("putstatic " + fileName + "/" + variableName + " " + TypeConverter.convert(type, true));
@@ -217,8 +218,14 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
             list.add(NEWLINE + ".method public static " + functionName + "(" + arguments + ")" + TypeConverter.convert(returnType, true));
 
         }
+
+        int variableAmount= 0;
         //Gets amount of variables in function
-        int variableAmount = Identifier.parentScope.getScopeSize(functionName);
+        if (functionName.equals("main")) {
+            variableAmount = Identifier.parentScope.getScopeSize("pizza");
+        } else {
+            variableAmount = Identifier.parentScope.getScopeSize(functionName);
+        }
 
         int localSize = returnTypes.length + variableAmount; //todo: replace 10 with amount of variables in function
 
@@ -231,7 +238,10 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
 
         for (ParseTree t : ctx.statement()) {
             //todo dont visit nullpointers
-                list.addAll(visit(t));
+            ArrayList<String> result = visit(t);
+            if (result != null) {
+                list.addAll(result);
+            }
         }
 
 
