@@ -1,0 +1,14 @@
+Alpha
+
+~pizza ()
+in a = 10;
+in b = 20;
+in c = a + b;
+in d = a - b;
+in e = a * b;
+in f = b / a;
+in g = a % b;
+sp (a + " " + b + " " + c + " " + d + " " + e + " " + f + " " + g);
+
+☕
+Omega
