@@ -77,6 +77,8 @@ public class TypeConverter {
         switch (type) {
             case BOOLEAN:
                     value = value.equals("tr") ? "1" : "0"; //convert boolean to 1 or 0
+            case TRUE:
+            case FALSE:
                 return kind == Command.PUT ? "iconst_" + value : "iload " + value;
             case INTEGER:
                 return kind == Command.PUT ? "bipush " + value : "iload " + value;

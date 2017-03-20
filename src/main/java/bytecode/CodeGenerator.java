@@ -7,6 +7,7 @@ import main.java.scopechecking.Identifier;
 import main.java.utils.DataType;
 import main.java.utils.DataTypes;
 import main.java.utils.Scope;
+import main.java.utils.model.Variable;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.util.ArrayList;
@@ -361,7 +362,65 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
     public ArrayList<String> visitStringExpression(alphaParser.StringExpressionContext ctx) {
         ArrayList<String> list = new ArrayList<>();
 
-        list.add("ldc "+ctx.getText());
+        list.add(TypeConverter.generateCommand(DataType.STRING, ctx.getText(), Command.PUT));
+        type = DataType.STRING;
+
+        return list;
+    }
+
+    @Override
+    public ArrayList<String> visitNumberExpression(alphaParser.NumberExpressionContext ctx) {
+        ArrayList<String> list = new ArrayList<>();
+
+        if (ctx.getText().contains(".")) { //this is a double todo: maybe change to if it has digits behind the number. maybe not.
+            list.add(TypeConverter.generateCommand(DataType.DOUBLE, ctx.getText(), Command.PUT));
+            type = DataType.DOUBLE;
+        } else { //this is an int
+            list.add(TypeConverter.generateCommand(DataType.INTEGER, ctx.getText(), Command.PUT));
+            type = DataType.INTEGER;
+        }
+        
+        return list;
+    }
+
+    @Override
+    public ArrayList<String> visitVariableExpression(alphaParser.VariableExpressionContext ctx) {
+        ArrayList<String> list = new ArrayList<>();
+
+        Variable variable = scope.getVariable(ctx.getText());
+        list.add(TypeConverter.generateCommand(variable.type, "" + variable.localNumber, Command.PUT));
+        type = variable.type;
+
+        return list;
+    }
+
+    @Override
+    public ArrayList<String> visitTrueExpression(alphaParser.TrueExpressionContext ctx) {
+        ArrayList<String> list = new ArrayList<>();
+
+        list.add(TypeConverter.generateCommand(DataType.TRUE, "1", Command.PUT));
+        type = DataType.BOOLEAN;
+        
+        return list;
+    }
+
+    @Override
+    public ArrayList<String> visitFalseExpression(alphaParser.FalseExpressionContext ctx) {
+        ArrayList<String> list = new ArrayList<>();
+
+        list.add(TypeConverter.generateCommand(DataType.FALSE, "0", Command.PUT));
+        type = DataType.BOOLEAN;
+
+        return list;
+    }
+
+    @Override
+    public ArrayList<String> visitCharExpression(alphaParser.CharExpressionContext ctx) {
+        ArrayList<String> list = new ArrayList<>();
+
+        String value = "" + ctx.getText().replaceAll("\'", "").getBytes();  //this maybe works. maybe not
+        list.add(TypeConverter.generateCommand(DataType.CHAR, value, Command.PUT));
+        type = DataType.CHAR;
 
         return list;
     }
@@ -369,11 +428,43 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
     @Override
     public ArrayList<String> visitPlusExpression(alphaParser.PlusExpressionContext ctx) {
         ArrayList<String> list = new ArrayList<>();
-        //todo typechecking
-        //todo iadd? what if string + string or double + double or 1 + ( 2 + 3)
-        list.add("bipush " + ctx.expression(0).getText());
-        list.add("bipush " + ctx.expression(0).getText());
-        list.add("iadd");
+        //maybe have to convert the first output, so keep output of second expression in a separate list
+        ArrayList<String> list1 = new ArrayList<>();
+        DataType[] types = new DataType[2];
+        
+        //visit both expressions, store both datatypes
+        list.addAll(visit(ctx.expression(0)));
+        types[0] = type;
+        
+        list1.addAll(visit(ctx.expression(1)));
+        types[1] = type;
+        
+        //now figure out how to combine those two datatypes.
+        if (types[0] == DataType.INTEGER) {
+            if (types[1] == DataType.INTEGER) {
+                list.addAll(list1);
+                list.add("iadd");
+            } else if (types[1] == DataType.DOUBLE) {
+                list.add("i2d"); //convert int to double
+                list.addAll(list1);
+                list.add("dadd");
+            }
+        } else if (types[0] == DataType.DOUBLE) {
+            if (types[1] == DataType.INTEGER) {
+                list.addAll(list1);
+                list.add("i2d");
+                list.add("dadd");
+            } else if (types[1] == DataType.DOUBLE) {
+                list.addAll(list1);
+                list.add("dadd");
+            }
+        } else { //rest is just string stuff
+            //convert first type to string
+            //convert second type to string
+            //add first to second
+            //finish!
+        }
+        
         return list;
     }
     
