@@ -16,7 +16,7 @@ language
 
 // expressions are true/false statements
 expression
- :  '-' 						expression 					#minusExpression
+ :  '-' 						expression 					#negativeExpression
  | NOT  						expression 					#notExpression
  | expression MULTIPLY 			expression 					#multiplyExpression
  | expression DIVIDE 			expression 					#divideExpression
