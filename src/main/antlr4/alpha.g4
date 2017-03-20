@@ -32,14 +32,10 @@ expression
  | expression AND 				expression 					#andExpression
  | expression OR 				expression 					#orExpression
  | LBRACKET expression RBRACKET 		   					#leftBracketExpressionRightBracketExpression
- | NUMBER								   					#numberExpression
- | CHAR_TYPE 												#charExpression
- | STRING_TYPE												#stringExpression
- | TRUE									   					#trueExpression
- | FALSE								   					#falseExpression
+ | value													#valueExpression
  | variable                                					#variableExpression
  | functionCall							   					#functionCallExpression
- | '\\+' (' ' (NUMBER|variable|CHAR_TYPE|STRING_TYPE))+     #addCustomExpression
+ | '\\+' (' ' (value | variable))+     						#addCustomExpression
  ;
   
  //--declarations--
@@ -106,8 +102,14 @@ declarationStatement: declarationFinal | declaration ';';
 
 
 //--collections--
- dataType: INTEGER | DOUBLE | STRING | CHAR | BOOLEAN;
- variable: TEXT;
+value: NUMBER			#numberValue
+     | CHAR_TYPE 		#charValue
+     | STRING_TYPE		#stringValue
+     | TRUE				#trueValue
+     | FALSE			#falseValue
+     ;
+dataType: INTEGER | DOUBLE | STRING | CHAR | BOOLEAN;
+variable: TEXT;
 
 /*
 =============================================

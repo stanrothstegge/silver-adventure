@@ -106,7 +106,7 @@ public class TypeChecker extends alphaBaseVisitor {
     }
 
     @Override
-    public Object visitFalseExpression(alphaParser.FalseExpressionContext ctx) {
+    public Object visitFalseValue(alphaParser.FalseValueContext ctx) {
         if (!currentVariable.equals("")) {
             try {
                 DataTypes.typeCheckingBoolean(DataType.TRUE, scope.lookupVariable(currentVariable));
@@ -181,7 +181,7 @@ public class TypeChecker extends alphaBaseVisitor {
 
 
     @Override
-    public Object visitStringExpression(alphaParser.StringExpressionContext ctx) {
+    public Object visitStringValue(alphaParser.StringValueContext ctx) {
         if (!currentVariable.equals("")) {
             //if (variables.get(currentVariable).getParams() != DataType.STRING) {
             if (scope.lookupVariable(currentVariable) != DataType.STRING) {
@@ -196,7 +196,7 @@ public class TypeChecker extends alphaBaseVisitor {
 
 
     @Override
-    public Object visitTrueExpression(alphaParser.TrueExpressionContext ctx) {
+    public Object visitTrueValue(alphaParser.TrueValueContext ctx) {
         if (!currentVariable.equals("")) {
 
             try {
@@ -315,7 +315,7 @@ public class TypeChecker extends alphaBaseVisitor {
 
 
     @Override
-    public Object visitCharExpression(alphaParser.CharExpressionContext ctx) {
+    public Object visitCharValue(alphaParser.CharValueContext ctx) {
         if (!currentVariable.equals("")) {
 
             currentVariable = "";                                                                                       //Clear for the next variable
@@ -370,7 +370,7 @@ public class TypeChecker extends alphaBaseVisitor {
     }
 
     @Override
-    public Object visitNumberExpression(alphaParser.NumberExpressionContext ctx) {
+    public Object visitNumberValue(alphaParser.NumberValueContext ctx) {
         if (!currentVariable.equals("")) {
             try {
                 //Clear for the next variable

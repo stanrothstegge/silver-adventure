@@ -1,4 +1,4 @@
-// Generated from E:/Dropbox/Saxion/Jaar 2/Kwartiel 3/Compilers & Operating Systems/Practitum/src/main/antlr4\alpha.g4 by ANTLR 4.6
+// Generated from C:/Users/Robin/Documents/School/Jaar 2/Kwartiel 3/Compilers/ProgrammeerTaal/src/main/antlr4\alpha.g4 by ANTLR 4.6
 package main.antlr4;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -24,6 +24,20 @@ public interface alphaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitLeftBracketExpressionRightBracketExpression(alphaParser.LeftBracketExpressionRightBracketExpressionContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code valueExpression}
+	 * labeled alternative in {@link alphaParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitValueExpression(alphaParser.ValueExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code negativeExpression}
+	 * labeled alternative in {@link alphaParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNegativeExpression(alphaParser.NegativeExpressionContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code minusExpression}
 	 * labeled alternative in {@link alphaParser#expression}.
 	 * @param ctx the parse tree
@@ -45,13 +59,6 @@ public interface alphaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitModuloExpression(alphaParser.ModuloExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code numberExpression}
-	 * labeled alternative in {@link alphaParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitNumberExpression(alphaParser.NumberExpressionContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code equalToExpression}
 	 * labeled alternative in {@link alphaParser#expression}.
 	 * @param ctx the parse tree
@@ -65,13 +72,6 @@ public interface alphaVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitNotExpression(alphaParser.NotExpressionContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code falseExpression}
-	 * labeled alternative in {@link alphaParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitFalseExpression(alphaParser.FalseExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code smallerThanExpression}
 	 * labeled alternative in {@link alphaParser#expression}.
@@ -129,20 +129,6 @@ public interface alphaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitAndExpression(alphaParser.AndExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code stringExpression}
-	 * labeled alternative in {@link alphaParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitStringExpression(alphaParser.StringExpressionContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code trueExpression}
-	 * labeled alternative in {@link alphaParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitTrueExpression(alphaParser.TrueExpressionContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code greaterOrEqualExpression}
 	 * labeled alternative in {@link alphaParser#expression}.
 	 * @param ctx the parse tree
@@ -156,13 +142,6 @@ public interface alphaVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitFunctionCallExpression(alphaParser.FunctionCallExpressionContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code charExpression}
-	 * labeled alternative in {@link alphaParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitCharExpression(alphaParser.CharExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code plusExpression}
 	 * labeled alternative in {@link alphaParser#expression}.
@@ -354,6 +333,41 @@ public interface alphaVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitWhileMethod(alphaParser.WhileMethodContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code numberValue}
+	 * labeled alternative in {@link alphaParser#value}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNumberValue(alphaParser.NumberValueContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code charValue}
+	 * labeled alternative in {@link alphaParser#value}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCharValue(alphaParser.CharValueContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code stringValue}
+	 * labeled alternative in {@link alphaParser#value}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStringValue(alphaParser.StringValueContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code trueValue}
+	 * labeled alternative in {@link alphaParser#value}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTrueValue(alphaParser.TrueValueContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code falseValue}
+	 * labeled alternative in {@link alphaParser#value}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFalseValue(alphaParser.FalseValueContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link alphaParser#dataType}.
 	 * @param ctx the parse tree

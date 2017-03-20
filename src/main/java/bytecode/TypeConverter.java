@@ -90,7 +90,10 @@ public class TypeConverter {
             case INTEGER:
                 switch (kind) {
                     case PUT:
-                        return "bipush " + value;
+                        //smaller than 128: bipush
+                        //smaller than 32768: sipush
+                        //rest: ldc
+                        return "ldc " + value;
                     case LOAD:
                         return "iload " + value;
                     case EQUALTO:
@@ -125,9 +128,9 @@ public class TypeConverter {
             case CHAR:
                 switch (kind) {
                     case PUT:
-                        return "castore " + value;//todo fix char
+                        return "bipush " + value;//todo fix char
                     case LOAD:
-                        return "caload " + value;//todo fix char
+                        return "iload " + value;//todo fix char
                     case EQUALTO:
                     case NOTEQUALTO:
                 }

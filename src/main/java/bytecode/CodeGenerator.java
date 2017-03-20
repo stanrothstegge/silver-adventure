@@ -9,7 +9,6 @@ import main.java.utils.DataTypes;
 import main.java.utils.Scope;
 import main.java.utils.model.Variable;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.ArrayList;
 
@@ -335,47 +334,29 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
     @Override
     public ArrayList<String> visitPrintFunction(alphaParser.PrintFunctionContext ctx) {
         ArrayList<String> list = new ArrayList<>();
-        ArrayList<String> listStrinBuilder = new ArrayList<>();
-        boolean stringBuilder = false;
         //todo handle variables and stuff
         list.add("getstatic java/lang/System/out Ljava/io/PrintStream;");
-
-        listStrinBuilder.add("new java/lang/StringBuilder");
-        listStrinBuilder.add("dup");
-        listStrinBuilder.add("invokespecial java/lang/StringBuilder.<init>()V");
-
         String printText = "";
 
-        for (ParseTree t : ctx.expression().children) {
-            if (t.getParent() instanceof alphaParser.StringExpressionContext ||
-                    t.getParent() instanceof alphaParser.NumberExpressionContext) {//Handles standalone string and expression
+        for (ParseTree t : ctx.children) {
+            if (t instanceof alphaParser.StringValueContext ||
+                    t instanceof alphaParser.NumberValueContext) {//Handles standalone string and expression
                 printText += TypeConverter.generateCommand(DataType.STRING, t.getText(),Command.PUT);
             }
-            if(t.getParent() instanceof  alphaParser.VariableExpressionContext){ //Handles standalone variables
+            if(t instanceof  alphaParser.VariableExpressionContext){ //Handles standalone variables
                 printText += TypeConverter.generateCommand(scope.lookupVariable(t.getText()), Integer.toString(scope.getVariable(t.getText()).localNumber),Command.LOAD);
-            }
-            if(t instanceof  alphaParser.VariableExpressionContext){ // handles + variables
-                stringBuilder = true;
-                listStrinBuilder.add(TypeConverter.generateCommand(scope.lookupVariable(t.getText()), Integer.toString(scope.getVariable(t.getText()).localNumber),Command.LOAD));
-                listStrinBuilder.add("invokevirtual java/lang/StringBuilder.append(Ljava/lang/String;)Ljava/lang/StringBuilder;");
-            }
-            if(t instanceof alphaParser.PlusExpressionContext){ //todo dosnt work well dont go to deep in to rabbit hole
-                listStrinBuilder.add(TypeConverter.generateCommand(scope.lookupVariable(((alphaParser.PlusExpressionContext) t).expression().get(0).getText()),
-                        Integer.toString(scope.getVariable(((alphaParser.PlusExpressionContext) t).expression().get(0).getText()).localNumber),Command.LOAD));
-                listStrinBuilder.add("invokevirtual java/lang/StringBuilder.append(Ljava/lang/String;)Ljava/lang/StringBuilder;");
-                listStrinBuilder.add(TypeConverter.generateCommand(scope.lookupVariable(((alphaParser.PlusExpressionContext) t).expression().get(1).getText()),
-                        Integer.toString(scope.getVariable(((alphaParser.PlusExpressionContext) t).expression().get(1).getText()).localNumber),Command.LOAD));
-                listStrinBuilder.add("invokevirtual java/lang/StringBuilder.append(Ljava/lang/String;)Ljava/lang/StringBuilder;");
+            } else {
+                ArrayList<String > result = visit(t);
+                if (result != null) {
+                    list.addAll(visit(t));
+                } else {
+                    System.out.println("something something went wrong help me " + t.getText());
+                }
             }
         }
-
-        //close string
-        if(stringBuilder) {
-            listStrinBuilder.add("invokevirtual java/lang/StringBuilder.toString()Ljava/lang/String;");
-            list.addAll(listStrinBuilder);
-        }else{
-            list.add(printText);
-        }
+     
+        list.add(printText);
+        
         list.add("invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V");
 
         return list;
@@ -386,7 +367,7 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
     private DataType expressionType;
     
     @Override
-    public ArrayList<String> visitStringExpression(alphaParser.StringExpressionContext ctx) {
+    public ArrayList<String> visitStringValue(alphaParser.StringValueContext ctx) {
         ArrayList<String> list = new ArrayList<>();
 
         list.add(TypeConverter.generateCommand(DataType.STRING, ctx.getText(), Command.PUT));
@@ -396,7 +377,7 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
     }
 
     @Override
-    public ArrayList<String> visitNumberExpression(alphaParser.NumberExpressionContext ctx) {
+    public ArrayList<String> visitNumberValue(alphaParser.NumberValueContext ctx) {
         ArrayList<String> list = new ArrayList<>();
 
         if (ctx.getText().contains(".")) { //this is a double todo: maybe change to if it has digits behind the number. maybe not.
@@ -415,14 +396,14 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
         ArrayList<String> list = new ArrayList<>();
 
         Variable variable = scope.getVariable(ctx.getText());
-        list.add(TypeConverter.generateCommand(variable.type, "" + variable.localNumber, Command.PUT));
+        list.add(TypeConverter.generateCommand(variable.type, "" + variable.localNumber, Command.LOAD));
         expressionType = variable.type;
 
         return list;
     }
 
     @Override
-    public ArrayList<String> visitTrueExpression(alphaParser.TrueExpressionContext ctx) {
+    public ArrayList<String> visitTrueValue(alphaParser.TrueValueContext ctx) {
         ArrayList<String> list = new ArrayList<>();
 
         list.add(TypeConverter.generateCommand(DataType.TRUE, "1", Command.PUT));
@@ -432,7 +413,7 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
     }
 
     @Override
-    public ArrayList<String> visitFalseExpression(alphaParser.FalseExpressionContext ctx) {
+    public ArrayList<String> visitFalseValue(alphaParser.FalseValueContext ctx) {
         ArrayList<String> list = new ArrayList<>();
 
         list.add(TypeConverter.generateCommand(DataType.FALSE, "0", Command.PUT));
@@ -442,11 +423,12 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
     }
 
     @Override
-    public ArrayList<String> visitCharExpression(alphaParser.CharExpressionContext ctx) {
+    public ArrayList<String> visitCharValue(alphaParser.CharValueContext ctx) {
         ArrayList<String> list = new ArrayList<>();
 
-        String value = "" + ctx.getText().replaceAll("\'", "").getBytes();  //this maybe works. maybe not
-        list.add(TypeConverter.generateCommand(DataType.CHAR, value, Command.PUT));
+//        String value = "" + ctx.getText().replaceAll("\'", "").getBytes();  //this maybe works. maybe not
+        String ascii = Integer.toString((int) ctx.getText().replaceAll("\'", "").charAt(0));
+        list.add(TypeConverter.generateCommand(DataType.CHAR, ascii, Command.PUT));
         expressionType = DataType.CHAR;
 
         return list;
@@ -454,15 +436,42 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
 
     /**
      * Helper method used to build strings from two values
-     * @param list value one (command list)
-     * @param type0 datatype of value one
-     * @param list1 value two (command list)
-     * @param type1 datatype of value two
+     * @param sources list of items (commands) to add to the string
+     * @param dataTypes datatype of each item
      * @return result value (command list)
      */
+    public ArrayList<String> stringBuilder(ArrayList<ArrayList<String>> sources, ArrayList<DataType> dataTypes) {
+        ArrayList<String> list = new ArrayList<>();
+
+        //first, setup the string builder
+        list.add("new java/lang/StringBuilder");
+        list.add("dup");
+        list.add("invokespecial java/lang/StringBuilder.<init>()V");
+        
+        //now, for each variable, load and add
+        for (int i = 0; i < sources.size(); i++) {
+            list.addAll(sources.get(i));
+            list.add("invokevirtual java/lang/StringBuilder.append(" + TypeConverter.convert(dataTypes.get(i), true) + ")Ljava/lang/StringBuilder;");
+        }
+        
+        //done adding everything, finish off the stringbuilder
+        list.add("invokevirtual java/lang/StringBuilder.toString()Ljava/lang/String;");
+        
+        expressionType = DataType.STRING;
+        
+        return list;
+    }
+    
     public ArrayList<String> stringBuilder(ArrayList<String> list, DataType type0, ArrayList<String> list1, DataType type1) {
-        //todo: build strings from expressions
-        return null;
+        ArrayList<ArrayList<String>> totalList = new ArrayList<>();
+        totalList.add(list);
+        totalList.add(list1);
+        
+        ArrayList<DataType> allTypes = new ArrayList<>();
+        allTypes.add(type0);
+        allTypes.add(type1);
+        
+        return stringBuilder(totalList, allTypes);
     }
 
     /**
@@ -598,8 +607,12 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
         ArrayList<DataType> listOfDataTypes = new ArrayList<>();
         
         for(ParseTree t: ctx.children) {
-            if (t instanceof alphaParser.VariableContext || t instanceof TerminalNode) {
-                //todo: change grammar so it doesn't visit a terminal node
+            if (t instanceof alphaParser.VariableContext 
+                    || t instanceof alphaParser.NumberValueContext 
+                    || t instanceof alphaParser.StringValueContext 
+                    || t instanceof alphaParser.CharValueContext 
+                    || t instanceof alphaParser.TrueValueContext 
+                    || t instanceof alphaParser.FalseValueContext) {
                 listOfValues.add(visit(t));
                 listOfDataTypes.add(expressionType);
             }
@@ -628,6 +641,7 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
                 list = result;
             }
         } else { //something else, so make it a string
+            //fixme: incompatible with new stringbuilder
             
             if (listOfValues.size() == 1) { //just one thing, do it manually
                 list = listOfValues.get(0);
