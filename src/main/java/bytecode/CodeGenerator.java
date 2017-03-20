@@ -7,7 +7,6 @@ import main.java.scopechecking.Identifier;
 import main.java.utils.DataType;
 import main.java.utils.DataTypes;
 import main.java.utils.Scope;
-import main.java.typechecking.TypeChecker;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.util.ArrayList;
@@ -126,17 +125,6 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
         list.add(TypeConverter.convert(type, false) + "store "  + number);
 
         //todo: work out expression
-
-        return list;
-    }
-
-
-
-    @Override
-    public ArrayList<String> visitStringExpression(alphaParser.StringExpressionContext ctx) {
-        ArrayList<String> list = new ArrayList<>();
-
-        list.add("ldc "+ctx.getText());
 
         return list;
     }
@@ -262,7 +250,8 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
 
         }
 
-        int variableAmount= 0;
+        int variableAmount;
+        
         //Gets amount of variables in function
         if (functionName.equals("main")) {
             variableAmount = Identifier.parentScope.getScopeSize("pizza");
@@ -321,9 +310,6 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
         return list;
     }
 
-    private ArrayList<alphaParser.ExpressionContext> argumentDeclarationExpressions = new ArrayList<>();
-    private ArrayList<String> argumentDeclarationVariables = new ArrayList<>();
-
     @Override
     public ArrayList<String> visitArgumentsDeclaration(alphaParser.ArgumentsDeclarationContext ctx) {
         ArrayList<String> list = new ArrayList<>();
@@ -341,17 +327,6 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
                 list.add(TypeConverter.convert(d.declarationFill().declaration().dataType().getText(), true));
             }
         }
-        return list;
-    }
-
-    @Override
-    public ArrayList<String> visitPlusExpression(alphaParser.PlusExpressionContext ctx) {
-        ArrayList<String> list = new ArrayList<>();
-        //todo typechecking
-        //todo iadd? what if string + string or double + double or 1 + ( 2 + 3)
-        list.add("bipush " + ctx.expression(0).getText());
-        list.add("bipush " + ctx.expression(0).getText());
-        list.add("iadd");
         return list;
     }
 
@@ -377,6 +352,32 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
 
         return list;
     }
+    
+    ///////////////////////EXPRESSIONS////////////////////////////
+
+    DataType type;
+    
+    @Override
+    public ArrayList<String> visitStringExpression(alphaParser.StringExpressionContext ctx) {
+        ArrayList<String> list = new ArrayList<>();
+
+        list.add("ldc "+ctx.getText());
+
+        return list;
+    }
+
+    @Override
+    public ArrayList<String> visitPlusExpression(alphaParser.PlusExpressionContext ctx) {
+        ArrayList<String> list = new ArrayList<>();
+        //todo typechecking
+        //todo iadd? what if string + string or double + double or 1 + ( 2 + 3)
+        list.add("bipush " + ctx.expression(0).getText());
+        list.add("bipush " + ctx.expression(0).getText());
+        list.add("iadd");
+        return list;
+    }
+    
+    ////////////////////SCOPE//////////////////////////////
 
     @Override
     public ArrayList<String> visitLeftBracketExpressionRightBracketExpression(alphaParser.LeftBracketExpressionRightBracketExpressionContext ctx) {

@@ -16,7 +16,8 @@ public class Scope {
     private final Scope parentScope;
     
     private final HashMap<String, Integer> scopeSizes;
-    private int biggestScope = 0;
+    private int biggestLocalSize = 0;
+    private int localSize = 0;
     
     private final ArrayList<Variable> variables = new ArrayList<>();
     private final HashMap<String, Method> methods;
@@ -42,10 +43,17 @@ public class Scope {
     public boolean declareVariable(String name, DataType type) {
         if (lookupVariable(name) == null) {
             
-            //figure out the local number
-            int localNumber = getLocalNumber();
+            //figure out the stack number
+            int stackNumber;
             
-            variables.add(new Variable(name, type, localNumber));
+            //doubles need double the size
+            if (type == DataType.DOUBLE) {
+                stackNumber = getLocalNumber(2);
+            } else {
+                stackNumber = getLocalNumber(1);
+            }
+            
+            variables.add(new Variable(name, type, stackNumber));
             return true;
         }
         return false;
@@ -53,15 +61,32 @@ public class Scope {
 
     /**
      * Helper method used to get the next available local number
+     * @param spaceNeeded space on the stack required
      * @return local number
      */
-    private int getLocalNumber() {
-        if (isGlobalScope) return 0;
+    private int getLocalNumber(int spaceNeeded) {
+        if (isGlobalScope) return 0; //see if this isn't the global scope
         
-        if (!variables.isEmpty()) { //see if this isn't the global scope
-            return variables.get(variables.size() - 1).localNumber + 1;
-        } else { //the parentscope is the globalscope, it's the first variable.
-            return parentScope.getLocalNumber();
+        if (!variables.isEmpty()) { //we have variables, so lets look at our own scope
+            
+            //however much stack space is needed, stack position is always 1 after the last position
+            int localPosition = localSize + 1;
+            
+            localSize += spaceNeeded;
+            
+            if (biggestLocalSize < localSize) { //if biggestLocalSize is smaller than localSize, we need to update
+                biggestLocalSize = localSize;
+            }
+            
+            return localPosition;
+        } else { //the get the stack number from the parentscope
+            localSize = parentScope.getLocalNumber(spaceNeeded);
+            
+            if (biggestLocalSize < localSize) { //if biggestLocalSize is smaller than localSize, we need to update
+                biggestLocalSize = localSize;
+            }
+            
+            return localSize;
         }
     }
 
@@ -150,14 +175,14 @@ public class Scope {
     public Scope close() {
         //managing storage of scope sizes
         //if this is functionscope
-        if (parentScope.isGlobalScope) { //add scope size to the hashmap of the globalscope
-            if (!variables.isEmpty() && biggestScope < variables.get(variables.size() - 1).localNumber) {
-                biggestScope = variables.get(variables.size() - 1).localNumber;
-            }
-            parentScope.scopeSizes.put(name, biggestScope);
+        if (parentScope.isGlobalScope) { //is globalscope, so add scope size to the hashmap of the globalscope
+            
+            parentScope.scopeSizes.put(name, biggestLocalSize);
+            
         } else { //overwrite biggestscope of parent if yours is bigger
-            if (!variables.isEmpty() && parentScope.biggestScope > variables.get(variables.size() - 1).localNumber) {
-                parentScope.biggestScope = variables.get(variables.size() - 1).localNumber;
+            
+            if (parentScope.biggestLocalSize < biggestLocalSize) {
+                parentScope.biggestLocalSize = biggestLocalSize;
             }
         }
         

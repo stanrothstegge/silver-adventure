@@ -7,7 +7,7 @@ do e = 2.2;
 do f = 2.2 + 2;
 in c;
 
-if (c)//shoud never enter this
+if (c)//should never enter this
 	st ift = "shoul";// 5 letter limit
 	if (a)
 		in y;
@@ -15,6 +15,15 @@ if (c)//shoud never enter this
 			in if3;
 		☕
 	☕
+	
+if (a)
+	in y;
+	if (a)
+		in if3;
+		do if4;
+	☕
+☕
+
 el//else
 	in y;
 	in ift;
