@@ -67,7 +67,7 @@ public class TypeConverter {
     }
 
     /**
-     * //todo ALLE THIS
+     * //todo invullen
      * @param type
      * @param value
      * @param kind
@@ -79,17 +79,60 @@ public class TypeConverter {
                     value = value.equals("tr") ? "1" : "0"; //convert boolean to 1 or 0
             case TRUE:
             case FALSE:
-                return kind == Command.PUT ? "iconst_" + value : "iload " + value;
+                switch (kind) {
+                    case PUT:
+                        return "iconst_" + value;
+                    case LOAD:
+                        return "iload " + value;
+                    case EQUALTO:
+                    case NOTEQUALTO:
+                }
             case INTEGER:
-                return kind == Command.PUT ? "bipush " + value : "iload " + value;
+                switch (kind) {
+                    case PUT:
+                        return "bipush " + value;
+                    case LOAD:
+                        return "iload " + value;
+                    case EQUALTO:
+                    case NOTEQUALTO:
+                    case GREATER:
+                    case GREATEREQUAL:
+                    case SMALLER:
+                    case SMALLEREQUAL:
+                }
             case DOUBLE:
-                return kind == Command.PUT ? "ldc2_w " + value : "dload " + value; // takes 2 spaces
+                switch (kind) {
+                    case PUT:
+                        return "ldc2_w " + value;
+                    case LOAD:
+                        return "dload " + value;
+                    case EQUALTO:
+                    case NOTEQUALTO:
+                    case GREATER:
+                    case GREATEREQUAL:
+                    case SMALLER:
+                    case SMALLEREQUAL:
+                }
             case STRING:
-                return kind == Command.PUT ? "ldc " + value : "aload " + value; //todo not sure if works
+                switch (kind) {
+                    case PUT:
+                        return "ldc " + value;//todo not sure if works
+                    case LOAD:
+                        return "aload " + value;//todo not sure if works
+                    case EQUALTO:
+                    case NOTEQUALTO:
+                }
             case CHAR:
-                return kind == Command.PUT ? "castore " + value : "caload " + value; //todo fix char
+                switch (kind) {
+                    case PUT:
+                        return "castore " + value;//todo fix char
+                    case LOAD:
+                        return "caload " + value;//todo fix char
+                    case EQUALTO:
+                    case NOTEQUALTO:
+                }
             default:
-                throw new RuntimeException("stuff wnet wrong");
+                throw new RuntimeException("stuff went wrong");
         }
     }
 }

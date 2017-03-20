@@ -9,6 +9,7 @@ import main.java.utils.DataTypes;
 import main.java.utils.Scope;
 import main.java.utils.model.Variable;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.ArrayList;
 
@@ -424,9 +425,18 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
 
         return list;
     }
-    
-    public ArrayList<String> stringBuilder() {
-        
+
+    /**
+     * Helper method used to build strings from two values
+     * @param list value one (command list)
+     * @param type0 datatype of value one
+     * @param list1 value two (command list)
+     * @param type1 datatype of value two
+     * @return result value (command list)
+     */
+    public ArrayList<String> stringBuilder(ArrayList<String> list, DataType type0, ArrayList<String> list1, DataType type1) {
+        //todo: build strings from expressions
+        return null;
     }
 
     /**
@@ -438,8 +448,7 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
      * @param modifier modifier to use (eg: 'add', 'div', 'mul' etc)
      * @return command list, or null if invalid datatype is used
      */
-    public ArrayList<String> mathExpression(ArrayList<String> list, DataType type0, ArrayList<String> list1, DataType type1, String modifier) {
-
+    private ArrayList<String> mathExpression(ArrayList<String> list, DataType type0, ArrayList<String> list1, DataType type1, String modifier) {
         if (type0 == DataType.INTEGER) {
             if (type1 == DataType.INTEGER) {
                 list.addAll(list1);
@@ -477,9 +486,40 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
         return list;
     }
 
+    /**
+     * Helper method used in working out expressions involving math
+     * @param ctx expressionContext
+     * @return List of instructions, or null if parameters were invalid
+     */
+    private ArrayList<String> mathExpression(alphaParser.ExpressionContext ctx, String modifier) {
+        ArrayList<String> list;
+        //maybe have to convert the first output, so keep output of second expression in a separate list
+        ArrayList<String> list0 = new ArrayList<>();
+        ArrayList<String> list1 = new ArrayList<>();
+        DataType[] types = new DataType[2];
+
+        //visit both expressions, store both datatypes
+        list0.addAll(visit(ctx.children.get(0)));
+        types[0] = expressionType;
+
+        list1.addAll(visit(ctx.children.get(2)));
+        types[1] = expressionType;
+
+        //now figure out how to combine those two datatypes.
+        ArrayList<String> resultList = mathExpression(list0, types[0], list1, types[1], modifier);
+
+        if (resultList != null) { //valid math, just return this
+            list = resultList;
+        } else { //invalid math
+            list = null;
+        }
+
+        return list;
+    }
+
     @Override
     public ArrayList<String> visitPlusExpression(alphaParser.PlusExpressionContext ctx) {
-        ArrayList<String> list = new ArrayList<>();
+        ArrayList<String> list;
         //maybe have to convert the first output, so keep output of second expression in a separate list
         ArrayList<String> list0 = new ArrayList<>();
         ArrayList<String> list1 = new ArrayList<>();
@@ -498,12 +538,148 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
         if (resultList != null) { //valid math, just return this
             list = resultList;
         } else { //invalid math, so it's a string.
-            //todo: support string
+            list = stringBuilder(list0, types[0], list1, types[1]);
         }
         
         return list;
     }
+
+    @Override
+    public ArrayList<String> visitMinusExpression(alphaParser.MinusExpressionContext ctx) {
+        return mathExpression(ctx, "sub");
+    }
+
+    @Override
+    public ArrayList<String> visitModuloExpression(alphaParser.ModuloExpressionContext ctx) {
+        return mathExpression(ctx, "rem");
+    }
+
+    @Override
+    public ArrayList<String> visitMultiplyExpression(alphaParser.MultiplyExpressionContext ctx) {
+        return mathExpression(ctx, "mul");
+    }
+
+    @Override
+    public ArrayList<String> visitDivideExpression(alphaParser.DivideExpressionContext ctx) {
+        return mathExpression(ctx, "div");
+    }
+
+    @Override
+    public ArrayList<String> visitAddCustomExpression(alphaParser.AddCustomExpressionContext ctx) {
+        ArrayList<String> list;
+        
+        ArrayList<ArrayList<String>> listOfValues = new ArrayList<>();
+        ArrayList<DataType> listOfDataTypes = new ArrayList<>();
+        
+        for(ParseTree t: ctx.children) {
+            if (t instanceof alphaParser.VariableContext || t instanceof TerminalNode) {
+                //todo: change grammar so it doesn't visit a terminal node
+                listOfValues.add(visit(t));
+                listOfDataTypes.add(expressionType);
+            }
+        }
+
+        boolean onlyNumbers = true;
+        for(DataType t: listOfDataTypes) {
+            if (t != DataType.INTEGER && t != DataType.DOUBLE) {
+                onlyNumbers = false;
+            }
+        }
+        
+        if (onlyNumbers) { //only numbers, so addition
+            
+            if (listOfValues.size() == 1) { //just one thing, do it manually
+                list = listOfValues.get(0);
+            } else {
+                //first add the first two values
+                ArrayList<String> result = mathExpression(listOfValues.get(0), listOfDataTypes.get(0), listOfValues.get(1), listOfDataTypes.get(1), "add");
+
+                //then, for each next value, get the last result and add it to the next. loop until done
+                for (int i = 2; i < listOfValues.size() - 1; i++) {
+                    result = mathExpression(result, expressionType, listOfValues.get(i), listOfDataTypes.get(i), "add");
+                }
+
+                list = result;
+            }
+        } else { //something else, so make it a string
+            
+            if (listOfValues.size() == 1) { //just one thing, do it manually
+                list = listOfValues.get(0);
+            } else {
+                //first add the first two values
+                ArrayList<String> result = stringBuilder(listOfValues.get(0), listOfDataTypes.get(0), listOfValues.get(1), listOfDataTypes.get(1));
+
+                //then, for each next value, get the last result and add it to the next. loop until done
+                for (int i = 2; i < listOfValues.size() - 1; i++) {
+                    result = stringBuilder(result, DataType.STRING, listOfValues.get(i), listOfDataTypes.get(i));
+                }
+
+                list = result;
+            }
+        }
+        
+        return list;
+    }
+
+    ///NUMBER COMPARISON
     
+    @Override
+    public ArrayList<String> visitSmallerThanExpression(alphaParser.SmallerThanExpressionContext ctx) {
+        return super.visitSmallerThanExpression(ctx);
+    }
+
+    @Override
+    public ArrayList<String> visitSmallerOrEqualExpression(alphaParser.SmallerOrEqualExpressionContext ctx) {
+        return super.visitSmallerOrEqualExpression(ctx);
+    }
+
+    @Override
+    public ArrayList<String> visitGreaterThanExpression(alphaParser.GreaterThanExpressionContext ctx) {
+        return super.visitGreaterThanExpression(ctx);
+    }
+
+    @Override
+    public ArrayList<String> visitGreaterOrEqualExpression(alphaParser.GreaterOrEqualExpressionContext ctx) {
+        return super.visitGreaterOrEqualExpression(ctx);
+    }
+
+    //COMPARISON
+    
+    @Override
+    public ArrayList<String> visitEqualToExpression(alphaParser.EqualToExpressionContext ctx) {
+        return super.visitEqualToExpression(ctx);
+    }
+
+    @Override
+    public ArrayList<String> visitNotEqualToExpression(alphaParser.NotEqualToExpressionContext ctx) {
+        return super.visitNotEqualToExpression(ctx);
+    }
+    
+    //BOOLEAN THINGS
+
+    @Override
+    public ArrayList<String> visitNotExpression(alphaParser.NotExpressionContext ctx) {
+        return super.visitNotExpression(ctx);
+    }
+
+    @Override
+    public ArrayList<String> visitOrExpression(alphaParser.OrExpressionContext ctx) {
+        return super.visitOrExpression(ctx);
+    }
+
+    @Override
+    public ArrayList<String> visitAndExpression(alphaParser.AndExpressionContext ctx) {
+        return super.visitAndExpression(ctx);
+    }
+    
+    ////IMPOSSIBLE//////
+
+    @Override
+    public ArrayList<String> visitFunctionCallExpression(alphaParser.FunctionCallExpressionContext ctx) {
+        //todo: kill me now
+        return super.visitFunctionCallExpression(ctx);
+    }
+
     ////////////////////SCOPE//////////////////////////////
 
     @Override
