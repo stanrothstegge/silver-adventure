@@ -231,7 +231,7 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
 
             DataType returnType = DataType.VOID;
 
-            //if 1 return type, just do it the normal way
+            //if 1 return expressionType, just do it the normal way
             if (returnTypes.length == 1) {
                 returnType = returnTypes[0];
             }
@@ -356,14 +356,14 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
     
     ///////////////////////EXPRESSIONS////////////////////////////
 
-    DataType type;
+    private DataType expressionType;
     
     @Override
     public ArrayList<String> visitStringExpression(alphaParser.StringExpressionContext ctx) {
         ArrayList<String> list = new ArrayList<>();
 
         list.add(TypeConverter.generateCommand(DataType.STRING, ctx.getText(), Command.PUT));
-        type = DataType.STRING;
+        expressionType = DataType.STRING;
 
         return list;
     }
@@ -374,10 +374,10 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
 
         if (ctx.getText().contains(".")) { //this is a double todo: maybe change to if it has digits behind the number. maybe not.
             list.add(TypeConverter.generateCommand(DataType.DOUBLE, ctx.getText(), Command.PUT));
-            type = DataType.DOUBLE;
+            expressionType = DataType.DOUBLE;
         } else { //this is an int
             list.add(TypeConverter.generateCommand(DataType.INTEGER, ctx.getText(), Command.PUT));
-            type = DataType.INTEGER;
+            expressionType = DataType.INTEGER;
         }
         
         return list;
@@ -389,7 +389,7 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
 
         Variable variable = scope.getVariable(ctx.getText());
         list.add(TypeConverter.generateCommand(variable.type, "" + variable.localNumber, Command.PUT));
-        type = variable.type;
+        expressionType = variable.type;
 
         return list;
     }
@@ -399,7 +399,7 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
         ArrayList<String> list = new ArrayList<>();
 
         list.add(TypeConverter.generateCommand(DataType.TRUE, "1", Command.PUT));
-        type = DataType.BOOLEAN;
+        expressionType = DataType.BOOLEAN;
         
         return list;
     }
@@ -409,7 +409,7 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
         ArrayList<String> list = new ArrayList<>();
 
         list.add(TypeConverter.generateCommand(DataType.FALSE, "0", Command.PUT));
-        type = DataType.BOOLEAN;
+        expressionType = DataType.BOOLEAN;
 
         return list;
     }
@@ -420,8 +420,60 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
 
         String value = "" + ctx.getText().replaceAll("\'", "").getBytes();  //this maybe works. maybe not
         list.add(TypeConverter.generateCommand(DataType.CHAR, value, Command.PUT));
-        type = DataType.CHAR;
+        expressionType = DataType.CHAR;
 
+        return list;
+    }
+    
+    public ArrayList<String> stringBuilder() {
+        
+    }
+
+    /**
+     * Helper method used to do math. also sets expressionType to the relevant type
+     * @param list command list for the first expression
+     * @param type0 datatype of first expression
+     * @param list1 command list for second expression
+     * @param type1 datatype for second expression
+     * @param modifier modifier to use (eg: 'add', 'div', 'mul' etc)
+     * @return command list, or null if invalid datatype is used
+     */
+    public ArrayList<String> mathExpression(ArrayList<String> list, DataType type0, ArrayList<String> list1, DataType type1, String modifier) {
+
+        if (type0 == DataType.INTEGER) {
+            if (type1 == DataType.INTEGER) {
+                list.addAll(list1);
+                list.add("i" + modifier);
+                
+                expressionType = DataType.INTEGER;
+            } else if (type1 == DataType.DOUBLE) {
+                list.add("i2d"); //convert int to double
+                list.addAll(list1);
+                list.add("d" + modifier);
+                
+                expressionType = DataType.DOUBLE;
+            } else { //not a valid math type, return
+                return null;
+            }
+        } else if (type0 == DataType.DOUBLE) {
+            if (type1 == DataType.INTEGER) {
+                list.addAll(list1);
+                list.add("i2d");
+                list.add("d" + modifier);
+
+                expressionType = DataType.DOUBLE;
+            } else if (type1 == DataType.DOUBLE) {
+                list.addAll(list1);
+                list.add("d" + modifier);
+
+                expressionType = DataType.DOUBLE;
+            } else { //not a valid math type, return
+                return null;
+            }
+        } else { //not a valid math type, return
+            return null;
+        }
+        
         return list;
     }
 
@@ -429,40 +481,24 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
     public ArrayList<String> visitPlusExpression(alphaParser.PlusExpressionContext ctx) {
         ArrayList<String> list = new ArrayList<>();
         //maybe have to convert the first output, so keep output of second expression in a separate list
+        ArrayList<String> list0 = new ArrayList<>();
         ArrayList<String> list1 = new ArrayList<>();
         DataType[] types = new DataType[2];
         
         //visit both expressions, store both datatypes
-        list.addAll(visit(ctx.expression(0)));
-        types[0] = type;
+        list0.addAll(visit(ctx.expression(0)));
+        types[0] = expressionType;
         
         list1.addAll(visit(ctx.expression(1)));
-        types[1] = type;
+        types[1] = expressionType;
         
         //now figure out how to combine those two datatypes.
-        if (types[0] == DataType.INTEGER) {
-            if (types[1] == DataType.INTEGER) {
-                list.addAll(list1);
-                list.add("iadd");
-            } else if (types[1] == DataType.DOUBLE) {
-                list.add("i2d"); //convert int to double
-                list.addAll(list1);
-                list.add("dadd");
-            }
-        } else if (types[0] == DataType.DOUBLE) {
-            if (types[1] == DataType.INTEGER) {
-                list.addAll(list1);
-                list.add("i2d");
-                list.add("dadd");
-            } else if (types[1] == DataType.DOUBLE) {
-                list.addAll(list1);
-                list.add("dadd");
-            }
-        } else { //rest is just string stuff
-            //convert first type to string
-            //convert second type to string
-            //add first to second
-            //finish!
+        ArrayList<String> resultList = mathExpression(list0, types[0], list1, types[1], "add");
+        
+        if (resultList != null) { //valid math, just return this
+            list = resultList;
+        } else { //invalid math, so it's a string.
+            //todo: support string
         }
         
         return list;
