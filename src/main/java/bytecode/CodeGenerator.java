@@ -334,21 +334,47 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
     @Override
     public ArrayList<String> visitPrintFunction(alphaParser.PrintFunctionContext ctx) {
         ArrayList<String> list = new ArrayList<>();
+        ArrayList<String> listStrinBuilder = new ArrayList<>();
+        boolean stringBuilder = false;
         //todo handle variables and stuff
         list.add("getstatic java/lang/System/out Ljava/io/PrintStream;");
+
+        listStrinBuilder.add("new java/lang/StringBuilder");
+        listStrinBuilder.add("dup");
+        listStrinBuilder.add("invokespecial java/lang/StringBuilder.<init>()V");
+
         String printText = "";
+
         for (ParseTree t : ctx.expression().children) {
             if (t.getParent() instanceof alphaParser.StringExpressionContext ||
                     t.getParent() instanceof alphaParser.NumberExpressionContext) {//Handles standalone string and expression
                 printText += TypeConverter.generateCommand(DataType.STRING, t.getText(),Command.PUT);
             }
-            if(t.getParent() instanceof  alphaParser.VariableExpressionContext){
+            if(t.getParent() instanceof  alphaParser.VariableExpressionContext){ //Handles standalone variables
                 printText += TypeConverter.generateCommand(scope.lookupVariable(t.getText()), Integer.toString(scope.getVariable(t.getText()).localNumber),Command.LOAD);
             }
-
+            if(t instanceof  alphaParser.VariableExpressionContext){ // handles + variables
+                stringBuilder = true;
+                listStrinBuilder.add(TypeConverter.generateCommand(scope.lookupVariable(t.getText()), Integer.toString(scope.getVariable(t.getText()).localNumber),Command.LOAD));
+                listStrinBuilder.add("invokevirtual java/lang/StringBuilder.append(Ljava/lang/String;)Ljava/lang/StringBuilder;");
+            }
+            if(t instanceof alphaParser.PlusExpressionContext){ //todo dosnt work well dont go to deep in to rabbit hole
+                listStrinBuilder.add(TypeConverter.generateCommand(scope.lookupVariable(((alphaParser.PlusExpressionContext) t).expression().get(0).getText()),
+                        Integer.toString(scope.getVariable(((alphaParser.PlusExpressionContext) t).expression().get(0).getText()).localNumber),Command.LOAD));
+                listStrinBuilder.add("invokevirtual java/lang/StringBuilder.append(Ljava/lang/String;)Ljava/lang/StringBuilder;");
+                listStrinBuilder.add(TypeConverter.generateCommand(scope.lookupVariable(((alphaParser.PlusExpressionContext) t).expression().get(1).getText()),
+                        Integer.toString(scope.getVariable(((alphaParser.PlusExpressionContext) t).expression().get(1).getText()).localNumber),Command.LOAD));
+                listStrinBuilder.add("invokevirtual java/lang/StringBuilder.append(Ljava/lang/String;)Ljava/lang/StringBuilder;");
+            }
         }
+
         //close string
-        list.add(printText);
+        if(stringBuilder) {
+            listStrinBuilder.add("invokevirtual java/lang/StringBuilder.toString()Ljava/lang/String;");
+            list.addAll(listStrinBuilder);
+        }else{
+            list.add(printText);
+        }
         list.add("invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V");
 
         return list;
