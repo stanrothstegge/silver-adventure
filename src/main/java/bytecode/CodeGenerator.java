@@ -682,62 +682,17 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
 
     @Override
     public ArrayList<String> visitAddCustomExpression(alphaParser.AddCustomExpressionContext ctx) {
-        ArrayList<String> list;
+        //altijd een string
+        ArrayList<String> list = new ArrayList<>();
         
         ArrayList<ArrayList<String>> listOfValues = new ArrayList<>();
         ArrayList<DataType> listOfDataTypes = new ArrayList<>();
         
-        for(ParseTree t: ctx.children) {
-            if (t instanceof alphaParser.VariableContext 
-                    || t instanceof alphaParser.NumberValueContext 
-                    || t instanceof alphaParser.StringValueContext 
-                    || t instanceof alphaParser.CharValueContext 
-                    || t instanceof alphaParser.TrueValueContext 
-                    || t instanceof alphaParser.FalseValueContext) {
-                listOfValues.add(visit(t));
-                listOfDataTypes.add(expressionType);
-            }
-        }
-
-        boolean onlyNumbers = true;
-        for(DataType t: listOfDataTypes) {
-            if (t != DataType.INTEGER && t != DataType.DOUBLE) {
-                onlyNumbers = false;
-            }
-        }
+        fillValues(listOfValues, listOfDataTypes, ctx);
         
-        if (onlyNumbers) { //only numbers, so addition
-            
-            if (listOfValues.size() == 1) { //just one thing, do it manually
-                list = listOfValues.get(0);
-            } else {
-                //first add the first two values
-                ArrayList<String> result = mathExpression(listOfValues.get(0), listOfDataTypes.get(0), listOfValues.get(1), listOfDataTypes.get(1), "add");
-
-                //then, for each next value, get the last result and add it to the next. loop until done
-                for (int i = 2; i < listOfValues.size() - 1; i++) {
-                    result = mathExpression(result, expressionType, listOfValues.get(i), listOfDataTypes.get(i), "add");
-                }
-
-                list = result;
-            }
-        } else { //something else, so make it a string
-            //fixme: incompatible with new stringbuilder
-            
-            if (listOfValues.size() == 1) { //just one thing, do it manually
-                list = listOfValues.get(0);
-            } else {
-                //first add the first two values
-                ArrayList<String> result = stringBuilder(listOfValues.get(0), listOfDataTypes.get(0), listOfValues.get(1), listOfDataTypes.get(1));
-
-                //then, for each next value, get the last result and add it to the next. loop until done
-                for (int i = 2; i < listOfValues.size() - 1; i++) {
-                    result = stringBuilder(result, DataType.STRING, listOfValues.get(i), listOfDataTypes.get(i));
-                }
-
-                list = result;
-            }
-        }
+        list.addAll(stringBuilder(listOfValues, listOfDataTypes));
+        
+        //todo: ooit nog number bij elkaar. maar daarvoor moet TypeChecker ook aangepast worden
         
         return list;
     }

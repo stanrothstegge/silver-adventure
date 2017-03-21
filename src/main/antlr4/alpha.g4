@@ -35,7 +35,7 @@ expression
  | value													#valueExpression
  | variable                                					#variableExpression
  | functionCall							   					#functionCallExpression
- | '\\+' (' ' (value | variable))+     						#addCustomExpression
+ | '\\+' (' ' (expression))+     							#addCustomExpression
  ;
   
  //--declarations--

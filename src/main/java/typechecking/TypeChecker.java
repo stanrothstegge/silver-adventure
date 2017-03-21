@@ -370,6 +370,12 @@ public class TypeChecker extends alphaBaseVisitor {
     }
 
     @Override
+    public Object visitAddCustomExpression(alphaParser.AddCustomExpressionContext ctx) {
+        //wordt altijd string, dus is wel prima zo
+        return new DataTypeCarrier(DataType.STRING);
+    }
+
+    @Override
     public Object visitNumberValue(alphaParser.NumberValueContext ctx) {
         if (!currentVariable.equals("")) {
             try {
