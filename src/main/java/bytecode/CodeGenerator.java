@@ -4,6 +4,7 @@ package main.java.bytecode;
 import main.antlr4.alphaBaseVisitor;
 import main.antlr4.alphaParser;
 import main.java.scopechecking.Identifier;
+import main.java.typechecking.TypeChecker;
 import main.java.utils.DataType;
 import main.java.utils.DataTypes;
 import main.java.utils.Scope;
@@ -288,24 +289,23 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
 
 
         if (functionName.equals("main")) {
-            //global variables expressions verwerken
-            for (int i = 0; i < globalExpressions.size(); i++) {
-                String variableName = globalVariables.get(i);
-                alphaParser.ExpressionContext expression = globalExpressions.get(i);
-
-                //todo: do stuff with the expression?
-            }
             list.add("return");
-
         } else {
-            //todo return statement
-            //todo don't call visit(ctx), inless you realy like stack overflow errors
-//            for (ParseTree t : ctx.statement()) {
-//                if (t instanceof alphaParser.ReturnMethodStatementContext) {
-//                    ArrayList<String> returnList = visit(t);
-//                    list.addAll(returnList); //todo handle every child
-//                }
-//            }
+            if (returnTypes.length == 1) {
+                list.add(TypeConverter.convert(returnTypes[0], false) + "return");
+            } else {
+
+
+
+
+
+
+                String output =  TypeChecker.parentScope.lookupMethod(functionName).getReturn().size() == 1 ?
+                        TypeConverter.convert(TypeChecker.parentScope.lookupMethod(functionName).getReturnType(0),true) : "";
+                list.add(output +"return");
+            }
+
+
         }
 
         list.add(".end method" + NEWLINE);
@@ -317,6 +317,8 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
         scope = scope.close();
         return list;
     }
+
+
 
     @Override
     public ArrayList<String> visitArgumentsDeclaration(alphaParser.ArgumentsDeclarationContext ctx) {
@@ -350,8 +352,6 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
             if (result != null) {
                 list.addAll(result);
                 toPrint = expressionType;
-            } else {
-                System.out.println("something something went wrong help me " + t.getText());
             }
         }
 
@@ -376,7 +376,7 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
                 list.add("invokevirtual java/util/Scanner.next()Ljava/lang/String;");
                 list.add("iconst_0");
                 list.add("invokevirtual java/lang/String.charAt(I)C");
-            break;
+                break;
             case STRING:
                 list.add("invokevirtual java/util/Scanner.next()Ljava/lang/String;");
                 break;
@@ -461,9 +461,7 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
     public ArrayList<String> visitCharValue(alphaParser.CharValueContext ctx) {
         ArrayList<String> list = new ArrayList<>();
 
-//        String value = "" + ctx.getText().replaceAll("\'", "").getBytes();  //this maybe works. maybe not
-        String ascii = Integer.toString((int) ctx.getText().replaceAll("\'", "").charAt(0));
-        list.add(TypeConverter.generateCommand(DataType.CHAR, ascii, Command.PUT));
+        list.add(TypeConverter.generateCommand(DataType.CHAR, ctx.getText(), Command.PUT));
         expressionType = DataType.CHAR;
 
         return list;
@@ -783,6 +781,48 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
     public ArrayList<String> visitFunctionCallExpression(alphaParser.FunctionCallExpressionContext ctx) {
         //todo: kill me now
         return super.visitFunctionCallExpression(ctx);
+    }
+
+    ///////////////////STATEMENTS//////////////////////////
+
+    @Override
+    public ArrayList<String> visitFunctionCallStatement(alphaParser.FunctionCallStatementContext ctx) {
+        ArrayList<String> list = new ArrayList<>();
+        String input = TypeChecker.parentScope.lookupMethod(ctx.functionCall().TEXT().getText()).getParameters().size() == 1 ?
+                TypeConverter.convert(TypeChecker.parentScope.lookupMethod(ctx.functionCall().TEXT().getText()).getParameters(0),true) : "";
+
+        String output =  TypeChecker.parentScope.lookupMethod(ctx.functionCall().TEXT().getText()).getReturn().size() == 1 ?
+                TypeConverter.convert(TypeChecker.parentScope.lookupMethod(ctx.functionCall().TEXT().getText()).getReturnType(0),true) : "V";
+
+        list.add("invokestatic " + fileName + "/" + ctx.functionCall().TEXT().getText() + "(" + input + ")" + output );
+
+       if(TypeChecker.parentScope.lookupMethod(ctx.functionCall().TEXT().getText()).getReturn().size() == 1 ){
+          ArrayList<String> variable = visit(ctx.functionCall().children.get(0));
+          list.add(TypeConverter.generateCommand(DataType.valueOf(variable.get(1)),Integer.toString(scope.getVariable(variable.get(0)).localNumber),Command.STORE));
+       }else{
+           //todo multible return
+       }
+
+        return list;
+    }
+
+    @Override
+    public ArrayList<String> visitReturnMethodStatement(alphaParser.ReturnMethodStatementContext ctx) {
+        ArrayList<String> list = new ArrayList<>();
+        if(ctx.returnMethod().expression().size() == 1){
+            if(ctx.returnMethod().expression(0) instanceof alphaParser.VariableExpressionContext){
+                list.add(TypeConverter.generateCommand(TypeChecker.parentScope.lookupMethod(functionName).getReturnType(0) ,
+                        Integer.toString(scope.getVariable(ctx.returnMethod().expression(0).getText()).localNumber),
+                        Command.LOAD));
+            }else {
+                list.add(TypeConverter.generateCommand(TypeChecker.parentScope.lookupMethod(functionName).getReturnType(0)
+                        , ctx.returnMethod().expression(0).getText(),
+                        Command.PUT));
+            }
+        }else{
+            //todo multible return
+        }
+        return list;
     }
 
     ////////////////////SCOPE//////////////////////////////

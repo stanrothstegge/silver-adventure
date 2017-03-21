@@ -136,7 +136,7 @@ public class TypeConverter {
             case CHAR:
                 switch (kind) {
                     case PUT:
-                        return "bipush " + value;//todo fix char
+                        return "bipush " +  Integer.toString((int) value.replaceAll("\'", "").charAt(0));
                     case STORE:
                         return "istore "+ value;
                     case LOAD:
