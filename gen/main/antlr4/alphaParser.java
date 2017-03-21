@@ -324,21 +324,6 @@ public class alphaParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class MultiplyExpressionContext extends ExpressionContext {
-		public List<ExpressionContext> expression() {
-			return getRuleContexts(ExpressionContext.class);
-		}
-		public ExpressionContext expression(int i) {
-			return getRuleContext(ExpressionContext.class,i);
-		}
-		public TerminalNode MULTIPLY() { return getToken(alphaParser.MULTIPLY, 0); }
-		public MultiplyExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitMultiplyExpression(this);
-			else return visitor.visitChildren(this);
-		}
-	}
 	public static class SmallerOrEqualExpressionContext extends ExpressionContext {
 		public List<ExpressionContext> expression() {
 			return getRuleContexts(ExpressionContext.class);
@@ -366,6 +351,21 @@ public class alphaParser extends Parser {
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitGreaterThanExpression(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class MultiplyExpressionContext extends ExpressionContext {
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode MULTIPLY() { return getToken(alphaParser.MULTIPLY, 0); }
+		public MultiplyExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof alphaVisitor ) return ((alphaVisitor<? extends T>)visitor).visitMultiplyExpression(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -611,156 +611,156 @@ public class alphaParser extends Parser {
 					switch ( getInterpreter().adaptivePredict(_input,4,_ctx) ) {
 					case 1:
 						{
-						_localctx = new MultiplyExpressionContext(new ExpressionContext(_parentctx, _parentState));
+						_localctx = new GreaterOrEqualExpressionContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(81);
 						if (!(precpred(_ctx, 18))) throw new FailedPredicateException(this, "precpred(_ctx, 18)");
 						setState(82);
-						match(MULTIPLY);
+						match(GREATEROREQUAL);
 						setState(83);
 						expression(19);
 						}
 						break;
 					case 2:
 						{
-						_localctx = new DivideExpressionContext(new ExpressionContext(_parentctx, _parentState));
+						_localctx = new SmallerOrEqualExpressionContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(84);
 						if (!(precpred(_ctx, 17))) throw new FailedPredicateException(this, "precpred(_ctx, 17)");
 						setState(85);
-						match(DIVIDE);
+						match(SMALLEROREQUAL);
 						setState(86);
 						expression(18);
 						}
 						break;
 					case 3:
 						{
-						_localctx = new ModuloExpressionContext(new ExpressionContext(_parentctx, _parentState));
+						_localctx = new GreaterThanExpressionContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(87);
 						if (!(precpred(_ctx, 16))) throw new FailedPredicateException(this, "precpred(_ctx, 16)");
 						setState(88);
-						match(MODULO);
+						match(GREATERTHAN);
 						setState(89);
 						expression(17);
 						}
 						break;
 					case 4:
 						{
-						_localctx = new PlusExpressionContext(new ExpressionContext(_parentctx, _parentState));
+						_localctx = new SmallerThanExpressionContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(90);
 						if (!(precpred(_ctx, 15))) throw new FailedPredicateException(this, "precpred(_ctx, 15)");
 						setState(91);
-						match(PLUS);
+						match(SMALLERTHAN);
 						setState(92);
 						expression(16);
 						}
 						break;
 					case 5:
 						{
-						_localctx = new MinusExpressionContext(new ExpressionContext(_parentctx, _parentState));
+						_localctx = new EqualToExpressionContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(93);
 						if (!(precpred(_ctx, 14))) throw new FailedPredicateException(this, "precpred(_ctx, 14)");
 						setState(94);
-						match(MINUS);
+						match(EQUALTO);
 						setState(95);
 						expression(15);
 						}
 						break;
 					case 6:
 						{
-						_localctx = new GreaterOrEqualExpressionContext(new ExpressionContext(_parentctx, _parentState));
+						_localctx = new NotEqualToExpressionContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(96);
 						if (!(precpred(_ctx, 13))) throw new FailedPredicateException(this, "precpred(_ctx, 13)");
 						setState(97);
-						match(GREATEROREQUAL);
+						match(NOTEQUALTO);
 						setState(98);
 						expression(14);
 						}
 						break;
 					case 7:
 						{
-						_localctx = new SmallerOrEqualExpressionContext(new ExpressionContext(_parentctx, _parentState));
+						_localctx = new AndExpressionContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(99);
 						if (!(precpred(_ctx, 12))) throw new FailedPredicateException(this, "precpred(_ctx, 12)");
 						setState(100);
-						match(SMALLEROREQUAL);
+						match(AND);
 						setState(101);
 						expression(13);
 						}
 						break;
 					case 8:
 						{
-						_localctx = new GreaterThanExpressionContext(new ExpressionContext(_parentctx, _parentState));
+						_localctx = new OrExpressionContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(102);
 						if (!(precpred(_ctx, 11))) throw new FailedPredicateException(this, "precpred(_ctx, 11)");
 						setState(103);
-						match(GREATERTHAN);
+						match(OR);
 						setState(104);
 						expression(12);
 						}
 						break;
 					case 9:
 						{
-						_localctx = new SmallerThanExpressionContext(new ExpressionContext(_parentctx, _parentState));
+						_localctx = new MultiplyExpressionContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(105);
 						if (!(precpred(_ctx, 10))) throw new FailedPredicateException(this, "precpred(_ctx, 10)");
 						setState(106);
-						match(SMALLERTHAN);
+						match(MULTIPLY);
 						setState(107);
 						expression(11);
 						}
 						break;
 					case 10:
 						{
-						_localctx = new EqualToExpressionContext(new ExpressionContext(_parentctx, _parentState));
+						_localctx = new DivideExpressionContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(108);
 						if (!(precpred(_ctx, 9))) throw new FailedPredicateException(this, "precpred(_ctx, 9)");
 						setState(109);
-						match(EQUALTO);
+						match(DIVIDE);
 						setState(110);
 						expression(10);
 						}
 						break;
 					case 11:
 						{
-						_localctx = new NotEqualToExpressionContext(new ExpressionContext(_parentctx, _parentState));
+						_localctx = new ModuloExpressionContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(111);
 						if (!(precpred(_ctx, 8))) throw new FailedPredicateException(this, "precpred(_ctx, 8)");
 						setState(112);
-						match(NOTEQUALTO);
+						match(MODULO);
 						setState(113);
 						expression(9);
 						}
 						break;
 					case 12:
 						{
-						_localctx = new AndExpressionContext(new ExpressionContext(_parentctx, _parentState));
+						_localctx = new MinusExpressionContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(114);
 						if (!(precpred(_ctx, 7))) throw new FailedPredicateException(this, "precpred(_ctx, 7)");
 						setState(115);
-						match(AND);
+						match(MINUS);
 						setState(116);
 						expression(8);
 						}
 						break;
 					case 13:
 						{
-						_localctx = new OrExpressionContext(new ExpressionContext(_parentctx, _parentState));
+						_localctx = new PlusExpressionContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(117);
 						if (!(precpred(_ctx, 6))) throw new FailedPredicateException(this, "precpred(_ctx, 6)");
 						setState(118);
-						match(OR);
+						match(PLUS);
 						setState(119);
 						expression(7);
 						}
@@ -2608,13 +2608,13 @@ public class alphaParser extends Parser {
 		"\30\2\2DE\5\4\3\2EF\7\31\2\2FR\3\2\2\2GR\5.\30\2HR\5\62\32\2IR\5\24\13"+
 		"\2JM\7\4\2\2KL\7\5\2\2LN\5\4\3\2MK\3\2\2\2NO\3\2\2\2OM\3\2\2\2OP\3\2\2"+
 		"\2PR\3\2\2\2Q>\3\2\2\2QA\3\2\2\2QC\3\2\2\2QG\3\2\2\2QH\3\2\2\2QI\3\2\2"+
-		"\2QJ\3\2\2\2R|\3\2\2\2ST\f\24\2\2TU\7\25\2\2U{\5\4\3\25VW\f\23\2\2WX\7"+
-		"\26\2\2X{\5\4\3\24YZ\f\22\2\2Z[\7\27\2\2[{\5\4\3\23\\]\f\21\2\2]^\7\23"+
-		"\2\2^{\5\4\3\22_`\f\20\2\2`a\7\24\2\2a{\5\4\3\21bc\f\17\2\2cd\7\37\2\2"+
-		"d{\5\4\3\20ef\f\16\2\2fg\7\36\2\2g{\5\4\3\17hi\f\r\2\2ij\7\33\2\2j{\5"+
-		"\4\3\16kl\f\f\2\2lm\7\32\2\2m{\5\4\3\rno\f\13\2\2op\7\34\2\2p{\5\4\3\f"+
-		"qr\f\n\2\2rs\7\35\2\2s{\5\4\3\13tu\f\t\2\2uv\7!\2\2v{\5\4\3\nwx\f\b\2"+
-		"\2xy\7 \2\2y{\5\4\3\tzS\3\2\2\2zV\3\2\2\2zY\3\2\2\2z\\\3\2\2\2z_\3\2\2"+
+		"\2QJ\3\2\2\2R|\3\2\2\2ST\f\24\2\2TU\7\37\2\2U{\5\4\3\25VW\f\23\2\2WX\7"+
+		"\36\2\2X{\5\4\3\24YZ\f\22\2\2Z[\7\33\2\2[{\5\4\3\23\\]\f\21\2\2]^\7\32"+
+		"\2\2^{\5\4\3\22_`\f\20\2\2`a\7\34\2\2a{\5\4\3\21bc\f\17\2\2cd\7\35\2\2"+
+		"d{\5\4\3\20ef\f\16\2\2fg\7!\2\2g{\5\4\3\17hi\f\r\2\2ij\7 \2\2j{\5\4\3"+
+		"\16kl\f\f\2\2lm\7\25\2\2m{\5\4\3\rno\f\13\2\2op\7\26\2\2p{\5\4\3\fqr\f"+
+		"\n\2\2rs\7\27\2\2s{\5\4\3\13tu\f\t\2\2uv\7\24\2\2v{\5\4\3\nwx\f\b\2\2"+
+		"xy\7\23\2\2y{\5\4\3\tzS\3\2\2\2zV\3\2\2\2zY\3\2\2\2z\\\3\2\2\2z_\3\2\2"+
 		"\2zb\3\2\2\2ze\3\2\2\2zh\3\2\2\2zk\3\2\2\2zn\3\2\2\2zq\3\2\2\2zt\3\2\2"+
 		"\2zw\3\2\2\2{~\3\2\2\2|z\3\2\2\2|}\3\2\2\2}\5\3\2\2\2~|\3\2\2\2\177\u0080"+
 		"\5\60\31\2\u0080\u0081\7\5\2\2\u0081\u0082\7\62\2\2\u0082\7\3\2\2\2\u0083"+

@@ -80,13 +80,6 @@ public interface alphaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSmallerThanExpression(alphaParser.SmallerThanExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code multiplyExpression}
-	 * labeled alternative in {@link alphaParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitMultiplyExpression(alphaParser.MultiplyExpressionContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code smallerOrEqualExpression}
 	 * labeled alternative in {@link alphaParser#expression}.
 	 * @param ctx the parse tree
@@ -100,6 +93,13 @@ public interface alphaVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitGreaterThanExpression(alphaParser.GreaterThanExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code multiplyExpression}
+	 * labeled alternative in {@link alphaParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMultiplyExpression(alphaParser.MultiplyExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code variableExpression}
 	 * labeled alternative in {@link alphaParser#expression}.

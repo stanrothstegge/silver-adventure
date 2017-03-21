@@ -18,11 +18,6 @@ language
 expression
  :  '-' 						expression 					#negativeExpression
  | NOT  						expression 					#notExpression
- | expression MULTIPLY 			expression 					#multiplyExpression
- | expression DIVIDE 			expression 					#divideExpression
- | expression MODULO			expression 					#moduloExpression
- | expression PLUS 				expression 					#plusExpression
- | expression MINUS 			expression 					#minusExpression
  | expression GREATEROREQUAL 	expression 					#greaterOrEqualExpression
  | expression SMALLEROREQUAL 	expression 					#smallerOrEqualExpression
  | expression GREATERTHAN 		expression 					#greaterThanExpression
@@ -31,6 +26,11 @@ expression
  | expression NOTEQUALTO 		expression 					#notEqualToExpression
  | expression AND 				expression 					#andExpression
  | expression OR 				expression 					#orExpression
+ | expression MULTIPLY 			expression 					#multiplyExpression
+ | expression DIVIDE 			expression 					#divideExpression
+ | expression MODULO			expression 					#moduloExpression
+ | expression MINUS 			expression 					#minusExpression
+ | expression PLUS 				expression 					#plusExpression
  | LBRACKET expression RBRACKET 		   					#leftBracketExpressionRightBracketExpression
  | value													#valueExpression
  | variable                                					#variableExpression
