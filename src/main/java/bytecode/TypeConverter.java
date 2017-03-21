@@ -76,7 +76,11 @@ public class TypeConverter {
     static String generateCommand(DataType type, String value, Command kind) {
         switch (type) {
             case BOOLEAN:
-                    value = value.equals("tr") ? "1" : "0"; //convert boolean to 1 or 0
+                    if (value.equals("tr")) {//true
+                        value = "1";
+                    } else if (value.equals("fs")) {//false
+                        value = "0";
+                    }
             case TRUE:
             case FALSE:
                 switch (kind) {

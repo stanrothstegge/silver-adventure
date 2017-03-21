@@ -114,6 +114,8 @@ public class Scope {
             if (v.name.equals(name)) {
                 return v;
             }
+        } if (parentScope != null) {
+            return parentScope.getVariable(name);
         }
         return null;
     }

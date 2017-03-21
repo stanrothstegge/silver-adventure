@@ -1,0 +1,69 @@
+Alpha
+//type checking checker
+
+~pizza ()
+in a = 2;
+in b = 3;
+bo c = tr;
+bo d = fs;
+
+sp (1 + a < b);//true
+
+sp (2 + a <= b);//true
+
+sp (3 + a > b);//false
+
+sp (4 + a >= b);//false
+
+sp (5 + a == b);//false
+
+sp (6 + a != b);//true
+
+sp (7 + (c || d));//true
+
+sp (8 + (c && d));//false
+
+a = 3;
+b = 2;
+c = tr;
+d = tr;
+
+sp (9 + a < b);//false
+
+sp (10 + a <= b);//false
+
+sp (11 + a > b);//true
+
+sp (12 + a >= b);//true
+
+sp (13 + a == b);//false
+
+sp (14 + a != b);//true
+
+sp (15 + (c || d));//true
+
+sp (16 + (c && d));//true
+
+a = 2;
+b = 2;
+c = fs;
+d = fs;
+
+sp (17 + a < b);//false
+
+sp (18 + a <= b);//true
+
+sp (19 + a > b);//false
+
+sp (20 + a >= b);//true
+
+sp (21 + a == b);//true
+
+sp (22 + a != b);//false
+
+sp (23 + (c || d));//false
+
+sp (24 + (c && d));//false
+
+☕
+Omega

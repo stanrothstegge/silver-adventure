@@ -11,6 +11,8 @@ import main.java.utils.model.Variable;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 
 public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
@@ -355,7 +357,7 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
             }
             if(t instanceof  alphaParser.VariableExpressionContext){ //Handles standalone variables
                 printText += TypeConverter.generateCommand(scope.lookupVariable(t.getText()), Integer.toString(scope.getVariable(t.getText()).localNumber),Command.LOAD);
-            } else {
+            } else  if (t instanceof alphaParser.ExpressionContext){
                 ArrayList<String > result = visit(t);
                 if (result != null) {
                     list.addAll(result);
@@ -564,11 +566,15 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
     }
 
     private boolean onlyPlusExpression = true;
+    
     public boolean plusExpressionIsString(alphaParser.PlusExpressionContext ctx) {
         onlyPlusExpression = true;
         boolean isString = false;
         
-        for(alphaParser.ExpressionContext e: ctx.expression()) {
+        List<alphaParser.ExpressionContext> expressions = ctx.expression();
+
+        for (int i = 0; i < expressions.size(); i++) {
+            alphaParser.ExpressionContext e = expressions.get(i);
             if (e instanceof alphaParser.PlusExpressionContext) { //check if it's still a plusexpression
 
                 alphaParser.PlusExpressionContext e2 = (alphaParser.PlusExpressionContext) e;
@@ -578,13 +584,31 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
                     return false;
                 }
 
-            } else if (e instanceof alphaParser.ValueExpressionContext || e instanceof alphaParser.VariableExpressionContext) { 
+            } else if (e instanceof alphaParser.ValueExpressionContext || e instanceof alphaParser.VariableExpressionContext) { //todo: support functioncall expression
                 //visits the expressions, setting expressiontype to the relevant type.
                 visit(e);
 
-                if (expressionType == DataType.CHAR || expressionType == DataType.STRING || expressionType == DataType.TRUE || expressionType == DataType.FALSE) {
+                if (expressionType == DataType.CHAR || expressionType == DataType.STRING || expressionType == DataType.BOOLEAN || expressionType == DataType.TRUE || expressionType == DataType.FALSE) {
                     isString = true;
                 }
+            } else if(e instanceof alphaParser.LeftBracketExpressionRightBracketExpressionContext) {
+                
+                //unknown expression, add it to the list
+                alphaParser.LeftBracketExpressionRightBracketExpressionContext e2 = (alphaParser.LeftBracketExpressionRightBracketExpressionContext) expressions.get(i);
+                expressions.add(e2.expression());
+                
+            } else if(e instanceof alphaParser.GreaterOrEqualExpressionContext ||
+                      e instanceof alphaParser.SmallerOrEqualExpressionContext ||
+                      e instanceof alphaParser.GreaterThanExpressionContext ||
+                      e instanceof alphaParser.SmallerThanExpressionContext ||
+                      e instanceof alphaParser.EqualToExpressionContext ||
+                      e instanceof alphaParser.NotEqualToExpressionContext ||
+                      e instanceof alphaParser.AndExpressionContext ||
+                      e instanceof alphaParser.OrExpressionContext ||
+                      e instanceof alphaParser.AddCustomExpressionContext) { //these are all definitely string types
+
+                return true;
+
             } else { //not a plus expression and not a value, so it's definitely math, not a string.
                 onlyPlusExpression = false;
                 return false;
@@ -596,7 +620,19 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
     
     private void fillValues(ArrayList<ArrayList<String>> list, ArrayList<DataType> types, alphaParser.ExpressionContext ctx) {
         for(ParseTree t: ctx.children) {
-            if (t instanceof alphaParser.ValueExpressionContext || t instanceof alphaParser.VariableExpressionContext) {
+            if (    t instanceof alphaParser.ValueExpressionContext || 
+                    t instanceof alphaParser.VariableExpressionContext || 
+                    t instanceof alphaParser.LeftBracketExpressionRightBracketExpressionContext ||
+                    t instanceof alphaParser.GreaterOrEqualExpressionContext ||
+                    t instanceof alphaParser.SmallerOrEqualExpressionContext ||
+                    t instanceof alphaParser.GreaterThanExpressionContext ||
+                    t instanceof alphaParser.SmallerThanExpressionContext ||
+                    t instanceof alphaParser.EqualToExpressionContext ||
+                    t instanceof alphaParser.NotEqualToExpressionContext ||
+                    t instanceof alphaParser.AndExpressionContext ||
+                    t instanceof alphaParser.OrExpressionContext ||
+                    t instanceof alphaParser.AddCustomExpressionContext) {
+                
                 //add the values
                 list.add(visit(t));
                 
@@ -698,54 +734,190 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
     }
 
     ///NUMBER COMPARISON
+    private int flagCounter = 0;
+
+    private ArrayList<String> flagHelper(ArrayList<String> variables, String comparison, ArrayList<String> resultFalse, ArrayList<String> resultTrue) {
+        ArrayList<String> list = new ArrayList<>();
+        String flag = "flag" + flagCounter;
+        ++flagCounter;
+
+        //add the values to the stack
+        list.addAll(variables);
+
+        //compare
+        list.add(comparison + " " + flag + "true");
+
+        //false
+        list.addAll(resultFalse);
+        list.add("goto " + flag + "end");
+
+        //true
+        list.add(flag + "true:");
+        list.addAll(resultTrue);
+
+        //endflag
+        list.add(flag + "end:");
+
+        return list;
+    }
+    
+    private ArrayList<String> compare(alphaParser.ExpressionContext ctx, String compareType) {
+        ArrayList<String> list = new ArrayList<>();
+        DataType type;
+
+        //first, load the two variables to compare
+        ArrayList<String> list0 = new ArrayList<>();
+        ArrayList<String> list1 = new ArrayList<>();
+
+        //visit both expressions, store both datatypes
+        list0.addAll(visit(ctx.children.get(0)));
+        DataType type0 = expressionType;
+
+        list1.addAll(visit(ctx.children.get(2)));
+        DataType type1 = expressionType;
+
+        //convert to proper type is necessary
+        if (type0 != type1) { //not equal, so one is double, one is int. find the int and convert
+            type = DataType.DOUBLE;
+            if (type0 == DataType.INTEGER) {
+                list.addAll(list0);
+                list.add("i2d");
+                list.addAll(list1);
+            } else {
+                list.addAll(list0);
+                list.addAll(list1);
+                list.add("i2d");
+            }
+        } else { //just set the type to whatever the type is
+            list.addAll(list0);
+            list.addAll(list1);
+            type = type0;
+        }
+        
+        String comparison = "if_" + TypeConverter.convert(type, false) + "cmp" + compareType;
+        ArrayList<String> resultFalse = new ArrayList<>();
+        resultFalse.add(TypeConverter.generateCommand(DataType.BOOLEAN, "0", Command.PUT));
+        
+        ArrayList<String> resultTrue = new ArrayList<>();
+        resultTrue.add(TypeConverter.generateCommand(DataType.BOOLEAN, "1", Command.PUT));
+        
+        list = flagHelper(list, comparison, resultFalse, resultTrue);
+        
+        expressionType = DataType.BOOLEAN;
+
+        return list;
+    }
     
     @Override
     public ArrayList<String> visitSmallerThanExpression(alphaParser.SmallerThanExpressionContext ctx) {
-        return super.visitSmallerThanExpression(ctx);
+        return compare(ctx, "lt");
     }
 
     @Override
     public ArrayList<String> visitSmallerOrEqualExpression(alphaParser.SmallerOrEqualExpressionContext ctx) {
-        return super.visitSmallerOrEqualExpression(ctx);
+        return compare(ctx, "le");
     }
 
     @Override
     public ArrayList<String> visitGreaterThanExpression(alphaParser.GreaterThanExpressionContext ctx) {
-        return super.visitGreaterThanExpression(ctx);
+        return compare(ctx, "gt");
     }
 
     @Override
     public ArrayList<String> visitGreaterOrEqualExpression(alphaParser.GreaterOrEqualExpressionContext ctx) {
-        return super.visitGreaterOrEqualExpression(ctx);
+        return compare(ctx, "ge");
     }
 
     //COMPARISON
     
     @Override
     public ArrayList<String> visitEqualToExpression(alphaParser.EqualToExpressionContext ctx) {
-        return super.visitEqualToExpression(ctx);
+        return compare(ctx, "eq");
     }
 
     @Override
     public ArrayList<String> visitNotEqualToExpression(alphaParser.NotEqualToExpressionContext ctx) {
-        return super.visitNotEqualToExpression(ctx);
+        return compare(ctx, "ne");
     }
     
     //BOOLEAN THINGS
 
     @Override
     public ArrayList<String> visitNotExpression(alphaParser.NotExpressionContext ctx) {
-        return super.visitNotExpression(ctx);
+        ArrayList<String> list;
+
+        //equal to 0
+        String comparison = "ifeq";
+        
+        //not equal to zero, so one. so add zero to stack
+        ArrayList<String> resultFalse = new ArrayList<>();
+        resultFalse.add(TypeConverter.generateCommand(DataType.BOOLEAN, "0", Command.PUT));
+
+        //equal to zero, so zero. so add one to stack
+        ArrayList<String> resultTrue = new ArrayList<>();
+        resultTrue.add(TypeConverter.generateCommand(DataType.BOOLEAN, "1", Command.PUT));
+
+        list = flagHelper(visit(ctx.expression()), comparison, resultFalse, resultTrue);
+
+        expressionType = DataType.BOOLEAN;
+        
+        return list;
     }
 
     @Override
     public ArrayList<String> visitOrExpression(alphaParser.OrExpressionContext ctx) {
-        return super.visitOrExpression(ctx);
+        ArrayList<String> list;
+
+        //equal to zero
+        String comparison = "ifeq";
+        
+        //not equal to zero, so the first expression is true
+        ArrayList<String> resultFalse = new ArrayList<>();
+        resultFalse.add(TypeConverter.generateCommand(DataType.BOOLEAN, "1", Command.PUT));
+
+        //equal to zero, so the first expression is false. but maybe the other one is true?
+        ArrayList<String> resultTrue = new ArrayList<>();
+        
+        ArrayList<String> resultTrue2 = new ArrayList<>();
+        resultTrue2.add(TypeConverter.generateCommand(DataType.BOOLEAN, "0", Command.PUT));
+
+        ArrayList<String> variable = visit(ctx.expression(1));
+        resultTrue.addAll(flagHelper(variable, comparison, resultFalse, resultTrue2));
+
+        variable = visit(ctx.expression(0));
+        list = flagHelper(variable, comparison, resultFalse, resultTrue);
+
+        expressionType = DataType.BOOLEAN;
+
+        return list;
     }
 
     @Override
     public ArrayList<String> visitAndExpression(alphaParser.AndExpressionContext ctx) {
-        return super.visitAndExpression(ctx);
+        ArrayList<String> list;
+
+        //equal to zero
+        String comparison = "ifeq";
+
+        //not equal to zero, so the first expression is true
+        //but is the other one true too?
+        ArrayList<String> resultFalse = new ArrayList<>();
+        
+        ArrayList<String> resultFalse2 = new ArrayList<>();
+        resultFalse2.add(TypeConverter.generateCommand(DataType.BOOLEAN, "1", Command.PUT));
+
+        //equal to zero, so the expression is false.
+        ArrayList<String> resultTrue = new ArrayList<>();
+        resultTrue.add(TypeConverter.generateCommand(DataType.BOOLEAN, "0", Command.PUT));
+        
+        //second comparison
+        resultFalse.addAll(flagHelper(visit(ctx.expression(1)), comparison, resultFalse2, resultTrue));
+        
+        list = flagHelper(visit(ctx.expression(0)), comparison, resultFalse, resultTrue);
+
+        expressionType = DataType.BOOLEAN;
+
+        return list;
     }
     
     ////IMPOSSIBLE//////
@@ -760,11 +932,8 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
 
     @Override
     public ArrayList<String> visitLeftBracketExpressionRightBracketExpression(alphaParser.LeftBracketExpressionRightBracketExpressionContext ctx) {
-        scope = scope.open();
+        ArrayList<String> list = visit(ctx.expression());
 
-        ArrayList<String> list = super.visitLeftBracketExpressionRightBracketExpression(ctx);
-
-        scope = scope.close();
         return list;
     }
 
