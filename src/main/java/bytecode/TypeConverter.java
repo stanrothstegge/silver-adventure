@@ -39,7 +39,7 @@ public class TypeConverter {
                 if (big) {
                     return "C";
                 } else {
-                    return "c";
+                    return "i";
                 }
             case VOID:
                 if (big) {
@@ -86,6 +86,8 @@ public class TypeConverter {
                 switch (kind) {
                     case PUT:
                         return "iconst_" + value;
+                    case STORE:
+                        return "istore "+ value;
                     case LOAD:
                         return "iload " + value;
                     case EQUALTO:
@@ -98,6 +100,8 @@ public class TypeConverter {
                         //smaller than 32768: sipush
                         //rest: ldc
                         return "ldc " + value;
+                    case STORE:
+                        return "istore "+ value;
                     case LOAD:
                         return "iload " + value;
                     case EQUALTO:
@@ -111,6 +115,8 @@ public class TypeConverter {
                 switch (kind) {
                     case PUT:
                         return "ldc2_w " + value;
+                    case STORE:
+                        return "dstore "+ value;
                     case LOAD:
                         return "dload " + value;
                     case EQUALTO:
@@ -124,6 +130,8 @@ public class TypeConverter {
                 switch (kind) {
                     case PUT:
                         return "ldc " + value;//todo not sure if works
+                    case STORE:
+                        return "astore "+value;
                     case LOAD:
                         return "aload " + value;//todo not sure if works
                     case EQUALTO:
@@ -132,7 +140,9 @@ public class TypeConverter {
             case CHAR:
                 switch (kind) {
                     case PUT:
-                        return "bipush " + value;//todo fix char
+                        return "bipush " +  Integer.toString((int) value.replaceAll("\'", "").charAt(0));
+                    case STORE:
+                        return "istore "+ value;
                     case LOAD:
                         return "iload " + value;//todo fix char
                     case EQUALTO:
@@ -141,5 +151,7 @@ public class TypeConverter {
             default:
                 throw new RuntimeException("stuff went wrong");
         }
+
+
     }
 }

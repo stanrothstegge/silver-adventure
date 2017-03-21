@@ -20,7 +20,7 @@ class Alpha {
 
     public static void main(String[] args) throws IOException {
         
-        String fileName = "firstcode";
+        String fileName = "test2";
 
         //week 1
         //Load in the file and  create lexer from it

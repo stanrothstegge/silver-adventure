@@ -18,7 +18,8 @@ import java.util.regex.Pattern;
  */
 public class TypeChecker extends alphaBaseVisitor {
 
-    private Scope scope = new Scope();
+    private static Scope scope = new Scope();
+    public static final Scope parentScope = scope;
 
     private String currentVariable = "";                                                                                //Used to save the key of function
     private String currentFunction = "";                                                                                //Use to hold the function to get it in the return methode
@@ -259,7 +260,17 @@ public class TypeChecker extends alphaBaseVisitor {
         int amount = ctx.returnMethod().expression().size();                                                            //Get how many
         if (amount > 0) {
             for (int i = 0; i < amount; i++) {
-                if (scope.lookupMethod(currentFunction).getReturnType(i) != ((DataTypeCarrier) visit(ctx.returnMethod().expression(i))).type)
+                Pattern p = Pattern.compile("[.]");
+                Matcher m = p.matcher(ctx.returnMethod().expression(i).getText());
+                if (m.find()) {
+                    if (scope.lookupMethod(currentFunction).getReturnType(i) != DataType.DOUBLE) {
+                        throw new RuntimeException(errorMessageMaker(ctx,
+                                "visitReturnMethodStatement Function didn't return correct DataType Expected :"
+                                        + scope.lookupMethod(currentFunction).getReturnType(i) + "got "
+                                        + ctx.returnMethod().expression(i).getText()));
+                    }
+                }
+                else if (scope.lookupMethod(currentFunction).getReturnType(i) != ((DataTypeCarrier) visit(ctx.returnMethod().expression(i))).type)
                     throw new RuntimeException(errorMessageMaker(ctx,
                             "visitReturnMethodStatement Function didn't return correct DataType Expected :"
                                     + scope.lookupMethod(currentFunction).getReturnType(i) + "got "

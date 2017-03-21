@@ -53,4 +53,8 @@ public class Method {
     public DataType getParameters(int i) {
         return parameters.get(i);
     }
+
+    public ArrayList<DataType> getParameters() {
+        return parameters;
+    }
 }
