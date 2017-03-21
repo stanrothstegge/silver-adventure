@@ -95,6 +95,7 @@ public class DataTypes {
     public static void typeCheckDoubleAndInteger(DataType dataTypeFirst, DataType dataTypeSecond) throws RuntimeException {
         switch (dataTypeFirst) {
             case INTEGER:                                                                                                //Check double and integer
+                //todo: kan wel double zijn, maar moet checken of het wel in een double wordt gestopt
                 switch (dataTypeSecond) {
                     case INTEGER:
                         return;

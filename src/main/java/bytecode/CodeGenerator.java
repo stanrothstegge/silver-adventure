@@ -60,8 +60,17 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
         }
         //todo count exactle limits and stuff
         //main.set(0,"\r\n.method public static main([Ljava/lang/String;)V");
-        main.set(1, ".limit stack 100");
-        main.set(2, ".limit locals 100");
+
+        int variableAmount;
+
+        //Gets amount of variables in function
+        variableAmount = Identifier.parentScope.getScopeSize("pizza");
+
+        int localSize = variableAmount + 1;//main always has 1 argument todo: replace 10 with amount of variables in function
+
+        main.set(1, ".limit stack " + localSize * 2);
+        main.set(2, ".limit locals " + localSize);
+        
         for (int x = 0; x < addToMain.size(); x++) {
             main.add(x + 3, addToMain.get(x));
         }
@@ -337,6 +346,7 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
         //todo handle variables and stuff
         list.add("getstatic java/lang/System/out Ljava/io/PrintStream;");
         String printText = "";
+        DataType toPrint = DataType.STRING;
 
         for (ParseTree t : ctx.children) {
             if (t instanceof alphaParser.StringValueContext ||
@@ -348,7 +358,8 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
             } else {
                 ArrayList<String > result = visit(t);
                 if (result != null) {
-                    list.addAll(visit(t));
+                    list.addAll(result);
+                    toPrint = expressionType;
                 } else {
                     System.out.println("something something went wrong help me " + t.getText());
                 }
@@ -357,7 +368,7 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
      
         list.add(printText);
         
-        list.add("invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V");
+        list.add("invokevirtual java/io/PrintStream/println(" + TypeConverter.convert(toPrint, true) + ")V");
 
         return list;
     }
@@ -552,28 +563,98 @@ public class CodeGenerator extends alphaBaseVisitor<ArrayList<String>> {
         return list;
     }
 
+    private boolean onlyPlusExpression = true;
+    public boolean plusExpressionIsString(alphaParser.PlusExpressionContext ctx) {
+        onlyPlusExpression = true;
+        boolean isString = false;
+        
+        for(alphaParser.ExpressionContext e: ctx.expression()) {
+            if (e instanceof alphaParser.PlusExpressionContext) { //check if it's still a plusexpression
+
+                alphaParser.PlusExpressionContext e2 = (alphaParser.PlusExpressionContext) e;
+                if (plusExpressionIsString(e2)) { //if child plusexpression is a string, we want to remember and return that
+                    isString = true;
+                } else if (!onlyPlusExpression) { //child plusexpression is not a string AND it's not only plusexpression, so we immediately return failure.
+                    return false;
+                }
+
+            } else if (e instanceof alphaParser.ValueExpressionContext || e instanceof alphaParser.VariableExpressionContext) { 
+                //visits the expressions, setting expressiontype to the relevant type.
+                visit(e);
+
+                if (expressionType == DataType.CHAR || expressionType == DataType.STRING || expressionType == DataType.TRUE || expressionType == DataType.FALSE) {
+                    isString = true;
+                }
+            } else { //not a plus expression and not a value, so it's definitely math, not a string.
+                onlyPlusExpression = false;
+                return false;
+            }
+        }
+        
+        return isString;
+    }
+    
+    private void fillValues(ArrayList<ArrayList<String>> list, ArrayList<DataType> types, alphaParser.ExpressionContext ctx) {
+        for(ParseTree t: ctx.children) {
+            if (t instanceof alphaParser.ValueExpressionContext || t instanceof alphaParser.VariableExpressionContext) {
+                //add the values
+                list.add(visit(t));
+                
+                types.add(expressionType);
+            } else if (t instanceof alphaParser.ExpressionContext){
+                alphaParser.ExpressionContext e = (alphaParser.ExpressionContext) t; 
+                fillValues(list, types, e);
+            }
+        }
+    }
+
+    private boolean topLevelPlusExpression = true;
     @Override
     public ArrayList<String> visitPlusExpression(alphaParser.PlusExpressionContext ctx) {
         ArrayList<String> list;
-        //maybe have to convert the first output, so keep output of second expression in a separate list
-        ArrayList<String> list0 = new ArrayList<>();
-        ArrayList<String> list1 = new ArrayList<>();
-        DataType[] types = new DataType[2];
+        boolean localTopLevelPlusExpression = false;
         
-        //visit both expressions, store both datatypes
-        list0.addAll(visit(ctx.expression(0)));
-        types[0] = expressionType;
+        if (this.topLevelPlusExpression) {
+            this.topLevelPlusExpression = false;
+            localTopLevelPlusExpression = true;
+        }
         
-        list1.addAll(visit(ctx.expression(1)));
-        types[1] = expressionType;
+        if (localTopLevelPlusExpression && plusExpressionIsString(ctx)) { // only check for the first plus expression - is string, so do things differently to optimise for stack
+            //if this is a string, we don't loop through the rest of the plusExpressions
+
+            ArrayList<ArrayList<String>> valueList = new ArrayList<>();
+            ArrayList<DataType> valueTypes = new ArrayList<>();
+            
+            fillValues(valueList, valueTypes, ctx);
+            
+            list = stringBuilder(valueList, valueTypes);
+        } else {
+            //this is a number, so we loop through the rest of the plusexpressions
+            
+            //maybe have to convert the first output, so keep output of second expression in a separate list
+            ArrayList<String> list0 = new ArrayList<>();
+            ArrayList<String> list1 = new ArrayList<>();
+            DataType[] types = new DataType[2];
+
+            //visit both expressions, store both datatypes
+            list0.addAll(visit(ctx.expression(0)));
+            types[0] = expressionType;
+
+            list1.addAll(visit(ctx.expression(1)));
+            types[1] = expressionType;
+
+            //now figure out how to combine those two datatypes.
+            ArrayList<String> resultList = mathExpression(list0, types[0], list1, types[1], "add");
+
+            if (resultList != null) { //valid math, just return this
+                list = resultList;
+            } else {
+                throw  new RuntimeException("this should never happen");
+            }
+        }
         
-        //now figure out how to combine those two datatypes.
-        ArrayList<String> resultList = mathExpression(list0, types[0], list1, types[1], "add");
-        
-        if (resultList != null) { //valid math, just return this
-            list = resultList;
-        } else { //invalid math, so it's a string.
-            list = stringBuilder(list0, types[0], list1, types[1]);
+        if (localTopLevelPlusExpression) {
+            this.topLevelPlusExpression = true;
         }
         
         return list;

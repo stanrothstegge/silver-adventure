@@ -177,7 +177,7 @@ public class Scope {
         //if this is functionscope
         if (parentScope.isGlobalScope) { //is globalscope, so add scope size to the hashmap of the globalscope
             
-            parentScope.scopeSizes.put(name, biggestLocalSize);
+            parentScope.scopeSizes.put(name, biggestLocalSize + 1);
             
         } else { //overwrite biggestscope of parent if yours is bigger
             

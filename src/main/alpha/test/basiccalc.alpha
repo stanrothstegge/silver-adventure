@@ -2,12 +2,12 @@ Alpha
 
 ~pizza ()
 in a = 10;
-in b = 20;
-in c = a + b;
-in d = a - b;
-in e = a * b;
-in f = b / a;
-in g = a % b;
+do b = 0.3;
+do c = a + b;
+do d = a - b;
+do e = a * b;
+do f = a / b;
+do g = a % b;
 sp (a + " " + b + " " + c + " " + d + " " + e + " " + f + " " + g);
 
 ☕
